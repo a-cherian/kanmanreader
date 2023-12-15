@@ -1,0 +1,633 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */; };
+		405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */; };
+		405945BB2B2C54DA00A6B1F9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945BA2B2C54DA00A6B1F9 /* ViewController.swift */; };
+		405945BE2B2C54DB00A6B1F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 405945BC2B2C54DB00A6B1F9 /* Main.storyboard */; };
+		405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */; };
+		405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 405945C22B2C54DF00A6B1F9 /* Assets.xcassets */; };
+		405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */; };
+		405945D22B2C54E000A6B1F9 /* ManhuaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */; };
+		405945DC2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */; };
+		405945DE2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		405945CE2B2C54E000A6B1F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 405945AB2B2C54DA00A6B1F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 405945B22B2C54DA00A6B1F9;
+			remoteInfo = ManhuaReader;
+		};
+		405945D82B2C54E000A6B1F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 405945AB2B2C54DA00A6B1F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 405945B22B2C54DA00A6B1F9;
+			remoteInfo = ManhuaReader;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManhuaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		405945BA2B2C54DA00A6B1F9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		405945BD2B2C54DB00A6B1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ManhuaReader.xcdatamodel; sourceTree = "<group>"; };
+		405945C22B2C54DF00A6B1F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		405945C52B2C54DF00A6B1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ManhuaReader.entitlements; sourceTree = "<group>"; };
+		405945C82B2C54DF00A6B1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderTests.swift; sourceTree = "<group>"; };
+		405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITests.swift; sourceTree = "<group>"; };
+		405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		405945B02B2C54DA00A6B1F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945CA2B2C54E000A6B1F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945D42B2C54E000A6B1F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		405945AA2B2C54DA00A6B1F9 = {
+			isa = PBXGroup;
+			children = (
+				405945B52B2C54DA00A6B1F9 /* ManhuaReader */,
+				405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */,
+				405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */,
+				405945B42B2C54DA00A6B1F9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		405945B42B2C54DA00A6B1F9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */,
+				405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */,
+				405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		405945B52B2C54DA00A6B1F9 /* ManhuaReader */ = {
+			isa = PBXGroup;
+			children = (
+				405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */,
+				405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */,
+				405945BA2B2C54DA00A6B1F9 /* ViewController.swift */,
+				405945BC2B2C54DB00A6B1F9 /* Main.storyboard */,
+				405945C22B2C54DF00A6B1F9 /* Assets.xcassets */,
+				405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */,
+				405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */,
+				405945C82B2C54DF00A6B1F9 /* Info.plist */,
+				405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */,
+			);
+			path = ManhuaReader;
+			sourceTree = "<group>";
+		};
+		405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */ = {
+			isa = PBXGroup;
+			children = (
+				405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */,
+			);
+			path = ManhuaReaderTests;
+			sourceTree = "<group>";
+		};
+		405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */ = {
+			isa = PBXGroup;
+			children = (
+				405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */,
+				405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */,
+			);
+			path = ManhuaReaderUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		405945B22B2C54DA00A6B1F9 /* ManhuaReader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 405945E12B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReader" */;
+			buildPhases = (
+				405945AF2B2C54DA00A6B1F9 /* Sources */,
+				405945B02B2C54DA00A6B1F9 /* Frameworks */,
+				405945B12B2C54DA00A6B1F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ManhuaReader;
+			productName = ManhuaReader;
+			productReference = 405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */;
+			productType = "com.apple.product-type.application";
+		};
+		405945CC2B2C54E000A6B1F9 /* ManhuaReaderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 405945E42B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderTests" */;
+			buildPhases = (
+				405945C92B2C54E000A6B1F9 /* Sources */,
+				405945CA2B2C54E000A6B1F9 /* Frameworks */,
+				405945CB2B2C54E000A6B1F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				405945CF2B2C54E000A6B1F9 /* PBXTargetDependency */,
+			);
+			name = ManhuaReaderTests;
+			productName = ManhuaReaderTests;
+			productReference = 405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		405945D62B2C54E000A6B1F9 /* ManhuaReaderUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 405945E72B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderUITests" */;
+			buildPhases = (
+				405945D32B2C54E000A6B1F9 /* Sources */,
+				405945D42B2C54E000A6B1F9 /* Frameworks */,
+				405945D52B2C54E000A6B1F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				405945D92B2C54E000A6B1F9 /* PBXTargetDependency */,
+			);
+			name = ManhuaReaderUITests;
+			productName = ManhuaReaderUITests;
+			productReference = 405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		405945AB2B2C54DA00A6B1F9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					405945B22B2C54DA00A6B1F9 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					405945CC2B2C54E000A6B1F9 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = 405945B22B2C54DA00A6B1F9;
+					};
+					405945D62B2C54E000A6B1F9 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = 405945B22B2C54DA00A6B1F9;
+					};
+				};
+			};
+			buildConfigurationList = 405945AE2B2C54DA00A6B1F9 /* Build configuration list for PBXProject "ManhuaReader" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 405945AA2B2C54DA00A6B1F9;
+			productRefGroup = 405945B42B2C54DA00A6B1F9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				405945B22B2C54DA00A6B1F9 /* ManhuaReader */,
+				405945CC2B2C54E000A6B1F9 /* ManhuaReaderTests */,
+				405945D62B2C54E000A6B1F9 /* ManhuaReaderUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		405945B12B2C54DA00A6B1F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */,
+				405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */,
+				405945BE2B2C54DB00A6B1F9 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945CB2B2C54E000A6B1F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945D52B2C54E000A6B1F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		405945AF2B2C54DA00A6B1F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				405945BB2B2C54DA00A6B1F9 /* ViewController.swift in Sources */,
+				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
+				405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */,
+				405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945C92B2C54E000A6B1F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				405945D22B2C54E000A6B1F9 /* ManhuaReaderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		405945D32B2C54E000A6B1F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				405945DC2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift in Sources */,
+				405945DE2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		405945CF2B2C54E000A6B1F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 405945B22B2C54DA00A6B1F9 /* ManhuaReader */;
+			targetProxy = 405945CE2B2C54E000A6B1F9 /* PBXContainerItemProxy */;
+		};
+		405945D92B2C54E000A6B1F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 405945B22B2C54DA00A6B1F9 /* ManhuaReader */;
+			targetProxy = 405945D82B2C54E000A6B1F9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		405945BC2B2C54DB00A6B1F9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				405945BD2B2C54DB00A6B1F9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				405945C52B2C54DF00A6B1F9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		405945DF2B2C54E000A6B1F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		405945E02B2C54E000A6B1F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		405945E22B2C54E000A6B1F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ManhuaReader/ManhuaReader.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ManhuaReader/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		405945E32B2C54E000A6B1F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ManhuaReader/ManhuaReader.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ManhuaReader/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		405945E52B2C54E000A6B1F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManhuaReader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManhuaReader";
+			};
+			name = Debug;
+		};
+		405945E62B2C54E000A6B1F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManhuaReader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManhuaReader";
+			};
+			name = Release;
+		};
+		405945E82B2C54E000A6B1F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ManhuaReader;
+			};
+			name = Debug;
+		};
+		405945E92B2C54E000A6B1F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AV5T75VG6K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ManhuaReader;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		405945AE2B2C54DA00A6B1F9 /* Build configuration list for PBXProject "ManhuaReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				405945DF2B2C54E000A6B1F9 /* Debug */,
+				405945E02B2C54E000A6B1F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		405945E12B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				405945E22B2C54E000A6B1F9 /* Debug */,
+				405945E32B2C54E000A6B1F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		405945E42B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				405945E52B2C54E000A6B1F9 /* Debug */,
+				405945E62B2C54E000A6B1F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		405945E72B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				405945E82B2C54E000A6B1F9 /* Debug */,
+				405945E92B2C54E000A6B1F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */,
+			);
+			currentVersion = 405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */;
+			path = ManhuaReader.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 405945AB2B2C54DA00A6B1F9 /* Project object */;
+}
