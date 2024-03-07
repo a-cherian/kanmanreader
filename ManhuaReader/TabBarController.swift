@@ -17,6 +17,7 @@ class TabBarController: UITabBarController {
     }
     
     private func configureTabs() {
+        // web view
         let calendar = CalendarViewController()
         calendar.tabBarItem.image = UIImage(systemName: "calendar")
         calendar.tabBarItem.title = "Calendar"
@@ -29,10 +30,10 @@ class TabBarController: UITabBarController {
         let entryListNav = UINavigationController(rootViewController: entryList)
         
         // reader
-        let entryCreation = DocumentSelectionViewController()
-        entryCreation.tabBarItem.image = UIImage(systemName: "plus.diamond")
-        entryCreation.tabBarItem.title = "Add Entry"
-        let entryCreationNav = UINavigationController(rootViewController: entryCreation)
+        let documents = DocumentSelectionViewController()
+        documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
+        documents.tabBarItem.title = "Documents"
+        let documentsNav = UINavigationController(rootViewController: documents)
         
         // vocabulary
         let stats = StatsViewController()
@@ -46,10 +47,10 @@ class TabBarController: UITabBarController {
         settings.tabBarItem.title = "Settings"
         let settingsNav = UINavigationController(rootViewController: settings)
         
-        tabBar.tintColor = .systemMint
+        tabBar.tintColor = Constants.accentColor
         tabBar.backgroundColor = .black
         
-        setViewControllers([calendarNav, entryListNav, entryCreationNav, statsNav, settingsNav], animated: true)
+        setViewControllers([documentsNav], animated: true)
     }
 
 }

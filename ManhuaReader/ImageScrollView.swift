@@ -12,9 +12,10 @@ import UIKit
     func imageScrollViewDidChangeOrientation(imageScrollView: ImageScrollView)
     func pageLeft()
     func pageRight()
+    func didTapRegion(location: CGPoint) -> Bool
 }
 
-open class ImageScrollView: UIScrollView {
+open class ImageScrollView: UIScrollView, UIGestureRecognizerDelegate {
     
     @objc public enum ScaleMode: Int {
         case aspectFill
@@ -42,6 +43,7 @@ open class ImageScrollView: UIScrollView {
     private var scaleToRestoreAfterResize: CGFloat = 1.0
 //    open var maxScaleFromMinScale: CGFloat = 3.0
     open var maxScaleFromMinScale: CGFloat = 5.0
+//    open var pageTapGesture: UITapGestureRecognizer? = nil
     
     override open var frame: CGRect {
         willSet {
@@ -193,7 +195,9 @@ open class ImageScrollView: UIScrollView {
         zoomView!.addGestureRecognizer(zoomDoubleTapGesture)
         
         let pageTapGesture = UITapGestureRecognizer(target: self, action: #selector(ImageScrollView.tapGestureRecognizer(_:)))
+        pageTapGesture.delegate = self
         pageTapGesture.numberOfTapsRequired = 1
+        pageTapGesture.numberOfTouchesRequired = 1
         zoomView!.addGestureRecognizer(pageTapGesture)
         
         configureImageForSize(image.size)
@@ -250,6 +254,9 @@ open class ImageScrollView: UIScrollView {
     }
     
     @objc func tapGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+        
+        let vision = imageScrollViewDelegate?.didTapRegion(location: gestureRecognizer.location(in: zoomView)) ?? false
+        if(vision) { return }
         if zoomScale != minimumZoomScale { return }
         
         let touchCenterX = gestureRecognizer.location(in: gestureRecognizer.view).x
@@ -291,6 +298,10 @@ open class ImageScrollView: UIScrollView {
             self.imageScrollViewDelegate?.imageScrollViewDidChangeOrientation(imageScrollView: self)
         }
     }
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 }
 
 extension ImageScrollView: UIScrollViewDelegate {
@@ -304,6 +315,24 @@ extension ImageScrollView: UIScrollViewDelegate {
     }
 
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        // Stop scrollView sliding:
+        let width = contentSize.width - bounds.width
+        let height = contentSize.height + bounds.height
+        let contentOffsetBounds = CGRect(x: 0, y: -bounds.height / 2, width: width, height: height)
+        let inBounds = contentOffsetBounds.contains(contentOffset)
+        if(inBounds) { return }
+        
+        // calculate conditions:
+        let swipeVelocityThreshold: CGFloat = 3
+        
+        if(velocity.x > swipeVelocityThreshold)
+        {
+            imageScrollViewDelegate?.pageRight()
+        }
+        if(velocity.x < -swipeVelocityThreshold) {
+            imageScrollViewDelegate?.pageLeft()
+        }
+        
         imageScrollViewDelegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
     }
     
