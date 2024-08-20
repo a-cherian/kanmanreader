@@ -10,6 +10,7 @@ import Vision
 import SwiftyTesseract
 
 class ReaderViewController: UIViewController, ImageScrollViewDelegate {
+    var VERT_OCR_FEATURE_FLAG = false
     
     private var dataSource: [UIImage] = [UIImage(systemName: "calendar") ?? UIImage(), UIImage(systemName: "plus.diamond") ?? UIImage(), UIImage(systemName: "calendar") ?? UIImage()]
     var position = 0
@@ -63,7 +64,10 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         let newView = UIView(frame: CGRect(x: 0, y: 0, width: 250, height: 35))
         
         newView.addSubview(ocrButton)
-        newView.addSubview(ocrSwitch)
+        
+        if(VERT_OCR_FEATURE_FLAG) {
+            newView.addSubview(ocrSwitch)
+        }
         
         return newView
     }()
@@ -99,7 +103,8 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         
         view.backgroundColor = .black
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView)
+        if(VERT_OCR_FEATURE_FLAG) { navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView) }
+        else { navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrButton) }
         
         addSubviews()
         configureUI()
@@ -117,8 +122,11 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
     
     func configureUI() {
         configureReader()
-        configureOCRButton()
-        configureOCRSwitch()
+        
+        if(VERT_OCR_FEATURE_FLAG) {
+            configureOCRButton()
+            configureOCRSwitch()
+        }
     }
     
     func configureReader() {

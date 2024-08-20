@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */; };
 		400E0DCF2B31D7C80024AD39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0DCE2B31D7C70024AD39 /* Constants.swift */; };
+		400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0E932B32D4230024AD39 /* PinyinConverter.swift */; };
+		400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */ = {isa = PBXBuildFile; productRef = 400E0E992B3559270024AD39 /* SwiftyTesseract */; };
+		400E0E9F2B357B160024AD39 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 400E0E9E2B357B160024AD39 /* tessdata */; };
+		400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0EA22B36D2BC0024AD39 /* BookCell.swift */; };
 		405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */; };
 		405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */; };
 		405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */; };
@@ -19,16 +23,12 @@
 		405945DE2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */; };
 		405945F42B2C55F900A6B1F9 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */; };
 		405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945EF2B2C55F900A6B1F9 /* TabBarController.swift */; };
-		405945F92B2C566400A6B1F9 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945F82B2C566400A6B1F9 /* CalendarViewController.swift */; };
-		405945FB2B2C567A00A6B1F9 /* EntryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945FA2B2C567A00A6B1F9 /* EntryListViewController.swift */; };
 		405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */; };
-		405945FF2B2C567E00A6B1F9 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945FE2B2C567E00A6B1F9 /* MenuViewController.swift */; };
-		405946012B2C568900A6B1F9 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946002B2C568900A6B1F9 /* SettingsViewController.swift */; };
-		405946032B2C569000A6B1F9 /* StatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946022B2C569000A6B1F9 /* StatsViewController.swift */; };
 		405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 405946052B2C679C00A6B1F9 /* ZIPFoundation */; };
 		405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */; };
 		405946622B2DC7CB00A6B1F9 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */; };
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
+		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,10 +48,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		400E0E902B31E4520024AD39 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryViewController.swift; sourceTree = "<group>"; };
 		400E0DCE2B31D7C70024AD39 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManhuaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		400E0E932B32D4230024AD39 /* PinyinConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinyinConverter.swift; sourceTree = "<group>"; };
+		400E0E9E2B357B160024AD39 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
+		400E0EA22B36D2BC0024AD39 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
+		405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ManhuaReader.app; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReader.app"; sourceTree = "<absolute>"; };
 		405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ManhuaReader.xcdatamodel; sourceTree = "<group>"; };
@@ -59,22 +75,18 @@
 		405945C52B2C54DF00A6B1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ManhuaReader.entitlements; sourceTree = "<group>"; };
 		405945C82B2C54DF00A6B1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ManhuaReaderTests.xctest; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReader.app/PlugIns/ManhuaReaderTests.xctest"; sourceTree = "<absolute>"; };
 		405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderTests.swift; sourceTree = "<group>"; };
-		405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ManhuaReaderUITests.xctest; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReaderUITests-Runner.app/PlugIns/ManhuaReaderUITests.xctest"; sourceTree = "<absolute>"; };
 		405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITests.swift; sourceTree = "<group>"; };
 		405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		405945EF2B2C55F900A6B1F9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		405945F82B2C566400A6B1F9 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
-		405945FA2B2C567A00A6B1F9 /* EntryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryListViewController.swift; sourceTree = "<group>"; };
 		405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSelectionViewController.swift; sourceTree = "<group>"; };
-		405945FE2B2C567E00A6B1F9 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
-		405946002B2C568900A6B1F9 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		405946022B2C569000A6B1F9 /* StatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViewController.swift; sourceTree = "<group>"; };
 		4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
 		405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		405946632B2EBABC00A6B1F9 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */,
 				405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,40 +116,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		400E0E952B32D4290024AD39 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				400E0E932B32D4230024AD39 /* PinyinConverter.swift */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
 		405945AA2B2C54DA00A6B1F9 = {
 			isa = PBXGroup;
 			children = (
 				405945B52B2C54DA00A6B1F9 /* ManhuaReader */,
 				405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */,
 				405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */,
-				405945B42B2C54DA00A6B1F9 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		405945B42B2C54DA00A6B1F9 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */,
-				405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */,
-				405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		405945B52B2C54DA00A6B1F9 /* ManhuaReader */ = {
 			isa = PBXGroup;
 			children = (
+				400E0E9E2B357B160024AD39 /* tessdata */,
 				405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */,
 				405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */,
 				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
+				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
 				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
 				405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */,
 				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
-				405945F82B2C566400A6B1F9 /* CalendarViewController.swift */,
-				405945FA2B2C567A00A6B1F9 /* EntryListViewController.swift */,
-				405945FE2B2C567E00A6B1F9 /* MenuViewController.swift */,
-				405946002B2C568900A6B1F9 /* SettingsViewController.swift */,
-				405946022B2C569000A6B1F9 /* StatsViewController.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				405945EF2B2C55F900A6B1F9 /* TabBarController.swift */,
 				405945C22B2C54DF00A6B1F9 /* Assets.xcassets */,
@@ -146,6 +153,8 @@
 				405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */,
 				405946632B2EBABC00A6B1F9 /* Extension.swift */,
 				400E0DCE2B31D7C70024AD39 /* Constants.swift */,
+				407D6D952C7493CC00F8A5B9 /* Data */,
+				400E0E952B32D4290024AD39 /* External */,
 			);
 			path = ManhuaReader;
 			sourceTree = "<group>";
@@ -167,6 +176,14 @@
 			path = ManhuaReaderUITests;
 			sourceTree = "<group>";
 		};
+		407D6D952C7493CC00F8A5B9 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -177,6 +194,7 @@
 				405945AF2B2C54DA00A6B1F9 /* Sources */,
 				405945B02B2C54DA00A6B1F9 /* Frameworks */,
 				405945B12B2C54DA00A6B1F9 /* Resources */,
+				400E0E902B31E4520024AD39 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -185,6 +203,7 @@
 			name = ManhuaReader;
 			packageProductDependencies = (
 				405946052B2C679C00A6B1F9 /* ZIPFoundation */,
+				400E0E992B3559270024AD39 /* SwiftyTesseract */,
 			);
 			productName = ManhuaReader;
 			productReference = 405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */;
@@ -260,8 +279,9 @@
 			mainGroup = 405945AA2B2C54DA00A6B1F9;
 			packageReferences = (
 				405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */,
 			);
-			productRefGroup = 405945B42B2C54DA00A6B1F9 /* Products */;
+			productRefGroup = 405945AA2B2C54DA00A6B1F9;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -277,8 +297,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				400E0E9F2B357B160024AD39 /* tessdata in Resources */,
 				405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */,
 				405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */,
+				407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,18 +326,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */,
-				405945FF2B2C567E00A6B1F9 /* MenuViewController.swift in Sources */,
 				405946622B2DC7CB00A6B1F9 /* ImageScrollView.swift in Sources */,
-				405946012B2C568900A6B1F9 /* SettingsViewController.swift in Sources */,
 				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
+				400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */,
+				400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */,
 				405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */,
 				405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */,
 				400E0DCF2B31D7C80024AD39 /* Constants.swift in Sources */,
 				405945F42B2C55F900A6B1F9 /* CoreDataManager.swift in Sources */,
 				405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */,
-				405945FB2B2C567A00A6B1F9 /* EntryListViewController.swift in Sources */,
-				405945F92B2C566400A6B1F9 /* CalendarViewController.swift in Sources */,
-				405946032B2C569000A6B1F9 /* StatsViewController.swift in Sources */,
 				405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */,
 				400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */,
 				405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */,
@@ -490,11 +509,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = ManhuaReader/ManhuaReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManhuaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -510,6 +531,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -521,11 +545,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = ManhuaReader/ManhuaReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManhuaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -541,6 +567,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -667,6 +696,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyTesseract/SwiftyTesseract";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
 		405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
@@ -678,6 +715,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		400E0E992B3559270024AD39 /* SwiftyTesseract */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */;
+			productName = SwiftyTesseract;
+		};
 		405946052B2C679C00A6B1F9 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;

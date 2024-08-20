@@ -17,17 +17,6 @@ class TabBarController: UITabBarController {
     }
     
     private func configureTabs() {
-        // web view
-        let calendar = CalendarViewController()
-        calendar.tabBarItem.image = UIImage(systemName: "calendar")
-        calendar.tabBarItem.title = "Calendar"
-        let calendarNav = UINavigationController(rootViewController: calendar)
-        
-        // documents
-        let entryList = EntryListViewController()
-        entryList.tabBarItem.image = UIImage(systemName: "line.3.horizontal")
-        entryList.tabBarItem.title = "Entry List"
-        let entryListNav = UINavigationController(rootViewController: entryList)
         
         // reader
         let documents = DocumentSelectionViewController()
@@ -36,16 +25,16 @@ class TabBarController: UITabBarController {
         let documentsNav = UINavigationController(rootViewController: documents)
         
         // vocabulary
-        let stats = StatsViewController()
-        stats.tabBarItem.image = UIImage(systemName: "chart.line.uptrend.xyaxis")
-        stats.tabBarItem.title = "Statistics"
-        let statsNav = UINavigationController(rootViewController: stats)
+//        let stats = StatsViewController()
+//        stats.tabBarItem.image = UIImage(systemName: "doc.plaintext")
+//        stats.tabBarItem.title = "Saved"
+//        let statsNav = UINavigationController(rootViewController: stats)
         
         // settings
-        let settings = SettingsViewController()
-        settings.tabBarItem.image = UIImage(systemName: "gearshape.fill")
-        settings.tabBarItem.title = "Settings"
-        let settingsNav = UINavigationController(rootViewController: settings)
+//        let settings = SettingsViewController()
+//        settings.tabBarItem.image = UIImage(systemName: "gearshape.fill")
+//        settings.tabBarItem.title = "Settings"
+//        let settingsNav = UINavigationController(rootViewController: settings)
         
         tabBar.tintColor = Constants.accentColor
         tabBar.backgroundColor = .black

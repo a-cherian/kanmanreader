@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22221.1" systemVersion="22G313" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Book" representedClassName="Book" syncable="YES" codeGenerationType="class">
         <attribute name="cover" optional="YES" attributeType="Binary"/>
         <attribute name="lastOpened" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -7,5 +7,17 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="totalPages" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
+    </entity>
+    <entity name="DictEntry" representedClassName="DictEntry" syncable="YES" codeGenerationType="class">
+        <attribute name="definition" attributeType="String" defaultValueString=""/>
+        <attribute name="pinyin" attributeType="String" defaultValueString=""/>
+        <attribute name="simplified" attributeType="String" defaultValueString=""/>
+        <attribute name="traditional" attributeType="String" defaultValueString=""/>
+        <fetchIndex name="byTraditionalIndex">
+            <fetchIndexElement property="traditional" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="bySimplifiedIndex">
+            <fetchIndexElement property="simplified" type="Binary" order="ascending"/>
+        </fetchIndex>
     </entity>
 </model>

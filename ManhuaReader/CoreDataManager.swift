@@ -113,4 +113,158 @@ struct CoreDataManager {
             print("Failed to update: \(saveError)")
         }
     }
+    
+    @discardableResult
+    func createEntry(traditional: String, simplified: String, pinyin: String, definition: String) -> DictEntry? {
+        let context = persistentContainer.newBackgroundContext()
+        
+        let entry = NSEntityDescription.insertNewObject(forEntityName: "DictEntry", into: context) as! DictEntry
+        
+        entry.traditional = traditional
+        entry.simplified = simplified
+        entry.pinyin = pinyin
+        entry.definition = definition
+        
+        do {
+            try context.save()
+            return entry
+        } catch let createError {
+            print("Failed to create: \(createError)")
+        }
+        
+        return nil
+    }
+    
+    func createDict(dictData: [[String]]) async -> Bool {
+        // Create a private context
+        let context = persistentContainer.newBackgroundContext()
+        
+        do {
+            let res = try await context.perform {
+                var i = 0
+                let batchRequest = NSBatchInsertRequest(entityName: "DictEntry", dictionaryHandler: { dict in
+                    if i < dictData.count {
+                        // Create data. The current Item has only one property, timestamp, of type Date.
+                        let entry = ["traditional": dictData[i][0], "simplified": dictData[i][1], "pinyin": dictData[i][2], "definition": dictData[i][3]]
+                        dict.setDictionary(entry)
+                        i += 1
+                        return false
+                    }
+                    return true
+                })
+                batchRequest.resultType = .statusOnly
+                let result = try context.execute(batchRequest) as! NSBatchInsertResult
+                return result.result as! Bool
+            }
+        }
+        catch let createError {
+            print("Failed to create: \(createError)")
+        }
+        return false
+    }
+    
+    func deleteDict() {
+        let context = persistentContainer.newBackgroundContext()
+        
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "DictEntry")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let saveError {
+            print("Failed to update: \(saveError)")
+        }
+    }
+    
+    func fetchDict() -> [DictEntry]? {
+        let context = persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<DictEntry>(entityName: "DictEntry")
+        
+        do {
+            let dict = try context.fetch(fetchRequest)
+            return dict
+        } catch let fetchError {
+            print("Failed to fetch: \(fetchError)")
+        }
+        
+        return nil
+    }
+    
+    func translationFor(chinese: String) -> [DictEntry] {
+        let predicate = NSPredicate(format: "(simplified == %@) OR (traditional == %@)", argumentArray: [chinese, chinese])
+        
+        return fetchEntryFor(predicate: predicate)
+    }
+    
+    func translationFor(traditional: String) -> [DictEntry] {
+        let predicate = NSPredicate(format: "traditional == %@", argumentArray: [traditional])
+        
+        return fetchEntryFor(predicate: predicate)
+    }
+    
+    func translationFor(simplified: String) -> [DictEntry] {
+        let predicate = NSPredicate(format: "simplified == %@", argumentArray: [simplified])
+        
+        return fetchEntryFor(predicate: predicate)
+    }
+    
+    func fetchEntryFor(predicate: NSPredicate) -> [DictEntry] {
+        let context = persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<DictEntry>(entityName: "DictEntry")
+        fetchRequest.predicate = predicate
+        
+        do {
+            let entries = try context.fetch(fetchRequest)
+            return entries
+        } catch let fetchError {
+            print("Failed to fetch: \(fetchError)")
+        }
+        return []
+    }
+    
+//    func fetchEntryObjects(forPredicate: NSPredicate) -> [TranslationEntry] {
+//        let fetchRequest: NSFetchRequest<TranslationEntry> = TranslationEntry.fetchRequest()
+//        fetchRequest.predicate = forPredicate
+//        
+//        do {
+//            let results = try DataController.sharedInstance.getContext().fetch(fetchRequest)
+//            
+//            return results
+//        }
+//        catch {
+//            debugPrint(error)
+//            return []
+//        }
+//    }
+//    public func translationsFor(simplifiedChinese: String) -> [Translation] {
+//        let simplifiedPredicate = NSPredicate(format: "simplified == %@", argumentArray: [simplifiedChinese])
+//        
+//        return self.translationsFor(entryPredicate: simplifiedPredicate)
+//    }
+//    
+//    public func translationsFor(chinese: String) -> [Translation] {
+//        let chinesePredicate = NSPredicate(format: "(simplified == %@) OR (traditional == %@)", argumentArray: [chinese, chinese])
+//        
+//        return self.translationsFor(entryPredicate: chinesePredicate)
+//    }
+//    
+//    public func translationsContaining(simplifiedChinese: String) -> [Translation] {
+//        let simplifiedPredicate = NSPredicate(format: "simplified CONTAINS %@", argumentArray: [simplifiedChinese])
+//        
+//        return self.translationsFor(entryPredicate: simplifiedPredicate)
+//    }
+//    
+//    public func translationsFor(traditionalChinese: String) -> [Translation] {
+//        let traditionalPredicate = NSPredicate(format: "traditional == %@", argumentArray: [traditionalChinese])
+//        
+//        return self.translationsFor(entryPredicate: traditionalPredicate)
+//    }
+//    
+//    public func translationsContaining(traditionalChinese: String) -> [Translation] {
+//        let traditionalPredicate = NSPredicate(format: "traditional CONTAINS %@", argumentArray: [traditionalChinese])
+//        
+//        return self.translationsFor(entryPredicate: traditionalPredicate)
+//    }
 }

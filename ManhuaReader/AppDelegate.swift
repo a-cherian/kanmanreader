@@ -15,6 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.loadDictionary()
+        }
+        
         return true
     }
 
@@ -73,6 +78,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
+    func loadDictionary() {
+        let userDefaults = UserDefaults.standard
+        
+        let currentDictVersion = userDefaults.string(forKey: Constants.LATEST_DICT_UPDATE_KEY)
+        
+        if(currentDictVersion != Constants.LATEST_DICT_UPDATE) {
+            print("Updating dictionary...")
+            let dictFileName = "cedict_ts_" + Constants.LATEST_DICT_UPDATE
+            guard let urlPath = Bundle.main.url(forResource: dictFileName, withExtension: "txt") else { return }
+            var dictLines: [String] = []
+            
+            do {
+                let dictText = try String(contentsOf: urlPath, encoding: String.Encoding.utf8)
+                dictLines = dictText.components(separatedBy: "\r\n")
+            }
+            catch {
+                return
+            }
+            
+            CoreDataManager.shared.deleteDict()
+            print("Deleting previous dictionary...")
+            
+            var dict: [[String]] = []
+
+            for entry in dictLines {
+                if(entry.hasPrefix("#")) { continue }
+                
+                let splitted = entry.trimmingCharacters(in: CharacterSet(charactersIn: "/")).split(separator: "/")
+                
+                let english = splitted[1...].joined(separator: "\\")
+                
+                let hanzi_and_pinyin = splitted[0].split(separator: "[")
+                
+                let hanzi = hanzi_and_pinyin[0].split(separator: " ")
+                let traditional = String(hanzi[0])
+                let simplified = String(hanzi[1])
+                
+                let pinyin_text = String(hanzi_and_pinyin[1]).trimmingCharacters(in: CharacterSet(charactersIn: "] "))
+                
+                dict.append([traditional, simplified, pinyin_text, english])
+            }
+            
+            Task {
+                await CoreDataManager.shared.createDict(dictData: dict)
+                userDefaults.setValue(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
+                print("Dictionary updated...")
             }
         }
     }

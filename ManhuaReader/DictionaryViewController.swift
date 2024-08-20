@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftChinese
 
 class DictionaryViewController: UIViewController {
     
@@ -159,6 +158,7 @@ class DictionaryViewController: UIViewController {
     
     @objc func didTapWords(_ tapGesture: UITapGestureRecognizer) {
         let point = tapGesture.location(in: ocrTextView)
+        
         guard let detectedWord = getWordAtPosition(point) else {
             ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
             dictionaryTextView.text = ""
@@ -166,42 +166,37 @@ class DictionaryViewController: UIViewController {
         }
         ocrTextView.attributedText = generateAttributedString(with: detectedWord, targetString: ocrTextView.text)
         
-        let dictionary = Dictionary()
-        //        var translations: [Translation] = dictionary.translationsFor(entryPredicate: NSPredicate()
-        var translations: [Translation] = []
+        var entries: [DictEntry] = []
         for i in 0..<detectedWord.count {
-            translations += dictionary.translationsFor(chinese: String(detectedWord.prefix(upTo: String.Index(utf16Offset: detectedWord.count - i, in: detectedWord))))
-//            var translations: [Translation] = dictionary.translationsFor(traditionalChinese: detectedWord)
-//            if translations.count == 0 { translations = dictionary.translationsFor(simplifiedChinese: detectedWord) }
+            entries += CoreDataManager.shared.translationFor(chinese: String(detectedWord.prefix(upTo: String.Index(utf16Offset: detectedWord.count - i, in: detectedWord))))
         }
-//        var translations: [Translation] = dictionary.translationsFor(traditionalChinese: detectedWord)
-//        if translations.count == 0 { translations = dictionary.translationsFor(simplifiedChinese: detectedWord) }
-        dictionaryTextView.text = generateTranslationString(translations: translations)
+        dictionaryTextView.text = generateTranslationString(entries: entries)
         
     }
     
-    func generateTranslationString(translations: [Translation]) -> String {
-        if(translations.count == 0) { return "" }
+    func generateTranslationString(entries: [DictEntry]) -> String {
+        if(entries.count == 0) { return "" }
         var string = "———————————————\n"
         
-        for i in 0..<translations.count {
-            let translation = translations[i]
-            string += translation.traditionalChinese
-            if translation.traditionalChinese != translation.simplifiedChinese {
-                string += "【" +  translation.simplifiedChinese + "】"
+        for i in 0..<entries.count {
+            let entry = entries[i]
+            string += entry.traditional!
+            if entry.traditional != entry.simplified {
+                string += "【" +  entry.simplified! + "】"
             }
             
             string += " - "
-            string += PinyinConverter().convert(pinyin: translation.pinyin)
+            string += PinyinConverter().convert(pinyin: entry.pinyin!)
             string += "\n"
             
-            for j in 0..<translation.englishDefinitions.count {
+            let definitions = entry.definition!.components(separatedBy: "\\")
+            for j in 0..<definitions.count {
                 string += String(j + 1)
-                string += ". " + translation.englishDefinitions[j] + "\n"
+                string += ". " + definitions[j] + "\n"
             }
-            if(i < translations.count - 1)
+            if(i < entries.count - 1)
             {
-                if(translation.simplifiedChinese == translations[i + 1].simplifiedChinese) { string += "————————\n" }
+                if(entry.simplified == entries[i + 1].simplified) { string += "————————\n" }
                 else { string += "========\n" }
             }
         }
@@ -236,44 +231,13 @@ class DictionaryViewController: UIViewController {
             let tokenizeView = UITextView()
             tokenizeView.text = String(ocrTextView.text.suffix(from: String.Index(utf16Offset: pos, in: ocrTextView.text)))
             
+            // TO DO: search that doesn't rely on apple dictionary
             if let range = tokenizeView.tokenizer.rangeEnclosingPosition(tokenizeView.beginningOfDocument, with: .word, inDirection:  UITextDirection(rawValue: UITextStorageDirection.forward.rawValue))
             {
                 return tokenizeView.text(in: range)
             }
         }
         return nil
-    }
-    
-    func updateDictionary() {
-        do {
-            // Latest CC-CEDICT
-            let exportInfo = try DictionaryExportInfo.latestDictionaryExportInfo()
-            let export = DictionaryExport(exportInfo: exportInfo!)
-            
-            // Download the dictionary export
-            export.download(onCompletion: { (exportContent, error) in
-                guard error == nil else {
-                    debugPrint("Unable to download dictionary export. Aborting.")
-                    return
-                }
-                
-                // Dictionary object used for getting translations
-                let dictionary = Dictionary()
-                debugPrint("Number of entries in dictionary before import: " + String(dictionary.numberOfEntries()))
-                
-                // Do an import
-                let importer = Importer(dictionaryExport: export)
-                importer.importTranslations(onProgress: { (totalEntries, progressedEntries) in
-                    // Progress update
-                    debugPrint("progressedEntries: \(progressedEntries), totalEntries: \(totalEntries)")
-                }, whenFinished: { (error, newEntries, updatedEntries, removedEntries) in
-                    debugPrint("Number of entries in dictionary before import: " + String(dictionary.numberOfEntries()))
-                })
-            })
-        }
-        catch let error {
-            debugPrint(error)
-        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
