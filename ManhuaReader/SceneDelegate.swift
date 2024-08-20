@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let documents = DocumentSelectionViewController()
         documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
-        documents.tabBarItem.title = "Documents"
+        documents.tabBarItem.title = "Books"
         let documentsNav = UINavigationController(rootViewController: documents)
         
 //        window.rootViewController = documentsNav

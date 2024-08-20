@@ -60,7 +60,7 @@ struct CoreDataManager {
     }
     
     func updateBook(book: Book?) {
-        guard let book = book else { return }
+        guard let _ = book else { return }
         let context = persistentContainer.viewContext
         
         do {
@@ -135,12 +135,13 @@ struct CoreDataManager {
         return nil
     }
     
+    @discardableResult
     func createDict(dictData: [[String]]) async -> Bool {
         // Create a private context
         let context = persistentContainer.newBackgroundContext()
         
         do {
-            let res = try await context.perform {
+            let _ = try await context.perform {
                 var i = 0
                 let batchRequest = NSBatchInsertRequest(entityName: "DictEntry", dictionaryHandler: { dict in
                     if i < dictData.count {

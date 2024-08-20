@@ -108,7 +108,8 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         var book = books.first(where: { $0.url == url })
         if book == nil {
             writeBookmarks(url: url)
-            book = CoreDataManager.shared.createBook(name: url.lastPathComponent, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
+            let name = (url.lastPathComponent as NSString).deletingPathExtension
+            book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
         } else {
             book?.lastOpened = Date()
             CoreDataManager.shared.updateBook(book: book)
@@ -128,6 +129,78 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         let images = extractBookImages(url: url).images
         
         self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
+    }
+    
+    func renameAction(_ book: Book) {
+        let alert = UIAlertController(
+            title: "Rename book",
+            message: "Enter a new title for your book.",
+            preferredStyle: .alert
+        )
+        alert.addTextField { (textField) in
+            textField.text = book.name
+        }
+        alert.addAction(UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { _ in
+                let name = alert.textFields?[0].text
+                book.name = name
+                CoreDataManager.shared.updateBook(book: book)
+                self.refreshData()
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func resetAction(_ book: Book) {
+        let alert = UIAlertController(
+            title: "Reset book progress",
+            message: "This will reset this book's progress to 0. Do you wish to proceed?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "Reset",
+            style: .destructive,
+            handler: { _ in
+                book.lastPage = 0
+                CoreDataManager.shared.updateBook(book: book)
+                self.refreshData()
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteAction(_ book: Book) {
+        let alert = UIAlertController(
+            title: "Confirm deletion",
+            message: "This will delete this book. This action is irreversible. Do you wish to proceed?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "Delete",
+            style: .destructive,
+            handler: { _ in
+                CoreDataManager.shared.deleteBook(book: book)
+                self.refreshData()
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
     }
     
     func extractBookImages(url: URL) -> (data: Data, images: [UIImage]) {
@@ -284,5 +357,18 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         
         return CGSize(width: cellWidth, height: cellHeight)
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                         contextMenuConfigurationForItemAt indexPath: IndexPath,
+                         point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
+            let book = self.books[indexPath.item]
+            let renameAction = UIAction(title: "Rename") { _ in self.renameAction(book) }
+            let resetAction = UIAction(title: "Reset Progress") { _ in self.resetAction(book) }
+            let deleteAction = UIAction(title: "Delete") { _ in self.deleteAction(book) }
+            return UIMenu(title: "", children: [renameAction, resetAction, deleteAction])
+        }
+    }
+
 }
 

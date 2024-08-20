@@ -115,8 +115,6 @@ extension UIImage {
     func drawRectsOnImage(_ rects: [CGRect], color: UIColor, for scrollView: ImageScrollView) -> UIImage {
         let imageSize = self.size
         let scale: CGFloat = 0.0
-        var zoomedRect = getZoomedRect(from: scrollView)
-        let adjustedRect = CGRect(x: zoomedRect.minX, y: zoomedRect.minY, width: min(self.size.width, zoomedRect.width), height: min(self.size.height, zoomedRect.height))
 
         UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
 
