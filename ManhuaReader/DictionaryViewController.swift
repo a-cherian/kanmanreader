@@ -9,6 +9,8 @@ import UIKit
 
 class DictionaryViewController: UIViewController {
     
+    var searchLimit = 8
+    
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         return scrollView
@@ -164,12 +166,25 @@ class DictionaryViewController: UIViewController {
             dictionaryTextView.text = ""
             return
         }
-        ocrTextView.attributedText = generateAttributedString(with: detectedWord, targetString: ocrTextView.text)
         
         var entries: [DictEntry] = []
         for i in 0..<detectedWord.count {
             entries += CoreDataManager.shared.translationFor(chinese: String(detectedWord.prefix(upTo: String.Index(utf16Offset: detectedWord.count - i, in: detectedWord))))
         }
+        
+        if(entries.count == 0) {
+            dictionaryTextView.text = ""
+            return
+        }
+        
+        let longestDetectedWord = entries.reduce(entries[0], {
+            if($0.traditional?.count ?? 0 > $1.traditional?.count ?? 0) { return $0 }
+            else { return $1 }
+        })
+        let trimmedWord = String(detectedWord.prefix(upTo: String.Index(utf16Offset: longestDetectedWord.traditional?.count ?? 0, in: detectedWord)))
+        ocrTextView.attributedText = generateAttributedString(with: trimmedWord, targetString: ocrTextView.text)
+        
+        
         dictionaryTextView.text = generateTranslationString(entries: entries)
         
     }
@@ -227,15 +242,9 @@ class DictionaryViewController: UIViewController {
         if let textPosition = ocrTextView.closestPosition(to: point)
         {
             let pos = ocrTextView.offset(from: ocrTextView.beginningOfDocument, to: textPosition)
-            
-            let tokenizeView = UITextView()
-            tokenizeView.text = String(ocrTextView.text.suffix(from: String.Index(utf16Offset: pos, in: ocrTextView.text)))
-            
-            // TO DO: search that doesn't rely on apple dictionary
-            if let range = tokenizeView.tokenizer.rangeEnclosingPosition(tokenizeView.beginningOfDocument, with: .word, inDirection:  UITextDirection(rawValue: UITextStorageDirection.forward.rawValue))
-            {
-                return tokenizeView.text(in: range)
-            }
+            let textAfterPos = ocrTextView.text.suffix(from: String.Index(utf16Offset: pos, in: ocrTextView.text))
+            let limitedText = String(textAfterPos.prefix(upTo: String.Index(utf16Offset: min(textAfterPos.count, searchLimit), in: textAfterPos)))
+            return limitedText
         }
         return nil
     }

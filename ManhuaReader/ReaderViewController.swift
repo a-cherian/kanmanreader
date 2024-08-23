@@ -205,7 +205,6 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if(completed) {
-            currentPage.scrollView.delegate = nil
             currentPage = pendingPage
             position = currentPage.position
         }
@@ -419,7 +418,7 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
         let newPage = Page()
         newPage.setImage(pages[position])
         newPage.position = position
-//        newPage.delegate = self
+        newPage.delegate = self
         
         return newPage
     }
