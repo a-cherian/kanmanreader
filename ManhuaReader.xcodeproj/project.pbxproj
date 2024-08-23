@@ -26,9 +26,9 @@
 		405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */; };
 		405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 405946052B2C679C00A6B1F9 /* ZIPFoundation */; };
 		405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */; };
-		405946622B2DC7CB00A6B1F9 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */; };
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
+		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,7 +67,6 @@
 		400E0E932B32D4230024AD39 /* PinyinConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinyinConverter.swift; sourceTree = "<group>"; };
 		400E0E9E2B357B160024AD39 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		400E0EA22B36D2BC0024AD39 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
-		405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ManhuaReader.app; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReader.app"; sourceTree = "<absolute>"; };
 		405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ManhuaReader.xcdatamodel; sourceTree = "<group>"; };
@@ -75,18 +74,19 @@
 		405945C52B2C54DF00A6B1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ManhuaReader.entitlements; sourceTree = "<group>"; };
 		405945C82B2C54DF00A6B1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ManhuaReaderTests.xctest; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReader.app/PlugIns/ManhuaReaderTests.xctest"; sourceTree = "<absolute>"; };
 		405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderTests.swift; sourceTree = "<group>"; };
-		405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ManhuaReaderUITests.xctest; path = "/Users/ac/Desktop/projects/ManhuaReader/build/Debug-iphoneos/ManhuaReaderUITests-Runner.app/PlugIns/ManhuaReaderUITests.xctest"; sourceTree = "<absolute>"; };
 		405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITests.swift; sourceTree = "<group>"; };
 		405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		405945EF2B2C55F900A6B1F9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSelectionViewController.swift; sourceTree = "<group>"; };
 		4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
-		405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		405946632B2EBABC00A6B1F9 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		40724F0A2C76F66E00EA81DB /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManhuaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
+		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +130,9 @@
 				405945B52B2C54DA00A6B1F9 /* ManhuaReader */,
 				405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */,
 				405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */,
+				40724F0A2C76F66E00EA81DB /* ManhuaReader.app */,
+				40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */,
+				40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -142,7 +145,7 @@
 				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
 				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
 				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
-				405946612B2DC7CB00A6B1F9 /* ImageScrollView.swift */,
+				407D6D962C756BFB00F8A5B9 /* Page.swift */,
 				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				405945EF2B2C55F900A6B1F9 /* TabBarController.swift */,
@@ -206,7 +209,7 @@
 				400E0E992B3559270024AD39 /* SwiftyTesseract */,
 			);
 			productName = ManhuaReader;
-			productReference = 405945B32B2C54DA00A6B1F9 /* ManhuaReader.app */;
+			productReference = 40724F0A2C76F66E00EA81DB /* ManhuaReader.app */;
 			productType = "com.apple.product-type.application";
 		};
 		405945CC2B2C54E000A6B1F9 /* ManhuaReaderTests */ = {
@@ -224,7 +227,7 @@
 			);
 			name = ManhuaReaderTests;
 			productName = ManhuaReaderTests;
-			productReference = 405945CD2B2C54E000A6B1F9 /* ManhuaReaderTests.xctest */;
+			productReference = 40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		405945D62B2C54E000A6B1F9 /* ManhuaReaderUITests */ = {
@@ -242,7 +245,7 @@
 			);
 			name = ManhuaReaderUITests;
 			productName = ManhuaReaderUITests;
-			productReference = 405945D72B2C54E000A6B1F9 /* ManhuaReaderUITests.xctest */;
+			productReference = 40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -326,9 +329,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */,
-				405946622B2DC7CB00A6B1F9 /* ImageScrollView.swift in Sources */,
 				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
 				400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */,
+				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
 				400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */,
 				405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */,
 				405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */,

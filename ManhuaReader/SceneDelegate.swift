@@ -25,10 +25,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navBar.backgroundColor = UIColor.black
         navBar.isTranslucent = false
         
-        let documents = DocumentSelectionViewController()
-        documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
-        documents.tabBarItem.title = "Books"
-        let documentsNav = UINavigationController(rootViewController: documents)
+//        let documents = DocumentSelectionViewController()
+//        documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
+//        documents.tabBarItem.title = "Books"
+//        let documentsNav = UINavigationController(rootViewController: documents)
         
 //        window.rootViewController = documentsNav
         window.rootViewController = TabBarController()

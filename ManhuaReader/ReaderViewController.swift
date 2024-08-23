@@ -9,10 +9,10 @@ import UIKit
 import Vision
 import SwiftyTesseract
 
-class ReaderViewController: UIViewController, ImageScrollViewDelegate {
-    var VERT_OCR_FEATURE_FLAG = false
-    
-    private var dataSource: [UIImage] = [UIImage(systemName: "calendar") ?? UIImage(), UIImage(systemName: "plus.diamond") ?? UIImage(), UIImage(systemName: "calendar") ?? UIImage()]
+class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, PageDelegate {
+    var pages: [UIImage] = []
+    var currentPage: Page = Page()
+    var pendingPage: Page = Page()
     var position = 0
     var book: Book
     
@@ -25,14 +25,7 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
     var detectVertical = false
     let tesseract = Tesseract(language: .custom("chi_tra_vert"))
     
-    var pinchGesture: UIPinchGestureRecognizer? = nil
-    var tapGesture: UITapGestureRecognizer? = nil
-    
-    lazy var reader: ImageScrollView = {
-        let view = ImageScrollView()
-        view.imageScrollViewDelegate = self
-        return view
-    }()
+    var scrollView: UIScrollView? = nil
     
     lazy var ocrButton: UIButton = {
         let button = UIButton()
@@ -49,6 +42,21 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         return button
     }()
     
+    lazy var prefsButton: UIButton = {
+        let button = UIButton()
+        
+        button.setImage(UIImage(systemName: "gearshape.fill"), for: .normal)
+        button.backgroundColor = .black
+        button.tintColor = .white
+        button.layer.cornerRadius = 10
+        button.layer.borderColor = Constants.accentColor.cgColor
+        button.layer.borderWidth = 2
+        
+        button.addTarget(self, action: #selector(didTapPrefs), for: .touchUpInside)
+        
+        return button
+    }()
+    
     lazy var ocrSwitch: UISwitch = {
         let button = UISwitch()
         
@@ -61,15 +69,12 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
     }()
     
     lazy var ocrView: UIView = {
-        let newView = UIView(frame: CGRect(x: 0, y: 0, width: 250, height: 35))
+        let view = UIView()
         
-        newView.addSubview(ocrButton)
+        view.addSubview(ocrButton)
+        view.addSubview(prefsButton)
         
-        if(VERT_OCR_FEATURE_FLAG) {
-            newView.addSubview(ocrSwitch)
-        }
-        
-        return newView
+        return view
     }()
     
     lazy var backButton: UIButton = {
@@ -87,10 +92,19 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
     }()
     
     init(images: [UIImage] = [], book: Book) {
-        self.dataSource = images
         self.position = Int(book.lastPage)
         self.book = book
-        super.init(nibName: nil, bundle: nil)
+        
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        
+        self.dataSource = self
+        self.delegate = self
+        
+        pages = images
+        
+        currentPage = createPage(position: position)
+        
+        setViewControllers([currentPage], direction: .forward, animated: true)
     }
     
     required init?(coder: NSCoder) {
@@ -103,10 +117,8 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         
         view.backgroundColor = .black
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        if(VERT_OCR_FEATURE_FLAG) { navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView) }
-        else { navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrButton) }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView)
         
-        addSubviews()
         configureUI()
         
     }
@@ -116,30 +128,9 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         super.viewDidLayoutSubviews()
     }
     
-    func addSubviews() {
-        view.addSubview(reader)
-    }
-    
     func configureUI() {
-        configureReader()
-        
-        if(VERT_OCR_FEATURE_FLAG) {
-            configureOCRButton()
-            configureOCRSwitch()
-        }
-    }
-    
-    func configureReader() {
-        reader.setup()
-        let image = dataSource[position]
-        reader.display(image: image)
-        reader.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            reader.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            reader.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            reader.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            reader.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        configureOCRButton()
+        configurePrefsButton()
     }
     
     func configureOCRButton() {
@@ -148,17 +139,20 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
             ocrButton.topAnchor.constraint(equalTo: ocrView.topAnchor),
             ocrButton.bottomAnchor.constraint(equalTo: ocrView.bottomAnchor),
             ocrButton.trailingAnchor.constraint(equalTo: ocrView.trailingAnchor),
-            ocrButton.widthAnchor.constraint(equalTo: ocrButton.heightAnchor)
+            ocrButton.heightAnchor.constraint(equalToConstant: 35),
+            ocrButton.widthAnchor.constraint(equalTo: ocrButton.heightAnchor),
         ])
     }
     
-    func configureOCRSwitch() {
-        ocrSwitch.translatesAutoresizingMaskIntoConstraints = false
+    func configurePrefsButton() {
+        prefsButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            ocrSwitch.topAnchor.constraint(equalTo: ocrView.topAnchor),
-            ocrSwitch.bottomAnchor.constraint(equalTo: ocrView.bottomAnchor),
-            ocrSwitch.leadingAnchor.constraint(equalTo: ocrView.leadingAnchor),
-            ocrSwitch.trailingAnchor.constraint(equalTo: ocrButton.leadingAnchor, constant: -20)
+            prefsButton.topAnchor.constraint(equalTo: ocrView.topAnchor),
+            prefsButton.bottomAnchor.constraint(equalTo: ocrView.bottomAnchor),
+            prefsButton.leadingAnchor.constraint(equalTo: ocrView.leadingAnchor),
+            prefsButton.trailingAnchor.constraint(equalTo: ocrButton.leadingAnchor, constant: -20),
+            prefsButton.heightAnchor.constraint(equalToConstant: 35),
+            prefsButton.widthAnchor.constraint(equalTo: prefsButton.heightAnchor)
         ])
     }
     
@@ -173,36 +167,48 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         self.present(dictionaryViewController, animated: true)
     }
     
-    func pageLeft() {
-        if(position + 1 < dataSource.count)
-        {
-            position += 1
-            let image = dataSource[position]
-            reader.display(image: image)
-        }
-        ocrEnabled = false
-    }
-    
-    func pageRight() {
-        if(position - 1 >= 0) {
-            position -= 1
-            let image = dataSource[position]
-            reader.display(image: image)
-        }
-        ocrEnabled = false
-    }
-    
     @objc func didTapOCR() {
         ocrEnabled = true
         requestInitialVision()
+    }
+    
+    @objc func didTapPrefs() {
+        // present popup
+        
+        print("prefs")
     }
     
     @objc func didTapOCRSwitch(_ sender: UISwitch ) {
         detectVertical = sender.isOn
     }
     
-    @objc func didPinch(_ sender: UIPinchGestureRecognizer) {
-        reader.isUserInteractionEnabled = true
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        if(position - 1 >= 0) {
+            let previousPage = createPage(position: position - 1)
+            return previousPage
+        }
+        return nil
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        if(position + 1 < pages.count)
+        {
+            let nextPage = createPage(position: position + 1)
+            return nextPage
+        }
+        return nil
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        pendingPage = pendingViewControllers[0] as! Page
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        if(completed) {
+            currentPage.scrollView.delegate = nil
+            currentPage = pendingPage
+            position = currentPage.position
+        }
     }
     
     @objc func didTapBack(_ sender: UIButton) {
@@ -225,7 +231,7 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
             text = requestHorizontalVision(on: unprocessedImage, region: region)
         }
         else {
-            text = requestVerticalVision(image: unprocessedImage ?? dataSource[position], cluster: clusters[regionIndex])
+            text = requestVerticalVision(image: unprocessedImage ?? pages[position], cluster: clusters[regionIndex])
         }
         
         self.presentDictionary(text: text)
@@ -353,8 +359,11 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
     }
     
     func requestInitialVision() {
-        let image = dataSource[position]
-        zoomedRect = image.getZoomedRect(from: reader)
+        let image = pages[position]
+        
+        // YOU NEED TO FIX THIS
+        zoomedRect = image.getZoomedRect(from: currentPage)
+        currentPage.imageView.image = image.crop(rect: zoomedRect)
         guard let cgImage = image.cgImage else { return }
 
         // Create a new image-request handler.
@@ -371,10 +380,11 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
             
             self.unprocessedImage = image
             
-            self.reader.zoomView?.image = image.drawRectsOnImage(self.textRegions, color: .red, for: self.reader)
+            self.currentPage.imageView.image = image.drawRectsOnImage(self.textRegions, color: .red)
         }
         
-        request.regionOfInterest = (zoomedRect ?? image.getZoomedRect(from: reader)).unnormalizeBoundingBox(for: image)
+//        request.regionOfInterest = zoomedRect ?? CGRect(origin: CGPointZero, size: image.size)
+        request.regionOfInterest = (zoomedRect ?? image.getZoomedRect(from: currentPage)).unnormalizeBoundingBox(for: image)
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["zh-Hant"]
 
@@ -405,7 +415,12 @@ class ReaderViewController: UIViewController, ImageScrollViewDelegate {
         return results.joined()
     }
     
-    func imageScrollViewDidChangeOrientation(imageScrollView: ImageScrollView) {
+    func createPage(position: Int) -> Page {
+        let newPage = Page()
+        newPage.setImage(pages[position])
+        newPage.position = position
+//        newPage.delegate = self
         
+        return newPage
     }
 }

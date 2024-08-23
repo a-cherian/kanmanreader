@@ -44,16 +44,18 @@ extension UIImage {
         return croppedImage
     }
     
-    func getZoomedRect(from scrollView: ImageScrollView) -> CGRect {
-        let zoom: CGFloat = 1.0 / scrollView.zoomScale
+    func getZoomedRect(from page: Page) -> CGRect {
+        let zoom: CGFloat = 1.0 / page.scrollView.zoomScale
         
-        let origX: CGFloat = (scrollView.contentOffset.x) * zoom // 0
-        let origY: CGFloat = (scrollView.contentOffset.y) * zoom // 0
-        let widthCropper: CGFloat = min(scrollView.zoomView?.image?.size.width ?? scrollView.frame.size.width * zoom, scrollView.frame.size.width * zoom)
-        let heightCropper: CGFloat = min(scrollView.zoomView?.image?.size.height ?? scrollView.frame.size.height * zoom, scrollView.frame.size.height * zoom)
+        let origX: CGFloat = (page.scrollView.contentOffset.x + page.scrollView.contentInset.left) * zoom // 0
+        let origY: CGFloat = (page.scrollView.contentOffset.y + page.scrollView.contentInset.top) * zoom // 0
+        let widthCropper: CGFloat = min(page.imageView.image?.size.width ?? page.scrollView.frame.size.width * zoom, page.scrollView.frame.size.width * zoom)
+        let heightCropper: CGFloat = min(page.imageView.image?.size.height ?? page.scrollView.frame.size.height * zoom, page.scrollView.frame.size.height * zoom)
         let SIDE_MARGIN: CGFloat = 0
         
-        return CGRectMake((origX + (SIDE_MARGIN/2)), (origY + (SIDE_MARGIN / 2)), (widthCropper - SIDE_MARGIN), (heightCropper  - SIDE_MARGIN))
+        let zoomedRect = CGRect(x: origX + (SIDE_MARGIN/2), y: origY + (SIDE_MARGIN / 2), width: widthCropper - SIDE_MARGIN, height: heightCropper  - SIDE_MARGIN)
+        
+        return zoomedRect
     }
     
     func getCroppedRect(from scrollView: UIScrollView) -> CGRect {
@@ -66,27 +68,6 @@ extension UIImage {
         let SIDE_MARGIN: CGFloat = 0
         
         return CGRectMake((origX + (SIDE_MARGIN/2)), (origY + (SIDE_MARGIN / 2)), (widthCropper - SIDE_MARGIN), (heightCropper  - SIDE_MARGIN))
-    }
-    
-    func drawRectsOnImage(_ rects: [CGRect], color: UIColor) -> UIImage {
-        let imageSize = self.size
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-
-        self.draw(at: CGPoint.zero)
-        let ctx = UIGraphicsGetCurrentContext()
-
-        ctx?.addRects(rects)
-        ctx?.setStrokeColor(color.cgColor)
-        ctx?.setLineWidth(2.0)
-        ctx?.strokePath()
-
-        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
-            return self
-        }
-
-        UIGraphicsEndImageContext()
-        return drawnImage
     }
     
     func drawPointsOnImage(_ points: [CGPoint], color: UIColor) -> UIImage {
@@ -112,7 +93,7 @@ extension UIImage {
         return drawnImage
     }
 
-    func drawRectsOnImage(_ rects: [CGRect], color: UIColor, for scrollView: ImageScrollView) -> UIImage {
+    func drawRectsOnImage(_ rects: [CGRect], color: UIColor) -> UIImage {
         let imageSize = self.size
         let scale: CGFloat = 0.0
 
