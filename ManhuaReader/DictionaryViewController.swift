@@ -80,8 +80,15 @@ class DictionaryViewController: UIViewController {
         view.backgroundColor = .white
         view.layoutMargins = UIEdgeInsets(top: 50, left: 5, bottom: 50, right: 5)
         
+        DictionaryTip.dictOpened = true
+        BoxTip.tipEnabled = false
+        
         addSubviews()
         configureUI()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        DictionaryTip.dictOpened = false
     }
     
     func addSubviews() {
@@ -173,6 +180,7 @@ class DictionaryViewController: UIViewController {
         }
         
         if(entries.count == 0) {
+            ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
             dictionaryTextView.text = ""
             return
         }
@@ -183,10 +191,9 @@ class DictionaryViewController: UIViewController {
         })
         let trimmedWord = String(detectedWord.prefix(upTo: String.Index(utf16Offset: longestDetectedWord.traditional?.count ?? 0, in: detectedWord)))
         ocrTextView.attributedText = generateAttributedString(with: trimmedWord, targetString: ocrTextView.text)
-        
-        
         dictionaryTextView.text = generateTranslationString(entries: entries)
         
+        DictionaryTip.tipEnabled = false
     }
     
     func generateTranslationString(entries: [DictEntry]) -> String {

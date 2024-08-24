@@ -68,9 +68,8 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
     
     func refreshData() {
-        let urls = readBookmarks()
-        books = retrieveBooks(urls: urls)
-        
+        books = BookmarkManager.shared.retrieveBooks()
+        print(books)
         documentCollectionView.reloadData()
     }
     
@@ -102,20 +101,9 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let url = urls.first/*, let _ = UIImage(contentsOfFile: url.path)*/ else { return }
-        let (cover, images) = extractBookImages(url: url)
-        
-        var book = books.first(where: { $0.url == url })
-        if book == nil {
-            writeBookmarks(url: url)
-            let name = (url.lastPathComponent as NSString).deletingPathExtension
-            book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
-        } else {
-            book?.lastOpened = Date()
-            CoreDataManager.shared.updateBook(book: book)
-        }
-        
-        guard let book = book else { return }
+        guard let url = urls.first else { return }
+        let images = BookmarkManager.shared.getImages(for: url).images
+        guard let book = BookmarkManager.shared.createBook(from: url) else { return }
         
         controller.dismiss(animated: true, completion: {
             self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
@@ -126,7 +114,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         let book = books[position]
         guard let url = book.url else { return }
         
-        let images = extractBookImages(url: url).images
+        let images = BookmarkManager.shared.getImages(for: url).images
         
         self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
     }
@@ -201,126 +189,6 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
             // cancel action
         }))
         present(alert, animated: true, completion: nil)
-    }
-    
-    func extractBookImages(url: URL) -> (data: Data, images: [UIImage]) {
-        guard url.startAccessingSecurityScopedResource() else {
-            return (Data(), [])
-        }
-
-        defer {
-            url.stopAccessingSecurityScopedResource()
-        }
-        
-        guard let archive = Archive(url: url, accessMode: .read) else {
-            return (Data(), [])
-        }
-        
-        var images: [UIImage] = []
-        
-        let sorted = archive.sorted(by: { ($0.fileAttributes[FileAttributeKey(rawValue: "NSFileModificationDate")] as! Date).compare(($1.fileAttributes[FileAttributeKey(rawValue: "NSFileModificationDate")] as! Date)) == .orderedAscending })
-        
-        var cover: Data = Data([])
-        
-        for i in 0..<sorted.count {
-            let entry = sorted[i]
-            
-            var extractedData: Data = Data([])
-            
-            do {
-                _ = try archive.extract(entry) { extractedData.append($0) }
-                if let image = UIImage(data: extractedData) {
-                    images.append(image)
-                }
-                if(i == 0) { cover = extractedData }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        
-        return (cover, images)
-    }
-    
-    func readBookmarks() -> [URL] {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
-        
-        let urls: [URL] = files?.compactMap {file in
-            do {
-                let bookmarkData = try Data(contentsOf: file)
-                var isStale = false
-                let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-                
-                guard !isStale else {
-                    deleteFile(url: file)
-                    CoreDataManager.shared.deleteBook(for: url)
-                    return nil
-                }
-                
-                return url
-            }
-            catch {
-                deleteFile(url: file)
-                print(error.localizedDescription)
-                return nil
-            }
-        }  ?? []
-        
-        return urls
-    }
-    
-    func deleteBookmarks() {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
-        
-        files?.forEach { file in
-            deleteFile(url: file)
-        }
-    }
-    
-    func retrieveBooks(urls: [URL]) -> [Book] {
-        let books = CoreDataManager.shared.fetchBooks()
-        
-        let matchedBooks = urls.compactMap { url in
-            books?.first(where: { $0.url == url } )
-        }
-        
-        books?.forEach { book in
-            if(!matchedBooks.contains(book)) { CoreDataManager.shared.deleteBook(book: book) }
-        }
-        
-        return matchedBooks.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
-    }
-    
-    func writeBookmarks(url: URL) {
-        guard url.startAccessingSecurityScopedResource() else {
-            return
-        }
-
-        defer {
-            url.stopAccessingSecurityScopedResource()
-        }
-        
-        do {
-            let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
-            
-            let uuid = UUID().uuidString
-            try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
-        }
-        catch {
-            print("Error creating the bookmark")
-        }
-    }
-    
-    func deleteFile(url: URL) {
-        let fm = FileManager.default
-        do {
-            try fm.removeItem(at: url)
-        } catch {
-            print(error)
-        }
-    }
-    
-    private func getAppSandboxDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {

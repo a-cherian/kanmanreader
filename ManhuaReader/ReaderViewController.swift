@@ -8,6 +8,7 @@
 import UIKit
 import Vision
 import SwiftyTesseract
+import TipKit
 
 class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, PageDelegate {
     var pages: [UIImage] = []
@@ -25,7 +26,30 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
     var detectVertical = false
     let tesseract = Tesseract(language: .custom("chi_tra_vert"))
     
-    var scrollView: UIScrollView? = nil
+    
+    var dictionaryViewController = DictionaryViewController(text: "")
+    
+    var ocrTip = OCRTip()
+    var boxTip = BoxTip()
+    var dictTip = DictionaryTip()
+    
+    var ocrTipTask: Task<Void, Never>?
+    var boxTipTask: Task<Void, Never>?
+    var dictTipTask: Task<Void, Never>?
+    
+    lazy var boxTipView: TipUIView = {
+        let view = TipUIView(boxTip)
+        view.viewStyle = CustomTipViewStyle()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    lazy var dictTipView: TipUIView = {
+        let view = TipUIView(dictTip)
+        view.viewStyle = CustomTipViewStyle()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     lazy var ocrButton: UIButton = {
         let button = UIButton()
@@ -72,7 +96,7 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
         let view = UIView()
         
         view.addSubview(ocrButton)
-        view.addSubview(prefsButton)
+//        view.addSubview(prefsButton)
         
         return view
     }()
@@ -123,14 +147,73 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if(book.name == "Sample Tutorial") {
+            try? Tips.resetDatastore()
+            try? Tips.configure()
+            OCRTip.tipEnabled = true
+            BoxTip.tipEnabled = true
+            BoxTip.boxesGenerated = false
+            DictionaryTip.tipEnabled = true
+            DictionaryTip.dictOpened = false
+        }
+    }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        ocrTipTask = ocrTipTask ?? Task { @MainActor in
+            for await shouldDisplay in ocrTip.shouldDisplayUpdates {
+                if shouldDisplay {
+                    let controller = TipUIPopoverViewController(ocrTip, sourceItem: ocrButton)
+                    controller.viewStyle = CustomTipViewStyle()
+                    controller.popoverPresentationController?.passthroughViews = [ocrButton]
+                    present(controller, animated: true)
+                }
+                else if presentedViewController is TipUIPopoverViewController {
+                    dismiss(animated: true)
+                }
+            }
+        }
+        
+        boxTipTask = boxTipTask ?? Task { @MainActor in
+            for await shouldDisplay in boxTip.shouldDisplayUpdates {
+                if shouldDisplay {
+                    view.addSubview(boxTipView)
+                    view.addConstraints([
+                        boxTipView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                        boxTipView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                        boxTipView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+                    ])
+                }
+                else {
+                    boxTipView.removeFromSuperview()
+                }
+            }
+        }
+        
+        dictTipTask = dictTipTask ?? Task { @MainActor in
+            for await shouldDisplay in dictTip.shouldDisplayUpdates {
+                if shouldDisplay, let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let currentWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                    currentWindow.addSubview(dictTipView)
+
+                    currentWindow.addConstraints([
+                        dictTipView.topAnchor.constraint(equalTo: currentWindow.topAnchor),
+                        dictTipView.bottomAnchor.constraint(equalTo: currentWindow.centerYAnchor),
+                        dictTipView.leadingAnchor.constraint(equalTo: currentWindow.leadingAnchor, constant: 20),
+                        dictTipView.trailingAnchor.constraint(equalTo: currentWindow.trailingAnchor, constant: -20)
+                    ])
+                }
+                else {
+                    dictTipView.removeFromSuperview()
+                }
+            }
+        }
     }
     
     func configureUI() {
         configureOCRButton()
-        configurePrefsButton()
+//        configurePrefsButton()
     }
     
     func configureOCRButton() {
@@ -157,7 +240,7 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
     }
     
     func presentDictionary(text: String) {
-        let dictionaryViewController = DictionaryViewController(text: text)
+        dictionaryViewController = DictionaryViewController(text: text)
         if let presentationController = dictionaryViewController.presentationController as? UISheetPresentationController {
             presentationController.detents = [.medium(), .large()]
             presentationController.prefersGrabberVisible = true
@@ -380,9 +463,13 @@ class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource
             self.unprocessedImage = image
             
             self.currentPage.imageView.image = image.drawRectsOnImage(self.textRegions, color: .red)
+            
+            if(self.textRegions.count > 0) {
+                OCRTip.tipEnabled = false
+                BoxTip.boxesGenerated = true
+            }
         }
         
-//        request.regionOfInterest = zoomedRect ?? CGRect(origin: CGPointZero, size: image.size)
         request.regionOfInterest = (zoomedRect ?? image.getZoomedRect(from: currentPage)).unnormalizeBoundingBox(for: image)
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["zh-Hant"]

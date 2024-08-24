@@ -18,35 +18,18 @@
 		405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */; };
 		405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 405945C22B2C54DF00A6B1F9 /* Assets.xcassets */; };
 		405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */; };
-		405945D22B2C54E000A6B1F9 /* ManhuaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */; };
-		405945DC2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */; };
-		405945DE2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */; };
 		405945F42B2C55F900A6B1F9 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */; };
 		405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945EF2B2C55F900A6B1F9 /* TabBarController.swift */; };
 		405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */; };
 		405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 405946052B2C679C00A6B1F9 /* ZIPFoundation */; };
 		405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */; };
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
+		405A7A972C7979E500A40D24 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A962C7979E500A40D24 /* BookmarkManager.swift */; };
+		405A7A9B2C79B95B00A40D24 /* moodthread-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 405A7A9A2C79B95B00A40D24 /* moodthread-tutorial-sample.zip */; };
+		40724F0E2C78521100EA81DB /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40724F0D2C78521100EA81DB /* Tips.swift */; };
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
 		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		405945CE2B2C54E000A6B1F9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 405945AB2B2C54DA00A6B1F9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 405945B22B2C54DA00A6B1F9;
-			remoteInfo = ManhuaReader;
-		};
-		405945D82B2C54E000A6B1F9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 405945AB2B2C54DA00A6B1F9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 405945B22B2C54DA00A6B1F9;
-			remoteInfo = ManhuaReader;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		400E0E902B31E4520024AD39 /* Embed Frameworks */ = {
@@ -74,17 +57,15 @@
 		405945C52B2C54DF00A6B1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ManhuaReader.entitlements; sourceTree = "<group>"; };
 		405945C82B2C54DF00A6B1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderTests.swift; sourceTree = "<group>"; };
-		405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITests.swift; sourceTree = "<group>"; };
-		405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManhuaReaderUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		405945EF2B2C55F900A6B1F9 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSelectionViewController.swift; sourceTree = "<group>"; };
 		4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
 		405946632B2EBABC00A6B1F9 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		405A7A962C7979E500A40D24 /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
+		405A7A9A2C79B95B00A40D24 /* moodthread-tutorial-sample.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "moodthread-tutorial-sample.zip"; sourceTree = "<group>"; };
 		40724F0A2C76F66E00EA81DB /* ManhuaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManhuaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManhuaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40724F0D2C78521100EA81DB /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
 		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,92 +80,60 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		405945CA2B2C54E000A6B1F9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		405945D42B2C54E000A6B1F9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		400E0E952B32D4290024AD39 /* External */ = {
+		400E0E952B32D4290024AD39 /* external */ = {
 			isa = PBXGroup;
 			children = (
 				400E0E932B32D4230024AD39 /* PinyinConverter.swift */,
 			);
-			path = External;
+			path = external;
 			sourceTree = "<group>";
 		};
 		405945AA2B2C54DA00A6B1F9 = {
 			isa = PBXGroup;
 			children = (
 				405945B52B2C54DA00A6B1F9 /* ManhuaReader */,
-				405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */,
-				405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */,
 				40724F0A2C76F66E00EA81DB /* ManhuaReader.app */,
-				40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */,
-				40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
 		405945B52B2C54DA00A6B1F9 /* ManhuaReader */ = {
 			isa = PBXGroup;
 			children = (
-				400E0E9E2B357B160024AD39 /* tessdata */,
 				405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */,
 				405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */,
-				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
-				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
-				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
-				407D6D962C756BFB00F8A5B9 /* Page.swift */,
-				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
-				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				405945EF2B2C55F900A6B1F9 /* TabBarController.swift */,
-				405945C22B2C54DF00A6B1F9 /* Assets.xcassets */,
-				405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */,
-				405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */,
-				405945C82B2C54DF00A6B1F9 /* Info.plist */,
-				405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */,
-				405946632B2EBABC00A6B1F9 /* Extension.swift */,
+				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
+				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
+				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
+				407D6D962C756BFB00F8A5B9 /* Page.swift */,
+				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
+				405A7A962C7979E500A40D24 /* BookmarkManager.swift */,
+				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				400E0DCE2B31D7C70024AD39 /* Constants.swift */,
-				407D6D952C7493CC00F8A5B9 /* Data */,
-				400E0E952B32D4290024AD39 /* External */,
+				40724F0D2C78521100EA81DB /* Tips.swift */,
+				405946632B2EBABC00A6B1F9 /* Extension.swift */,
+				405945BF2B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld */,
+				407D6D952C7493CC00F8A5B9 /* data */,
+				400E0E952B32D4290024AD39 /* external */,
+				405945C82B2C54DF00A6B1F9 /* Info.plist */,
+				405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */,
+				405945C22B2C54DF00A6B1F9 /* Assets.xcassets */,
+				405945C72B2C54DF00A6B1F9 /* ManhuaReader.entitlements */,
 			);
 			path = ManhuaReader;
 			sourceTree = "<group>";
 		};
-		405945D02B2C54E000A6B1F9 /* ManhuaReaderTests */ = {
+		407D6D952C7493CC00F8A5B9 /* data */ = {
 			isa = PBXGroup;
 			children = (
-				405945D12B2C54E000A6B1F9 /* ManhuaReaderTests.swift */,
-			);
-			path = ManhuaReaderTests;
-			sourceTree = "<group>";
-		};
-		405945DA2B2C54E000A6B1F9 /* ManhuaReaderUITests */ = {
-			isa = PBXGroup;
-			children = (
-				405945DB2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift */,
-				405945DD2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift */,
-			);
-			path = ManhuaReaderUITests;
-			sourceTree = "<group>";
-		};
-		407D6D952C7493CC00F8A5B9 /* Data */ = {
-			isa = PBXGroup;
-			children = (
+				405A7A9A2C79B95B00A40D24 /* moodthread-tutorial-sample.zip */,
+				400E0E9E2B357B160024AD39 /* tessdata */,
 				407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */,
 			);
-			path = Data;
+			path = data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,42 +161,6 @@
 			productReference = 40724F0A2C76F66E00EA81DB /* ManhuaReader.app */;
 			productType = "com.apple.product-type.application";
 		};
-		405945CC2B2C54E000A6B1F9 /* ManhuaReaderTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 405945E42B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderTests" */;
-			buildPhases = (
-				405945C92B2C54E000A6B1F9 /* Sources */,
-				405945CA2B2C54E000A6B1F9 /* Frameworks */,
-				405945CB2B2C54E000A6B1F9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				405945CF2B2C54E000A6B1F9 /* PBXTargetDependency */,
-			);
-			name = ManhuaReaderTests;
-			productName = ManhuaReaderTests;
-			productReference = 40724F0B2C76F66E00EA81DB /* ManhuaReaderTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		405945D62B2C54E000A6B1F9 /* ManhuaReaderUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 405945E72B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderUITests" */;
-			buildPhases = (
-				405945D32B2C54E000A6B1F9 /* Sources */,
-				405945D42B2C54E000A6B1F9 /* Frameworks */,
-				405945D52B2C54E000A6B1F9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				405945D92B2C54E000A6B1F9 /* PBXTargetDependency */,
-			);
-			name = ManhuaReaderUITests;
-			productName = ManhuaReaderUITests;
-			productReference = 40724F0C2C76F66E00EA81DB /* ManhuaReaderUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -260,14 +173,6 @@
 				TargetAttributes = {
 					405945B22B2C54DA00A6B1F9 = {
 						CreatedOnToolsVersion = 15.0;
-					};
-					405945CC2B2C54E000A6B1F9 = {
-						CreatedOnToolsVersion = 15.0;
-						TestTargetID = 405945B22B2C54DA00A6B1F9;
-					};
-					405945D62B2C54E000A6B1F9 = {
-						CreatedOnToolsVersion = 15.0;
-						TestTargetID = 405945B22B2C54DA00A6B1F9;
 					};
 				};
 			};
@@ -289,8 +194,6 @@
 			projectRoot = "";
 			targets = (
 				405945B22B2C54DA00A6B1F9 /* ManhuaReader */,
-				405945CC2B2C54E000A6B1F9 /* ManhuaReaderTests */,
-				405945D62B2C54E000A6B1F9 /* ManhuaReaderUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -302,22 +205,9 @@
 			files = (
 				400E0E9F2B357B160024AD39 /* tessdata in Resources */,
 				405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */,
+				405A7A9B2C79B95B00A40D24 /* moodthread-tutorial-sample.zip in Resources */,
 				405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */,
 				407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		405945CB2B2C54E000A6B1F9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		405945D52B2C54E000A6B1F9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,6 +221,7 @@
 				405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */,
 				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
 				400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */,
+				405A7A972C7979E500A40D24 /* BookmarkManager.swift in Sources */,
 				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
 				400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */,
 				405945C12B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodeld in Sources */,
@@ -339,42 +230,13 @@
 				405945F42B2C55F900A6B1F9 /* CoreDataManager.swift in Sources */,
 				405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */,
 				405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */,
+				40724F0E2C78521100EA81DB /* Tips.swift in Sources */,
 				400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */,
 				405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		405945C92B2C54E000A6B1F9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				405945D22B2C54E000A6B1F9 /* ManhuaReaderTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		405945D32B2C54E000A6B1F9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				405945DC2B2C54E000A6B1F9 /* ManhuaReaderUITests.swift in Sources */,
-				405945DE2B2C54E000A6B1F9 /* ManhuaReaderUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		405945CF2B2C54E000A6B1F9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 405945B22B2C54DA00A6B1F9 /* ManhuaReader */;
-			targetProxy = 405945CE2B2C54E000A6B1F9 /* PBXContainerItemProxy */;
-		};
-		405945D92B2C54E000A6B1F9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 405945B22B2C54DA00A6B1F9 /* ManhuaReader */;
-			targetProxy = 405945D82B2C54E000A6B1F9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		405945C42B2C54DF00A6B1F9 /* LaunchScreen.storyboard */ = {
@@ -525,7 +387,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -561,7 +423,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -576,84 +438,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		405945E52B2C54E000A6B1F9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AV5T75VG6K;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManhuaReader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManhuaReader";
-			};
-			name = Debug;
-		};
-		405945E62B2C54E000A6B1F9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AV5T75VG6K;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManhuaReader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManhuaReader";
-			};
-			name = Release;
-		};
-		405945E82B2C54E000A6B1F9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AV5T75VG6K;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ManhuaReader;
-			};
-			name = Debug;
-		};
-		405945E92B2C54E000A6B1F9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AV5T75VG6K;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = acherian.ManhuaReaderUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = ManhuaReader;
 			};
 			name = Release;
 		};
@@ -674,24 +458,6 @@
 			buildConfigurations = (
 				405945E22B2C54E000A6B1F9 /* Debug */,
 				405945E32B2C54E000A6B1F9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		405945E42B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				405945E52B2C54E000A6B1F9 /* Debug */,
-				405945E62B2C54E000A6B1F9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		405945E72B2C54E000A6B1F9 /* Build configuration list for PBXNativeTarget "ManhuaReaderUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				405945E82B2C54E000A6B1F9 /* Debug */,
-				405945E92B2C54E000A6B1F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

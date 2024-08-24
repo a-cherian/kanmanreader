@@ -11,14 +11,14 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadDictionary()
         }
+        
+        self.loadSample()
         
         return true
     }
@@ -129,6 +129,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 userDefaults.setValue(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
                 print("Dictionary updated...")
             }
+        }
+    }
+    
+    func loadSample() {
+        let userDefaults = UserDefaults.standard
+        let loadedSample = userDefaults.string(forKey: Constants.LOADED_SAMPLE_KEY)
+        
+        if(loadedSample != Constants.LOADED_SAMPLE) {
+            guard let sampleUrl = Bundle.main.url(forResource: "moodthread-tutorial-sample", withExtension: "zip") else { return }
+            let book = BookmarkManager.shared.createBook(from: sampleUrl, name: "Sample Tutorial")
         }
     }
 

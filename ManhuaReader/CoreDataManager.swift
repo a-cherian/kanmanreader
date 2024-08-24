@@ -10,7 +10,7 @@ import CoreData
 struct CoreDataManager {
     
     static let shared = CoreDataManager()
-    
+     
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ManhuaReader")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
