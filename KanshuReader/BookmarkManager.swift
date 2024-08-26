@@ -14,6 +14,7 @@ struct BookmarkManager {
     static let shared = BookmarkManager()
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
+    @discardableResult
     func createBook(from url: URL, name: String? = nil) -> Book? {
         let books = CoreDataManager.shared.fetchBooks()
         let (cover, images) = getImages(for: url)

@@ -8,18 +8,12 @@
 import UIKit
 import TipKit
 
-protocol Reader: UIViewController {
-    var pages: [UIImage] { get set }
-    var position: Int { get set }
-    var currentPage: Page { get set }
-    var currentImage: UIImage { get }
-}
-
-class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRecognizerDelegate {
-//    var pages: [UIImage] = []
-//    var currentPage: Page = Page()
-//    var pendingPage: Page = Page()
-//    var position = 0
+class ReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, PageDelegate, TipDelegate, TextRecognizerDelegate {
+    var pages: [UIImage] = []
+    var vertReader = VertReaderViewController(position: 0)
+    var currentPage: Page = Page()
+    var pendingPage: Page = Page()
+    var position = 0
     var book: Book
     
     var tipManager: TipManager?
@@ -30,11 +24,9 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     var scrollVertical = false
     
     var dictionaryViewController = DictionaryViewController(text: "")
-
+//
     var boxTipView: TipUIView?
     var dictTipView: TipUIView?
-    
-    var reader: Reader = HReaderViewController()
     
     lazy var ocrButton: UIButton = {
         let button = UIButton()
@@ -101,13 +93,18 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }()
     
     init(images: [UIImage] = [], book: Book) {
+        self.position = Int(book.lastPage)
         self.book = book
         
-        super.init(nibName: nil, bundle: nil)
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
         
         textRecognizer.delegate = self
         
-        reader = HReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+        pages = images
+        currentPage = createPage(position: position)
+        setViewControllers([currentPage], direction: .forward, animated: true)
+        self.dataSource = self
+        self.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -122,7 +119,7 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView)
         
         configureUI()
-        addReader()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -138,18 +135,6 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         tipManager?.startTasks()
-    }
-    
-    func addReader() {
-        addChild(reader)
-        view.addSubview(reader.view)
-        reader.didMove(toParent: self)
-    }
-    
-    func removeReader() {
-        reader.willMove(toParent: nil)
-        reader.view.removeFromSuperview()
-        reader.removeFromParent()
     }
     
     func configureUI() {
@@ -230,11 +215,20 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         self.present(dictionaryViewController, animated: true)
     }
     
+    func createPage(position: Int) -> Page {
+        let newPage = Page()
+        newPage.setImage(pages[position])
+        newPage.position = position
+        newPage.delegate = self
+        
+        return newPage
+    }
+    
     @objc func didTapOCR() {
         ocrEnabled = true
         
-        let image = reader.currentImage
-        zoomedRect = image.getZoomedRect(from: reader.currentPage)
+        let image = pages[position]
+        zoomedRect = image.getZoomedRect(from: currentPage)
         textRecognizer.requestInitialVision(for: image, with: zoomedRect)
     }
     
@@ -244,16 +238,18 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         detectVertical = !detectVertical
         scrollVertical = !scrollVertical
         
-        removeReader()
-        
         if(scrollVertical) {
-            reader = VReaderViewController(images: reader.pages, position: reader.position)
+            vertReader = VertReaderViewController(position: position)
+            setViewControllers([vertReader], direction: .forward, animated: false)
+            self.delegate = nil
+            self.dataSource = nil
         }
         else {
-            reader = HReaderViewController(images: reader.pages, position: reader.position)
+            currentPage = createPage(position: vertReader.position)
+            setViewControllers([currentPage], direction: .forward, animated: false)
+            self.delegate = self
+            self.dataSource = self
         }
-        
-        addReader()
         
         print("prefs")
     }
@@ -263,14 +259,14 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }
     
     @objc func didTapBack(_ sender: UIButton) {
-        book.lastPage = Int64(reader.position)
+        book.lastPage = Int64(position)
         book.lastOpened = Date()
         CoreDataManager.shared.updateBook(book: book)
         self.navigationController?.popViewController(animated: true)
     }
     
     func didPerformVision(image: UIImage) {
-        reader.currentPage.imageView.image = image
+        currentPage.imageView.image = image
     }
     
     func didDisplay(tip: any Tip) {
@@ -310,5 +306,39 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         self.presentDictionary(text: text)
         
         return true
+    }
+}
+
+
+
+
+
+extension ReaderViewController {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        if(position - 1 >= 0) {
+            let previousPage = createPage(position: position - 1)
+            return previousPage
+        }
+        return nil
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        if(position + 1 < pages.count)
+        {
+            let nextPage = createPage(position: position + 1)
+            return nextPage
+        }
+        return nil
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        pendingPage = pendingViewControllers[0] as! Page
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        if(completed) {
+            currentPage = pendingPage
+            position = currentPage.position
+        }
     }
 }

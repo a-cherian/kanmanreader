@@ -44,6 +44,27 @@ struct CoreDataManager {
         return nil
     }
     
+    func fetchBook(for name: String) -> Book? {
+        
+        let context = persistentContainer.viewContext
+        
+        let request = Book.fetchRequest()
+        request.predicate = NSPredicate(format: "name == %@", argumentArray: [name])
+        
+        do {
+            let results = try context.fetch(request)
+            
+            return results.first
+            
+            try context.save()
+        }
+        catch {
+            debugPrint(error)
+        }
+        
+        return nil
+    }
+    
     func fetchBooks() -> [Book]? {
         let context = persistentContainer.viewContext
         

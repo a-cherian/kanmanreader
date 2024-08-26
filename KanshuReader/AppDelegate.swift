@@ -138,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
             guard let sampleUrl = Bundle.main.url(forResource: "kanshu-tutorial-sample", withExtension: "zip") else { return }
-            let book = BookmarkManager.shared.createBook(from: sampleUrl, name: "Sample Tutorial")
+            BookmarkManager.shared.createBook(from: sampleUrl, name: "Sample Tutorial")
         }
     }
 

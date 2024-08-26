@@ -13,6 +13,7 @@
 		400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */ = {isa = PBXBuildFile; productRef = 400E0E992B3559270024AD39 /* SwiftyTesseract */; };
 		400E0E9F2B357B160024AD39 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 400E0E9E2B357B160024AD39 /* tessdata */; };
 		400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0EA22B36D2BC0024AD39 /* BookCell.swift */; };
+		4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC642C7C5874007D216B /* HReaderViewController.swift */; };
 		405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */; };
 		405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */; };
 		405945C12B2C54DB00A6B1F9 /* KanshuReader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 405945BF2B2C54DB00A6B1F9 /* KanshuReader.xcdatamodeld */; };
@@ -28,6 +29,7 @@
 		405A7A9B2C79B95B00A40D24 /* kanshu-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 405A7A9A2C79B95B00A40D24 /* kanshu-tutorial-sample.zip */; };
 		405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9D2C7B04AE00A40D24 /* TipManager.swift */; };
 		405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */; };
+		405A7AB02C7C094400A40D24 /* VReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */; };
 		40724F0E2C78521100EA81DB /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40724F0D2C78521100EA81DB /* Tips.swift */; };
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
 		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
@@ -52,6 +54,7 @@
 		400E0E932B32D4230024AD39 /* PinyinConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinyinConverter.swift; sourceTree = "<group>"; };
 		400E0E9E2B357B160024AD39 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		400E0EA22B36D2BC0024AD39 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
+		4049AC642C7C5874007D216B /* HReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HReaderViewController.swift; sourceTree = "<group>"; };
 		405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		405945C02B2C54DB00A6B1F9 /* ManhuaReader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ManhuaReader.xcdatamodel; sourceTree = "<group>"; };
@@ -68,7 +71,8 @@
 		405A7A9C2C79E46100A40D24 /* KanshuReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KanshuReader.entitlements; sourceTree = "<group>"; };
 		405A7A9D2C7B04AE00A40D24 /* TipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipManager.swift; sourceTree = "<group>"; };
 		405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
-		40724F0A2C76F66E00EA81DB /* KanshuReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KanshuReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VReaderViewController.swift; sourceTree = "<group>"; };
+		40724F0A2C76F66E00EA81DB /* Kanshu Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kanshu Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40724F0D2C78521100EA81DB /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
 		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
@@ -99,7 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				405945B52B2C54DA00A6B1F9 /* KanshuReader */,
-				40724F0A2C76F66E00EA81DB /* KanshuReader.app */,
+				40724F0A2C76F66E00EA81DB /* Kanshu Reader.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,8 +115,10 @@
 				405945EF2B2C55F900A6B1F9 /* TabBarController.swift */,
 				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
 				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
-				405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */,
+				4049AC642C7C5874007D216B /* HReaderViewController.swift */,
+				405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */,
 				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
+				405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */,
 				407D6D962C756BFB00F8A5B9 /* Page.swift */,
 				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
 				405A7A9D2C7B04AE00A40D24 /* TipManager.swift */,
@@ -164,7 +170,7 @@
 				400E0E992B3559270024AD39 /* SwiftyTesseract */,
 			);
 			productName = ManhuaReader;
-			productReference = 40724F0A2C76F66E00EA81DB /* KanshuReader.app */;
+			productReference = 40724F0A2C76F66E00EA81DB /* Kanshu Reader.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -230,6 +236,7 @@
 				405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */,
 				405A7A972C7979E500A40D24 /* BookmarkManager.swift in Sources */,
 				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
+				405A7AB02C7C094400A40D24 /* VReaderViewController.swift in Sources */,
 				400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */,
 				405945C12B2C54DB00A6B1F9 /* KanshuReader.xcdatamodeld in Sources */,
 				405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */,
@@ -238,6 +245,7 @@
 				405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */,
 				405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */,
 				40724F0E2C78521100EA81DB /* Tips.swift in Sources */,
+				4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */,
 				400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */,
 				405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */,
 				405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */,
@@ -315,6 +323,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "Kanshu Reader";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -371,6 +380,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "Kanshu Reader";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -403,7 +413,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanshuReader;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Kanshu Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -440,7 +450,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanshuReader;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Kanshu Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
