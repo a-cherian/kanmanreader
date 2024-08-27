@@ -245,48 +245,4 @@ struct CoreDataManager {
         }
         return []
     }
-    
-//    func fetchEntryObjects(forPredicate: NSPredicate) -> [TranslationEntry] {
-//        let fetchRequest: NSFetchRequest<TranslationEntry> = TranslationEntry.fetchRequest()
-//        fetchRequest.predicate = forPredicate
-//        
-//        do {
-//            let results = try DataController.sharedInstance.getContext().fetch(fetchRequest)
-//            
-//            return results
-//        }
-//        catch {
-//            debugPrint(error)
-//            return []
-//        }
-//    }
-//    public func translationsFor(simplifiedChinese: String) -> [Translation] {
-//        let simplifiedPredicate = NSPredicate(format: "simplified == %@", argumentArray: [simplifiedChinese])
-//        
-//        return self.translationsFor(entryPredicate: simplifiedPredicate)
-//    }
-//    
-//    public func translationsFor(chinese: String) -> [Translation] {
-//        let chinesePredicate = NSPredicate(format: "(simplified == %@) OR (traditional == %@)", argumentArray: [chinese, chinese])
-//        
-//        return self.translationsFor(entryPredicate: chinesePredicate)
-//    }
-//    
-//    public func translationsContaining(simplifiedChinese: String) -> [Translation] {
-//        let simplifiedPredicate = NSPredicate(format: "simplified CONTAINS %@", argumentArray: [simplifiedChinese])
-//        
-//        return self.translationsFor(entryPredicate: simplifiedPredicate)
-//    }
-//    
-//    public func translationsFor(traditionalChinese: String) -> [Translation] {
-//        let traditionalPredicate = NSPredicate(format: "traditional == %@", argumentArray: [traditionalChinese])
-//        
-//        return self.translationsFor(entryPredicate: traditionalPredicate)
-//    }
-//    
-//    public func translationsContaining(traditionalChinese: String) -> [Translation] {
-//        let traditionalPredicate = NSPredicate(format: "traditional CONTAINS %@", argumentArray: [traditionalChinese])
-//        
-//        return self.translationsFor(entryPredicate: traditionalPredicate)
-//    }
 }

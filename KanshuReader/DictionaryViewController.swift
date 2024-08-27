@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DictionaryViewController: UIViewController {
+class DictionaryViewController: UIViewController, UITextViewDelegate {
     
     var searchLimit = 8
     
@@ -32,7 +32,7 @@ class DictionaryViewController: UIViewController {
         textView.isEditable = false
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = false
-        //        textView.tokenizer = nil
+        textView.delegate = self
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapWords(_:)))
         textView.addGestureRecognizer(tapGesture)
@@ -50,7 +50,6 @@ class DictionaryViewController: UIViewController {
         textView.isEditable = false
         textView.isUserInteractionEnabled = false
         textView.isScrollEnabled = false
-        //        textView.refreshControl?.contentVerticalAlignment
         return textView
     }()
     
@@ -264,4 +263,13 @@ class DictionaryViewController: UIViewController {
         ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
         dictionaryTextView.text = ""
     }
+    
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        if textView.selectedTextRange != nil {
+            textView.delegate = nil
+            textView.selectedTextRange = nil
+            textView.delegate = self
+        }
+    }
+
 }

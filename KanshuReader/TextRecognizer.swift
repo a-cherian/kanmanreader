@@ -23,7 +23,7 @@ class TextRecognizer {
     var clusters: [[CGRect]] = []
     var textRegions: [CGRect] = []
     
-    func requestInitialVision(for image: UIImage, with frame: CGRect?) {
+    func requestInitialVision(for image: UIImage, with frame: CGRect? = nil) {
         guard let cgImage = image.cgImage else { return }
 
         // Create a new image-request handler.
@@ -48,7 +48,9 @@ class TextRecognizer {
             self.delegate?.didPerformVision(image: image.drawRectsOnImage(self.textRegions, color: .red))
         }
         
-        request.regionOfInterest = (frame ?? CGRectZero).unnormalizeBoundingBox(for: image)
+        if let frame = frame {
+            request.regionOfInterest = frame.unnormalizeBoundingBox(for: image)
+        }
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["zh-Hant"]
 
@@ -133,7 +135,8 @@ class TextRecognizer {
     }
     
     func getBoxes(observations: [VNRecognizedTextObservation], image: UIImage, rect: CGRect?) -> [(String?, CGRect)] {
-        let rect: CGRect = rect ?? CGRect(origin: CGPoint.zero, size: image.size)
+        var requestImage = image
+        if rect != nil { requestImage = image.crop(rect: rect) }
         let boundingRects: [(String?, CGRect)] = observations.compactMap { observation in
             // Find the top observation.
             guard let candidate = observation.topCandidates(1).first else { return ("", .zero) }
@@ -146,8 +149,8 @@ class TextRecognizer {
             let boundingBox = boxObservation?.boundingBox ?? .zero
 
             // Convert the rectangle from normalized coordinates to image coordinates.
-            let normalizedToZoom = boundingBox.normalizeBoundingBox(for: image.crop(rect: rect))
-            let normalized = CGRect(x: normalizedToZoom.minX + rect.minX, y: normalizedToZoom.minY + rect.minY, width: normalizedToZoom.width, height: normalizedToZoom.height)
+            let normalizedToZoom = boundingBox.normalizeBoundingBox(for: requestImage)
+            let normalized = CGRect(x: normalizedToZoom.minX + (rect?.minX ?? 0), y: normalizedToZoom.minY + (rect?.minY ?? 0), width: normalizedToZoom.width, height: normalizedToZoom.height)
             return (candidate.string, normalized)
         }
         return boundingRects

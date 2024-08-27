@@ -38,19 +38,25 @@ extension UIImage {
     
     func crop(rect: CGRect?) -> UIImage {
         guard let rect = rect else { return self }
-        guard let croppedImageRef = cgImage?.cropping(to: rect) else { return self }
-        let croppedImage = UIImage(cgImage: croppedImageRef, scale: scale, orientation: imageOrientation)
-
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: rect.size.width, height: rect.size.height), true, scale)
+        draw(at: CGPoint(x: -rect.origin.x, y: -rect.origin.y))
+        guard let croppedImage = UIGraphicsGetImageFromCurrentImageContext() else { return self }
+        UIGraphicsEndImageContext()
         return croppedImage
     }
-    
+
     func getZoomedRect(from page: Page) -> CGRect {
-        let zoom: CGFloat = 1.0 / page.scrollView.zoomScale
+        return getZoomedRect(for: page.imageView.image, from: page.scrollView)
+    }
+    
+    func getZoomedRect(for image: UIImage?, from scrollView: UIScrollView) -> CGRect {
+        let zoom: CGFloat = 1.0 / scrollView.zoomScale
         
-        let origX: CGFloat = (page.scrollView.contentOffset.x + page.scrollView.contentInset.left) * zoom // 0
-        let origY: CGFloat = (page.scrollView.contentOffset.y + page.scrollView.contentInset.top) * zoom // 0
-        let widthCropper: CGFloat = min(page.imageView.image?.size.width ?? page.scrollView.frame.size.width * zoom, page.scrollView.frame.size.width * zoom)
-        let heightCropper: CGFloat = min(page.imageView.image?.size.height ?? page.scrollView.frame.size.height * zoom, page.scrollView.frame.size.height * zoom)
+        let origX: CGFloat = (scrollView.contentOffset.x + scrollView.contentInset.left) * zoom // 0
+        let origY: CGFloat = (scrollView.contentOffset.y + scrollView.contentInset.top) * zoom // 0
+        let widthCropper: CGFloat = min(image?.size.width ?? scrollView.frame.size.width * zoom, scrollView.frame.size.width * zoom)
+        let heightCropper: CGFloat = min(image?.size.height ?? scrollView.frame.size.height * zoom, scrollView.frame.size.height * zoom)
         let SIDE_MARGIN: CGFloat = 0
         
         let zoomedRect = CGRect(x: origX + (SIDE_MARGIN/2), y: origY + (SIDE_MARGIN / 2), width: widthCropper - SIDE_MARGIN, height: heightCropper  - SIDE_MARGIN)
@@ -72,7 +78,7 @@ extension UIImage {
     
     func drawPointsOnImage(_ points: [CGPoint], color: UIColor) -> UIImage {
         let imageSize = self.size
-        let scale: CGFloat = 0.0
+        let scale: CGFloat = scale
         UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
 
         self.draw(at: CGPoint.zero)
@@ -95,7 +101,7 @@ extension UIImage {
 
     func drawRectsOnImage(_ rects: [CGRect], color: UIColor) -> UIImage {
         let imageSize = self.size
-        let scale: CGFloat = 0.0
+        let scale: CGFloat = scale
 
         UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
 
@@ -178,11 +184,8 @@ extension CGRect: Hashable {
     func unnormalizeBoundingBox(for image: UIImage) -> CGRect
     {
         let imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-//        let unnormalized = VNNormalizedRectForImageRect(self, Int(imageRect.size.width), Int(imageRect.size.height))
-//        min(scrollView.zoomView?.image?.size.width ?? scrollView.frame.size.width * zoom, scrollView.frame.size.width * zoom)
         let unnormalized = VNNormalizedRectForImageRect(self, Int(imageRect.size.width), Int(imageRect.size.height))
         
-
         let normalized = CGRect(
             origin: CGPoint(
                 x: unnormalized.origin.x,
@@ -196,11 +199,8 @@ extension CGRect: Hashable {
     func unnormalizeBoundingBox(for rect: CGRect?) -> CGRect
     {
         guard let rect = rect else { return self }
-//        let unnormalized = VNNormalizedRectForImageRect(self, Int(imageRect.size.width), Int(imageRect.size.height))
-//        min(scrollView.zoomView?.image?.size.width ?? scrollView.frame.size.width * zoom, scrollView.frame.size.width * zoom)
         let unnormalized = VNNormalizedRectForImageRect(self, Int(rect.size.width), Int(rect.size.height))
         
-
         let normalized = CGRect(
             origin: CGPoint(
                 x: unnormalized.origin.x,
@@ -216,6 +216,22 @@ extension CGRect: Hashable {
         let x = max(0, self.minX)
         let y = max(0, self.minY)
         return CGRect(x: x, y: y, width: min(self.width, 1 - x), height: min(self.height, 1 - y))
+    }
+}
+
+extension UIScrollView {
+    func screenshot() -> UIImage? {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = UIScreen.main.scale
+
+        let renderer = UIGraphicsImageRenderer(size: self.bounds.size, format: format)
+
+        let image = renderer.image { rendererContext in
+            rendererContext.cgContext.translateBy(x: 0, y: -contentOffset.y)
+            self.layer.render(in: rendererContext.cgContext)
+        }
+
+        return image
     }
 }
 

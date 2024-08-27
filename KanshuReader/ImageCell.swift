@@ -19,13 +19,6 @@ class ImageCell: UITableViewCell {
     
     var aspectConstraint: NSLayoutConstraint? = nil
     
-//    var aspectConstraint : NSLayoutConstraint? {
-//        didSet {
-//            if let oldValue = oldValue { pageView.removeConstraint(oldValue) }
-//            if let aspectConstraint = aspectConstraint { pageView.addConstraint(aspectConstraint) }
-//        }
-//    }
-    
     var pageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
@@ -36,7 +29,6 @@ class ImageCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
-//        backgroundColor = .black
         selectionStyle = .none
         
         addSubviews()
@@ -47,11 +39,6 @@ class ImageCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        aspectConstraint = nil
-//    }
     
     override func prepareForReuse() {
         super.prepareForReuse()

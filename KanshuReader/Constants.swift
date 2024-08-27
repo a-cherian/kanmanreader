@@ -12,8 +12,8 @@ struct Constants {
     static let LOADED_SAMPLE = "v1.0"
     static let LATEST_DICT_UPDATE_KEY = "dictDate"
     static let LATEST_DICT_UPDATE = "2024-08-19"
-    static let accentColor = UIColor.systemMint
-//    static let accentColor = UIColor(red: 200 / 255.0, green: 242 / 255.0, blue: 145 / 255.0, alpha: 1.0)
+//    static let accentColor = UIColor.systemMint
+    static let accentColor = UIColor(red: 166 / 255.0, green: 221 / 255.0, blue: 171 / 255.0, alpha: 1.0)
     static let lightBlueColor = UIColor(red: 139 / 255.0, green: 232 / 255.0, blue: 223 / 255.0, alpha: 1.0)
     static let largeFont: CGFloat = 24
     static let smallFont: CGFloat = 20

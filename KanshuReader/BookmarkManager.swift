@@ -150,7 +150,6 @@ struct BookmarkManager {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
-//            let uuid = url.absoluteString
             let uuid = generateUUID(for: url)
             try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
         }
@@ -166,17 +165,12 @@ struct BookmarkManager {
     }
     
     func deleteBookmark(url: URL) {
-//        uuids.forEach({ uuid in
-//            let url = getAppSandboxDirectory().appendingPathComponent(uuid)
-//            try? FileManager.default.removeItem(at: url)
-//        })
         let fm = FileManager.default
         do {
             let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(generateUUID(for: url))
             if(fm.fileExists(atPath: bookmarkURL.path))
             {
-                print("hi")
-                try fm.removeItem(at: bookmarkURL)
+                try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
             }
         } catch {
             print(error)

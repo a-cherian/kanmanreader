@@ -15,11 +15,8 @@ protocol Reader: UIViewController {
     var currentImage: UIImage { get }
 }
 
-class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRecognizerDelegate {
-//    var pages: [UIImage] = []
-//    var currentPage: Page = Page()
-//    var pendingPage: Page = Page()
-//    var position = 0
+class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate {
+    
     var book: Book
     
     var tipManager: TipManager?
@@ -27,7 +24,19 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     var ocrEnabled = false
     var zoomedRect: CGRect? = nil
     var detectVertical = false
-    var scrollVertical = false
+    var scrollVertical = false {
+        didSet {
+            removeReader()
+            if(scrollVertical) {
+                reader = VReaderViewController(images: reader.pages, position: reader.position, parent: self)
+            }
+            else { reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self) }
+            addReader()
+            
+            textRecognizer = TextRecognizer()
+            textRecognizer.delegate = self
+        }
+    }
     
     var dictionaryViewController = DictionaryViewController(text: "")
 
@@ -231,37 +240,22 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }
     
     @objc func didTapOCR() {
-        ocrEnabled = true
-        
         if let hReader = reader as? HReaderViewController {
-            let image = reader.currentImage
+            let image = hReader.currentImage
             zoomedRect = image.getZoomedRect(from: reader.currentPage)
             textRecognizer.requestInitialVision(for: image, with: zoomedRect)
         }
         else if let vReader = reader as? VReaderViewController {
-            // to do: extract image from UITableView
-            return
+            guard let image = vReader.tableView.screenshot() else { return }
+            textRecognizer.requestInitialVision(for: image)
         }
     }
     
     @objc func didTapPrefs() {
         // present popup
         
-        detectVertical = !detectVertical
+//        detectVertical = !detectVertical
         scrollVertical = !scrollVertical
-        
-        removeReader()
-        
-        if(scrollVertical) {
-            reader = VReaderViewController(images: reader.pages, position: reader.position)
-        }
-        else {
-            reader = HReaderViewController(images: reader.pages, position: reader.position)
-        }
-        
-        addReader()
-        
-        print("prefs")
     }
     
     @objc func didTapOCRSwitch(_ sender: UISwitch ) {
@@ -276,7 +270,12 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }
     
     func didPerformVision(image: UIImage) {
-        reader.currentPage.imageView.image = image
+        if let hReader = reader as? HReaderViewController {
+            reader.currentPage.imageView.image = image
+        }
+        else if let vReader = reader as? VReaderViewController {
+            vReader.startVisionMode(image: image)
+        }
     }
     
     func didDisplay(tip: any Tip) {
@@ -307,14 +306,17 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         }
     }
     
+    @discardableResult
     func didTapRegion(location: CGPoint) -> Bool {
-        guard let zoomedRect = zoomedRect else { return false }
-        if !(zoomedRect.contains(location)) { return false }
-        
         guard let text = textRecognizer.requestFinalVision(for: location, vertical: detectVertical) else { return false }
 
         self.presentDictionary(text: text)
         
         return true
+    }
+    
+    func didFlipPage() {
+        textRecognizer = TextRecognizer()
+        textRecognizer.delegate = self
     }
 }

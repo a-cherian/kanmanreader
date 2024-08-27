@@ -8,14 +8,14 @@
 import UIKit
 
 protocol PageDelegate: AnyObject {
-    func didTapRegion(location: CGPoint) -> Bool
+    @discardableResult func didTapRegion(location: CGPoint) -> Bool
 }
 
 class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     var position = -1
     weak var delegate: PageDelegate? = nil
     
-    var initialImage = false
+    var initialImage: UIImage? = nil
     var singleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     var doubleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     
@@ -45,11 +45,11 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if initialImage {
+        if initialImage == nil {
             let scale = scrollView.bounds.width / imageView.intrinsicContentSize.width
             scrollView.minimumZoomScale = scale
             scrollView.zoomScale = scale
-            initialImage = false
+            initialImage = imageView.image
         }
     }
     
@@ -98,7 +98,7 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
     
     func setImage(_ image: UIImage) {
         imageView.image = image;
-        initialImage = true
+        initialImage = nil
     }
     
     func centerContent() {
@@ -126,7 +126,6 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
     }
     
     @objc func didSingleTap(_ gestureRecognizer: UIGestureRecognizer) {
-        
         let vision = delegate?.didTapRegion(location: gestureRecognizer.location(in: imageView)) ?? false
         if(vision) { return }
         if scrollView.zoomScale != scrollView.minimumZoomScale { return }

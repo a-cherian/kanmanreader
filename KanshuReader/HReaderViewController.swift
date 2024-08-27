@@ -8,7 +8,14 @@
 import UIKit
 import TipKit
 
+protocol HReaderDelegate: AnyObject {
+    func didFlipPage()
+}
+
 class HReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, Reader {
+    
+    weak var rDelegate: HReaderDelegate?
+    
     var pages: [UIImage] = []
     var position: Int {
         currentPage.position
@@ -25,6 +32,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
         self.pages = images
         self.currentPage = createPage(position: position)
         self.currentPage.delegate = parent
+        self.rDelegate = parent
         
         setViewControllers([currentPage], direction: .forward, animated: true)
         self.dataSource = self
@@ -67,7 +75,10 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if(completed) {
+            let previousPage = previousViewControllers[0] as? Page
+            previousPage?.imageView.image = previousPage?.initialImage
             currentPage = pendingPage
+            rDelegate?.didFlipPage()
         }
     }
 }
