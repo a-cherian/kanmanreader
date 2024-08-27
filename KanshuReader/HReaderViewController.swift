@@ -10,7 +10,9 @@ import TipKit
 
 class HReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, Reader {
     var pages: [UIImage] = []
-    var position: Int = 0
+    var position: Int {
+        currentPage.position
+    }
     var currentImage: UIImage { return pages[position] }
     var currentPage: Page = Page()
     var pendingPage: Page = Page()
@@ -21,7 +23,6 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
         if(images.count == 0) { return }
         
         self.pages = images
-        self.position = position
         self.currentPage = createPage(position: position)
         self.currentPage.delegate = parent
         
@@ -67,7 +68,6 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if(completed) {
             currentPage = pendingPage
-            position = currentPage.position
         }
     }
 }

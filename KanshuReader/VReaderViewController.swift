@@ -7,9 +7,14 @@
 
 import UIKit
 
-class VReaderViewController: UIViewController, Reader {
+class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UITableViewDelegate {
+    
     var pages: [UIImage] = []
-    var position: Int = 0
+    var startPosition: Int = 0
+    var position: Int {
+        let cell = tableView.visibleCells.first as! ImageCell
+        return cell.position
+    }
     var currentImage: UIImage { return pages[position] }
     var currentPage: Page = Page()
     
@@ -17,6 +22,13 @@ class VReaderViewController: UIViewController, Reader {
         let table = UITableView()
         
         table.backgroundColor = .red
+        table.register(ImageCell.self, forCellReuseIdentifier: ImageCell.identifier)
+        table.dataSource = self
+        table.delegate = self
+        table.rowHeight = UITableView.automaticDimension
+        table.estimatedRowHeight = 500
+        table.separatorStyle = .none
+//        table.rowHeight = 500
         
         return table
     }()
@@ -25,8 +37,9 @@ class VReaderViewController: UIViewController, Reader {
         super.init(nibName: nil, bundle: nil)
         
         self.pages = images
-        self.position = position
-        self.currentPage = createPage(position: position)
+//        self.position = position
+        tableView.scrollToRow(at: IndexPath(row: position, section: 0), at: .top, animated: false)
+        tableView.reloadData()
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +51,7 @@ class VReaderViewController: UIViewController, Reader {
         
         addSubviews()
         configureUI()
-        
+        tableView.reloadData()
     }
     
     func addSubviews() {
@@ -68,4 +81,20 @@ class VReaderViewController: UIViewController, Reader {
         
         return newPage
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as! ImageCell
+        cell.delegate = parent as? ReaderViewController
+        cell.position = indexPath.item
+        if(cell.initialImage) { cell.setImage(pages[indexPath.item]) }
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return pages.count
+    }
+    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return UITableView.automaticDimension
+//    }
 }

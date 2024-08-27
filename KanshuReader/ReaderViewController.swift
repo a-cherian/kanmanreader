@@ -10,7 +10,7 @@ import TipKit
 
 protocol Reader: UIViewController {
     var pages: [UIImage] { get set }
-    var position: Int { get set }
+    var position: Int { get }
     var currentPage: Page { get set }
     var currentImage: UIImage { get }
 }
@@ -233,9 +233,15 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     @objc func didTapOCR() {
         ocrEnabled = true
         
-        let image = reader.currentImage
-        zoomedRect = image.getZoomedRect(from: reader.currentPage)
-        textRecognizer.requestInitialVision(for: image, with: zoomedRect)
+        if let hReader = reader as? HReaderViewController {
+            let image = reader.currentImage
+            zoomedRect = image.getZoomedRect(from: reader.currentPage)
+            textRecognizer.requestInitialVision(for: image, with: zoomedRect)
+        }
+        else if let vReader = reader as? VReaderViewController {
+            // to do: extract image from UITableView
+            return
+        }
     }
     
     @objc func didTapPrefs() {
