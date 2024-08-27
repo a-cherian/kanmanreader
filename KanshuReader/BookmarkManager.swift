@@ -25,7 +25,6 @@ struct BookmarkManager {
             let name = name ?? (url.lastPathComponent as NSString).deletingPathExtension
             book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
         } else {
-            book?.lastOpened = Date()
             CoreDataManager.shared.updateBook(book: book)
         }
         
@@ -47,12 +46,26 @@ struct BookmarkManager {
         
         var images: [UIImage] = []
         
-        let sorted = archive.sorted(by: { ($0.fileAttributes[FileAttributeKey(rawValue: "NSFileModificationDate")] as! Date).compare(($1.fileAttributes[FileAttributeKey(rawValue: "NSFileModificationDate")] as! Date)) == .orderedAscending })
+        // sort by filename
+        var entries = archive.sorted(by: { ($0.path).compare($1.path) == .orderedAscending })
+        
+        // filter out directory & extraneous files
+        entries = entries.filter { entry in
+            let isMacFile = entry.path.hasPrefix("__MACOSX")
+            
+            let imageSuffixes = [".jpg", ".jpeg", ".png", ".webp", ".tiff", ".heic", ".bmp"]
+            var isImageFile = false
+            imageSuffixes.forEach { imageSuffix in
+                isImageFile = isImageFile || entry.path.hasSuffix(imageSuffix)
+            }
+            
+            return isImageFile && !isMacFile
+        }
         
         var cover: Data = Data([])
         
-        for i in 0..<sorted.count {
-            let entry = sorted[i]
+        for i in 0..<entries.count {
+            let entry = entries[i]
             
             var extractedData: Data = Data([])
             
@@ -82,8 +95,7 @@ struct BookmarkManager {
                 guard !isStale && BookmarkManager.LINK_CHECKING else {
                     bookmarkData = try url.bookmarkData()
                     url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-                    deleteFile(url: file)
-                    CoreDataManager.shared.deleteBook(for: file)
+                    deleteBook(for: file)
                     return url
                 }
                 
@@ -91,8 +103,7 @@ struct BookmarkManager {
             }
             catch {
                 if(!BookmarkManager.LINK_CHECKING) {
-                    deleteFile(url: file)
-                    CoreDataManager.shared.deleteBook(for: file)
+                    deleteBook(for: file)
                 }
                 print(error.localizedDescription)
                 return nil
@@ -100,14 +111,6 @@ struct BookmarkManager {
         }  ?? []
         
         return urls
-    }
-    
-    func deleteBookmarks() {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
-        
-        files?.forEach { file in
-            deleteFile(url: file)
-        }
     }
     
     func retrieveBooks() -> [Book] {
@@ -121,7 +124,7 @@ struct BookmarkManager {
             }
             
             books?.forEach { book in
-                if(!matchedBooks.contains(book)) { CoreDataManager.shared.deleteBook(book: book) }
+                if(!matchedBooks.contains(book)) { BookmarkManager.shared.deleteBook(for: book.url) }
             }
             
             return matchedBooks.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
@@ -147,7 +150,8 @@ struct BookmarkManager {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
-            let uuid = UUID().uuidString
+//            let uuid = url.absoluteString
+            let uuid = generateUUID(for: url)
             try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
         }
         catch {
@@ -155,10 +159,25 @@ struct BookmarkManager {
         }
     }
     
-    func deleteFile(url: URL) {
+    func deleteBook(for url: URL?) {
+        guard let file = url else { return }
+        deleteBookmark(url: file)
+        CoreDataManager.shared.deleteBook(for: file)
+    }
+    
+    func deleteBookmark(url: URL) {
+//        uuids.forEach({ uuid in
+//            let url = getAppSandboxDirectory().appendingPathComponent(uuid)
+//            try? FileManager.default.removeItem(at: url)
+//        })
         let fm = FileManager.default
         do {
-            try fm.removeItem(at: url)
+            let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(generateUUID(for: url))
+            if(fm.fileExists(atPath: bookmarkURL.path))
+            {
+                print("hi")
+                try fm.removeItem(at: bookmarkURL)
+            }
         } catch {
             print(error)
         }
@@ -166,5 +185,25 @@ struct BookmarkManager {
     
     private func getAppSandboxDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    func deleteBookmarks() {
+        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
+        let fm = FileManager.default
+
+        
+        files?.forEach { file in
+            do {
+                try fm.removeItem(at: file)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func generateUUID(for url: URL) -> String {
+        var uuid = url.absoluteString.replacing("/", with: "")
+        uuid = uuid.replacing(":", with: "")
+        return uuid
     }
 }

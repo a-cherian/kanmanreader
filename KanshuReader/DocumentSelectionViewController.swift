@@ -105,7 +105,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         guard let book = BookmarkManager.shared.createBook(from: url) else { return }
         
         controller.dismiss(animated: true, completion: {
-            self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
+            self.openBook(images: images, book: book)
         })
     }
     
@@ -115,6 +115,13 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         
         let images = BookmarkManager.shared.getImages(for: url).images
         
+        
+        openBook(images: images, book: book)
+    }
+    
+    func openBook(images: [UIImage], book: Book) {
+        book.lastOpened = Date()
+        CoreDataManager.shared.updateBook(book: book)
         self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
     }
     
@@ -207,6 +214,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         
         cell.title.text = book.name
         cell.progress.text = "Progress: " + String(book.lastPage) + " / " + String(book.totalPages)
+        
         cell.coverView.image = UIImage(data: book.cover ?? Data()) ?? UIImage()
         
         return cell
