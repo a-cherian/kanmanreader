@@ -68,7 +68,7 @@ class ReaderPrefsViewController: UIViewController {
     func addSubviews() {
         view.addSubview(stackView)
         stackView.addArrangedSubview(ToggleView(text: "Reader Scroll Direction", view: scrollDirControl))
-        stackView.addArrangedSubview(ToggleView(text: "Text Scanning Direction", view: textDirControl))
+//        stackView.addArrangedSubview(ToggleView(text: "Text Scanning Direction", view: textDirControl))
     }
     
     func configureUI() {
