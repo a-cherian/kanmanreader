@@ -134,11 +134,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func loadSample() {
         let userDefaults = UserDefaults.standard
+        
         let loadedSample = userDefaults.string(forKey: Constants.LOADED_SAMPLE_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
-            guard let sampleUrl = Bundle.main.url(forResource: "kanshu-tutorial-sample", withExtension: "zip") else { return }
-            BookmarkManager.shared.createBook(from: sampleUrl, name: "Sample Tutorial")
+            BookmarkManager.shared.createTutorial()
+            userDefaults.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
+        }
+        else {
+            BookmarkManager.shared.relinkTutorial()
         }
     }
 

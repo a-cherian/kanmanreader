@@ -17,18 +17,43 @@ struct BookmarkManager {
     @discardableResult
     func createBook(from url: URL, name: String? = nil) -> Book? {
         let books = CoreDataManager.shared.fetchBooks()
-        let (cover, images) = getImages(for: url)
         
         var book = books?.first(where: { $0.url == url })
+        
         if book == nil {
             createBookmark(url: url)
-            let name = name ?? (url.lastPathComponent as NSString).deletingPathExtension
+            let name = name ?? getFileName(for: url)
+            let (cover, images) = getImages(for: url)
             book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
         } else {
             CoreDataManager.shared.updateBook(book: book)
         }
+        print(book?.url)
         
         return book
+    }
+    
+    func createTutorial() {
+        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
+        
+        var book = CoreDataManager.shared.fetchTutorial()
+        
+        if book == nil {
+            let name = "Sample Tutorial"
+            let (cover, images) = getImages(for: sampleUrl)
+            book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: sampleUrl, lastOpened: Date())
+        } else {
+            book?.url = sampleUrl
+            CoreDataManager.shared.updateBook(book: book)
+        }
+    }
+    
+    func relinkTutorial() {
+        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
+        
+        var book = CoreDataManager.shared.fetchTutorial()
+        book?.url = sampleUrl
+        CoreDataManager.shared.updateBook(book: book)
     }
     
     func getImages(for url: URL, isApp: Bool = false) -> (data: Data, images: [UIImage]) {
@@ -88,21 +113,19 @@ struct BookmarkManager {
         
         let urls: [URL] = files?.compactMap {file in
             do {
-                var bookmarkData = try Data(contentsOf: file)
+                let bookmarkData = try Data(contentsOf: file)
                 var isStale = false
-                var url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
+                let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
                 
                 guard !isStale && BookmarkManager.LINK_CHECKING else {
-                    bookmarkData = try url.bookmarkData()
-                    url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-                    deleteBook(for: file)
-                    return url
+                    if(!url.isTutorial) { deleteBook(for: url) }
+                    return nil
                 }
                 
                 return url
             }
             catch {
-                if(!BookmarkManager.LINK_CHECKING) {
+                if(BookmarkManager.LINK_CHECKING) {
                     deleteBook(for: file)
                 }
                 print(error.localizedDescription)
@@ -119,12 +142,16 @@ struct BookmarkManager {
         if(BookmarkManager.LINK_CHECKING) {
             let urls = readBookmarks()
             
-            let matchedBooks = urls.compactMap { url in
-                books?.first(where: { $0.url == url } )
-            }
+            let matchedBooks: [Book] = books?.compactMap { book in
+                if book.isTutorial { return book }
+                guard let _ = urls.first(where: { book.url == $0 } ) else { return nil}
+                return book
+            } ?? []
             
             books?.forEach { book in
-                if(!matchedBooks.contains(book)) { BookmarkManager.shared.deleteBook(for: book.url) }
+                if(!matchedBooks.contains(book)) {
+                    BookmarkManager.shared.deleteBook(for: book.url)
+                }
             }
             
             return matchedBooks.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
@@ -160,6 +187,7 @@ struct BookmarkManager {
     
     func deleteBook(for url: URL?) {
         guard let file = url else { return }
+        print(url)
         deleteBookmark(url: file)
         CoreDataManager.shared.deleteBook(for: file)
     }
@@ -199,5 +227,22 @@ struct BookmarkManager {
         var uuid = url.absoluteString.replacing("/", with: "")
         uuid = uuid.replacing(":", with: "")
         return uuid
+    }
+    
+    func getFileName(for url: URL?) -> String {
+        guard let url = url else { return "" }
+        return (url.lastPathComponent as NSString).deletingPathExtension
+    }
+}
+
+extension Book {
+    var isTutorial: Bool {
+        url?.lastPathComponent.hasPrefix(Constants.TUTORIAL_FILENAME) ?? false
+    }
+}
+
+extension URL {
+    var isTutorial: Bool {
+        lastPathComponent.contains(Constants.TUTORIAL_FILENAME)
     }
 }

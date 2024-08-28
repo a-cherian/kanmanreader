@@ -53,10 +53,7 @@ struct CoreDataManager {
         
         do {
             let results = try context.fetch(request)
-            
             return results.first
-            
-            try context.save()
         }
         catch {
             debugPrint(error)
@@ -75,6 +72,24 @@ struct CoreDataManager {
             return books
         } catch let fetchError {
             print("Failed to fetch: \(fetchError)")
+        }
+        
+        return nil
+    }
+    
+    func fetchTutorial() -> Book? {
+        
+        let context = persistentContainer.viewContext
+        
+        let request = Book.fetchRequest()
+        request.predicate = NSPredicate(format: "url CONTAINS %@", argumentArray: [Constants.TUTORIAL_FILENAME])
+        
+        do {
+            let results = try context.fetch(request)
+            return results.first
+        }
+        catch {
+            debugPrint(error)
         }
         
         return nil

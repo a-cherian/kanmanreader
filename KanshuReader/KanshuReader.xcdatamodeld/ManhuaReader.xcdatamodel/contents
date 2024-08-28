@@ -2,11 +2,11 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Book" representedClassName="Book" syncable="YES" codeGenerationType="class">
         <attribute name="cover" optional="YES" attributeType="Binary"/>
-        <attribute name="lastOpened" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="lastPage" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="totalPages" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="url" optional="YES" attributeType="URI"/>
+        <attribute name="lastOpened" attributeType="Date" defaultDateTimeInterval="746523540" usesScalarValueType="NO"/>
+        <attribute name="lastPage" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="totalPages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" attributeType="URI" defaultValueString="default"/>
     </entity>
     <entity name="DictEntry" representedClassName="DictEntry" syncable="YES" codeGenerationType="class">
         <attribute name="definition" attributeType="String" defaultValueString=""/>

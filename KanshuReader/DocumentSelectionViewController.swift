@@ -213,7 +213,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         cell.delegate = self
         
         cell.title.text = book.name
-        cell.progress.text = "Progress: " + String(book.lastPage) + " / " + String(book.totalPages)
+        cell.progress.text = "Progress: " + String(book.lastPage + 1) + " / " + String(book.totalPages)
         
         cell.coverView.image = UIImage(data: book.cover ?? Data()) ?? UIImage()
         
