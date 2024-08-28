@@ -20,7 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let navBar = UINavigationBar.appearance()
-        navBar.tintColor = Constants.accentColor
         navBar.barTintColor = UIColor.black
         navBar.backgroundColor = UIColor.black
         navBar.isTranslucent = false
@@ -35,6 +34,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = window
         window.makeKeyAndVisible()
+        window.overrideUserInterfaceStyle = .dark
+        window.tintColor = Constants.accentColor
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

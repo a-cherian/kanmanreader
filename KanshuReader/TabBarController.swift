@@ -36,7 +36,6 @@ class TabBarController: UITabBarController {
 //        settings.tabBarItem.title = "Settings"
 //        let settingsNav = UINavigationController(rootViewController: settings)
         
-        tabBar.tintColor = Constants.accentColor
         tabBar.backgroundColor = .black
         
         setViewControllers([documentsNav], animated: true)

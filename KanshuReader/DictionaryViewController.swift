@@ -18,7 +18,8 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     
     lazy var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = Constants.accentColor
+        view.layer.cornerRadius = 10
+        view.backgroundColor = .white
         return view
     }()
     
@@ -76,7 +77,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.accentColor
         view.layoutMargins = UIEdgeInsets(top: 50, left: 5, bottom: 50, right: 5)
         
         DictionaryTip.dictOpened = true

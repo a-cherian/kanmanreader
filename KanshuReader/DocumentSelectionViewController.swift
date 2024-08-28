@@ -17,7 +17,6 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
         
         button.backgroundColor = .black
-        button.tintColor = Constants.accentColor
         button.layer.cornerRadius = 10
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = 2
