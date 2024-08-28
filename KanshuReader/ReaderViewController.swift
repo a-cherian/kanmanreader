@@ -15,22 +15,23 @@ protocol Reader: UIViewController {
     var currentImage: UIImage { get }
 }
 
-class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate {
-    
+class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate, PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate, ReaderPrefsDelegate {
     var book: Book
     
     var tipManager: TipManager?
     var textRecognizer = TextRecognizer()
     var ocrEnabled = false
     var zoomedRect: CGRect? = nil
-    var detectVertical = false
-    var scrollVertical = false {
+    var textDirection: Direction = .horizontal
+    var scrollDirection: Direction = .horizontal {
         didSet {
             removeReader()
-            if(scrollVertical) {
+            if scrollDirection == .vertical {
                 reader = VReaderViewController(images: reader.pages, position: reader.position, parent: self)
             }
-            else { reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self) }
+            else if scrollDirection == .horizontal {
+                reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self)
+            }
             addReader()
             
             textRecognizer = TextRecognizer()
@@ -39,11 +40,17 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }
     
     var dictionaryViewController = DictionaryViewController(text: "")
-
+    var reader: Reader = HReaderViewController()
+    
+    var prefsViewController: ReaderPrefsViewController = {
+        let controller = ReaderPrefsViewController()
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.permittedArrowDirections = .up
+        return controller
+    }()
+    
     var boxTipView: TipUIView?
     var dictTipView: TipUIView?
-    
-    var reader: Reader = HReaderViewController()
     
     lazy var ocrButton: UIButton = {
         let button = UIButton()
@@ -72,17 +79,6 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         
         button.addTarget(self, action: #selector(didTapPrefs), for: .touchUpInside)
         
-        return button
-    }()
-    
-    lazy var ocrSwitch: UISwitch = {
-        let button = UISwitch()
-        
-        button.tintColor = Constants.accentColor
-        button.onTintColor = Constants.accentColor
-        
-        button.addTarget(self, action: #selector(didTapOCRSwitch(_:)), for: .valueChanged)
-
         return button
     }()
     
@@ -129,6 +125,9 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
         view.backgroundColor = .black
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView)
+        
+        prefsViewController.popoverPresentationController?.delegate = self
+        prefsViewController.delegate = self
         
         configureUI()
         addReader()
@@ -252,14 +251,16 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     }
     
     @objc func didTapPrefs() {
-        // present popup
-        
-//        detectVertical = !detectVertical
-        scrollVertical = !scrollVertical
-    }
-    
-    @objc func didTapOCRSwitch(_ sender: UISwitch ) {
-        detectVertical = sender.isOn
+        if let pvc = prefsViewController.popoverPresentationController {
+            pvc.permittedArrowDirections = [.up]
+            pvc.delegate = self
+            pvc.sourceRect = prefsButton.frame
+            pvc.sourceView = prefsButton
+            
+            if(!isModal(prefsViewController)) {
+                self.present(prefsViewController, animated: true)
+            }
+        }
     }
     
     @objc func didTapBack(_ sender: UIButton) {
@@ -271,7 +272,7 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     
     func didPerformVision(image: UIImage) {
         if let hReader = reader as? HReaderViewController {
-            reader.currentPage.imageView.image = image
+            hReader.currentPage.imageView.image = image
         }
         else if let vReader = reader as? VReaderViewController {
             vReader.startVisionMode(image: image)
@@ -308,7 +309,7 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     
     @discardableResult
     func didTapRegion(location: CGPoint) -> Bool {
-        guard let text = textRecognizer.requestFinalVision(for: location, vertical: detectVertical) else { return false }
+        guard let text = textRecognizer.requestFinalVision(for: location, textDirection: textDirection) else { return false }
 
         self.presentDictionary(text: text)
         
@@ -318,5 +319,33 @@ class ReaderViewController: UIViewController, PageDelegate, TipDelegate, TextRec
     func didFlipPage() {
         textRecognizer = TextRecognizer()
         textRecognizer.delegate = self
+    }
+    
+    func changedScroll(to direction: Direction) {
+        switch(direction) {
+        case .horizontal:
+            scrollDirection = .horizontal
+        case .vertical:
+            scrollDirection = .vertical
+        }
+    }
+    
+    func changedText(to direction: Direction) {
+        switch(direction) {
+        case .horizontal:
+            textDirection = .horizontal
+        case .vertical:
+            textDirection = .vertical
+        }
+    }
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func isModal(_ vc: UIViewController) -> Bool {
+        return vc.presentingViewController?.presentedViewController == vc
+            || (vc.navigationController != nil && vc.navigationController?.presentingViewController?.presentedViewController == vc.navigationController)
+            || vc.tabBarController?.presentingViewController is UITabBarController
     }
 }

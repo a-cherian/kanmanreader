@@ -62,16 +62,16 @@ class TextRecognizer {
         }
     }
     
-    func requestFinalVision(for location: CGPoint, vertical: Bool) -> String? {
+    func requestFinalVision(for location: CGPoint, textDirection: Direction) -> String? {
         guard let regionIndex = textRegions.firstIndex(where: { $0.contains(location) }) else { return nil }
         let region = textRegions[regionIndex]
         
         var text: String? = ""
         
-        if(vertical) {
+        if textDirection == .vertical {
             text = requestVerticalVision(image: unprocessedImage, cluster: clusters[regionIndex])
         }
-        else {
+        else if textDirection == .horizontal {
             text = requestHorizontalVision(on: unprocessedImage, region: region)
         }
         
