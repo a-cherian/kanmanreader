@@ -91,37 +91,42 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
 
     @objc func didTapImport() {
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.zip], asCopy: false)
+        let fileTypes: [UTType] = [UTType.zip, UTType(importedAs: "com.acherian.cbz")].compactMap { $0 }
+//        UTType(importedAs: "com.acherian.cbz")
+        
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
         documentPicker.delegate = self
-        documentPicker.allowsMultipleSelection = false
+        documentPicker.allowsMultipleSelection = true
         documentPicker.modalPresentationStyle = .fullScreen
         present(documentPicker, animated: true, completion: nil)
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let url = urls.first else { return }
-        let images = BookmarkManager.shared.getImages(for: url).images
-        guard let book = BookmarkManager.shared.createBook(from: url) else { return }
+        let books = urls.compactMap { url in
+            return BookmarkManager.shared.createBook(from: url)
+        }
         
-        controller.dismiss(animated: true, completion: {
-            self.openBook(images: images, book: book)
-        })
+        if(urls.count == 1 && books.count == 1) {
+            controller.dismiss(animated: true, completion: {
+                self.openBook(books[0])
+            })
+        }
+        
+        refreshData()
     }
     
     func didTapBook(position: Int) {
         let book = books[position]
-        guard let url = book.url else { return }
-        
-        let images = BookmarkManager.shared.getImages(for: url).images
-        
-        
-        openBook(images: images, book: book)
+        openBook(book)
     }
     
-    func openBook(images: [UIImage], book: Book) {
-        book.lastOpened = Date()
-        CoreDataManager.shared.updateBook(book: book)
-        self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
+    func openBook(_ book: Book) {
+        if let url = book.url {
+            book.lastOpened = Date()
+            CoreDataManager.shared.updateBook(book: book)
+            let images = BookmarkManager.shared.getImages(for: url).images
+            self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
+        }
     }
     
     func renameAction(_ book: Book) {

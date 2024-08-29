@@ -66,7 +66,10 @@ struct BookmarkManager {
     }
     
     func extractImages(for url: URL) -> (data: Data, images: [UIImage]) {
-        guard let archive = Archive(url: url, accessMode: .read) else { return (Data(), []) }
+        guard let archive = Archive(url: url, accessMode: .read) else { 
+            print("?")
+            return (Data(), [])
+        }
         
         var images: [UIImage] = []
         

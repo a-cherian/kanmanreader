@@ -52,7 +52,7 @@ class TextRecognizer {
             request.regionOfInterest = frame.unnormalizeBoundingBox(for: image)
         }
         request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["zh-Hant"]
+        request.recognitionLanguages = ["zh-Hant", "en-US"]
 
         do {
             // Perform the text-recognition request.
@@ -97,7 +97,7 @@ class TextRecognizer {
         
         request.regionOfInterest = region.unnormalizeBoundingBox(for: unwrapped)
         request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["zh-Hant"]
+        request.recognitionLanguages = ["zh-Hant", "en-US"]
         
         do {
             // Perform the text-recognition request.
