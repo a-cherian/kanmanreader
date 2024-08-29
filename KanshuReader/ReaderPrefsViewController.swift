@@ -44,8 +44,10 @@ class ReaderPrefsViewController: UIViewController {
         return view
     }()
     
-    init(prefs: [String]? = nil) {
+    init(with preferences: ReaderPreferences? = nil) {
         super.init(nibName: nil, bundle: nil)
+        
+        updatePreferences(with: preferences)
     }
     
     required init?(coder: NSCoder) {
@@ -82,6 +84,18 @@ class ReaderPrefsViewController: UIViewController {
             stackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor)
         ])
+    }
+    
+    func updatePreferences(with prefs: ReaderPreferences?) {
+        guard let prefs = prefs else { return }
+        
+        // scroll direction
+        let scrollDirMapping: [Direction] = [.horizontal, .vertical]
+        scrollDirControl.selectedSegmentIndex = scrollDirMapping.firstIndex(of: prefs.scrollDirection) ?? 0
+        
+        // text direction
+        let textDirMapping: [Direction] = [.horizontal, .vertical]
+        textDirControl.selectedSegmentIndex = textDirMapping.firstIndex(of: prefs.scrollDirection) ?? 0
     }
 }
 

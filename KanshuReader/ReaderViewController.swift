@@ -22,22 +22,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     var textRecognizer = TextRecognizer()
     var ocrEnabled = false
     var zoomedRect: CGRect? = nil
-    var textDirection: Direction = .horizontal
-    var scrollDirection: Direction = .horizontal {
-        didSet {
-            removeReader()
-            if scrollDirection == .vertical {
-                reader = VReaderViewController(images: reader.pages, position: reader.position, parent: self)
-            }
-            else if scrollDirection == .horizontal {
-                reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self)
-            }
-            addReader()
-            
-            textRecognizer = TextRecognizer()
-            textRecognizer.delegate = self
-        }
-    }
+    
+    var preferences = ReaderPreferences()
     
     var dictionaryViewController = DictionaryViewController(text: "")
     var reader: Reader = HReaderViewController()
@@ -110,9 +96,16 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         super.init(nibName: nil, bundle: nil)
         
-        textRecognizer.delegate = self
         
-        reader = HReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+        preferences = ReaderPreferences(from: book.preferences)
+        if preferences.scrollDirection == .horizontal {
+            reader = HReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+        }
+        else if preferences.scrollDirection == .vertical {
+            reader = VReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+        }
+        
+        textRecognizer.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -257,6 +250,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func didTapPrefs() {
+        prefsViewController.updatePreferences(with: preferences)
         if let pvc = prefsViewController.popoverPresentationController {
             pvc.permittedArrowDirections = [.up]
             pvc.delegate = self
@@ -312,7 +306,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     
     @discardableResult
     func didTapRegion(location: CGPoint) -> Bool {
-        guard let text = textRecognizer.requestFinalVision(for: location, textDirection: textDirection) else { return false }
+        guard let text = textRecognizer.requestFinalVision(for: location, textDirection: preferences.textDirection) else { return false }
 
         self.presentDictionary(text: text)
         
@@ -327,24 +321,37 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     func changedScroll(to direction: Direction) {
         switch(direction) {
         case .horizontal:
-            scrollDirection = .horizontal
+            preferences.scrollDirection = .horizontal
         case .vertical:
-            scrollDirection = .vertical
+            preferences.scrollDirection = .vertical
         }
+        
+        removeReader()
+        if preferences.scrollDirection == .vertical {
+            reader = VReaderViewController(images: reader.pages, position: reader.position, parent: self)
+        }
+        else if preferences.scrollDirection == .horizontal {
+            reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self)
+        }
+        addReader()
+        
+        textRecognizer = TextRecognizer()
+        textRecognizer.delegate = self
     }
     
     func changedText(to direction: Direction) {
         switch(direction) {
         case .horizontal:
-            textDirection = .horizontal
+            preferences.textDirection = .horizontal
         case .vertical:
-            textDirection = .vertical
+            preferences.textDirection = .vertical
         }
     }
     
     func closeBook() {
         book.lastPage = Int64(reader.position)
         book.lastOpened = Date()
+        book.preferences = preferences.string
         CoreDataManager.shared.updateBook(book: book)
     }
     

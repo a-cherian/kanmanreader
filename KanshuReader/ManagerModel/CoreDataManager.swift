@@ -22,7 +22,7 @@ struct CoreDataManager {
     }()
     
     @discardableResult
-    func createBook(name: String, lastPage: Int, totalPages: Int, cover: Data, url: URL, lastOpened: Date) -> Book? {
+    func createBook(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences()) -> Book? {
         let context = persistentContainer.viewContext
         
         let book = NSEntityDescription.insertNewObject(forEntityName: "Book", into: context) as! Book
@@ -33,6 +33,7 @@ struct CoreDataManager {
         book.cover = cover
         book.url = url
         book.lastOpened = lastOpened
+        book.preferences = prefs.string
         
         do {
             try context.save()

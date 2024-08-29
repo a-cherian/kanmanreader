@@ -24,11 +24,10 @@ struct BookmarkManager {
             createBookmark(url: url)
             let name = name ?? getFileName(for: url)
             let (cover, images) = getImages(for: url)
-            book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: url, lastOpened: Date())
+            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url)
         } else {
             CoreDataManager.shared.updateBook(book: book)
         }
-        print(book?.url)
         
         return book
     }
@@ -41,7 +40,7 @@ struct BookmarkManager {
         if book == nil {
             let name = "Sample Tutorial"
             let (cover, images) = getImages(for: sampleUrl)
-            book = CoreDataManager.shared.createBook(name: name, lastPage: 0, totalPages: images.count, cover: cover, url: sampleUrl, lastOpened: Date())
+            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl)
         } else {
             book?.url = sampleUrl
             CoreDataManager.shared.updateBook(book: book)
