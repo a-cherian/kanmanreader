@@ -133,6 +133,11 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         addReader()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tipManager?.startTasks()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         if(book.isTutorial) {
             tipManager = TipManager()
@@ -142,11 +147,12 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
             TipManager.disableTips()
         }
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        tipManager?.startTasks()
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        closeBook()
     }
+
     
     func addReader() {
         addChild(reader)
@@ -264,9 +270,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func didTapBack(_ sender: UIButton) {
-        book.lastPage = Int64(reader.position)
-        book.lastOpened = Date()
-        CoreDataManager.shared.updateBook(book: book)
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -337,6 +340,12 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         case .vertical:
             textDirection = .vertical
         }
+    }
+    
+    func closeBook() {
+        book.lastPage = Int64(reader.position)
+        book.lastOpened = Date()
+        CoreDataManager.shared.updateBook(book: book)
     }
     
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
