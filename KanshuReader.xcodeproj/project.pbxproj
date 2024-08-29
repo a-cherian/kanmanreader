@@ -15,6 +15,8 @@
 		400E0EA32B36D2BC0024AD39 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0EA22B36D2BC0024AD39 /* BookCell.swift */; };
 		402963532C8001AF00211F2E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 402963522C8001AF00211F2E /* PrivacyInfo.xcprivacy */; };
 		402963552C80369100211F2E /* ReaderPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963542C80369100211F2E /* ReaderPreferences.swift */; };
+		402963582C806E6700211F2E /* Unzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963572C806E6700211F2E /* Unzipper.swift */; };
+		4029635B2C8077ED00211F2E /* Unrar in Frameworks */ = {isa = PBXBuildFile; productRef = 4029635A2C8077ED00211F2E /* Unrar */; };
 		4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC642C7C5874007D216B /* HReaderViewController.swift */; };
 		4049AC692C7C851D007D216B /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC682C7C851D007D216B /* ImageCell.swift */; };
 		4049AC6B2C7E83A3007D216B /* ReaderPrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */; };
@@ -61,6 +63,7 @@
 		400E0EA22B36D2BC0024AD39 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
 		402963522C8001AF00211F2E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		402963542C80369100211F2E /* ReaderPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPreferences.swift; sourceTree = "<group>"; };
+		402963572C806E6700211F2E /* Unzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unzipper.swift; sourceTree = "<group>"; };
 		4049AC642C7C5874007D216B /* HReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HReaderViewController.swift; sourceTree = "<group>"; };
 		4049AC682C7C851D007D216B /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPrefsViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4029635B2C8077ED00211F2E /* Unrar in Frameworks */,
 				400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */,
 				405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */,
 			);
@@ -117,6 +121,7 @@
 				405A7A9D2C7B04AE00A40D24 /* TipManager.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				405A7A962C7979E500A40D24 /* BookmarkManager.swift */,
+				402963572C806E6700211F2E /* Unzipper.swift */,
 			);
 			path = ManagerModel;
 			sourceTree = "<group>";
@@ -135,19 +140,10 @@
 				405945B62B2C54DA00A6B1F9 /* AppDelegate.swift */,
 				405945B82B2C54DA00A6B1F9 /* SceneDelegate.swift */,
 				405945EF2B2C55F900A6B1F9 /* TabBarController.swift */,
-				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
-				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
-				4049AC642C7C5874007D216B /* HReaderViewController.swift */,
-				405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */,
-				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
-				4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */,
-				407D6D962C756BFB00F8A5B9 /* Page.swift */,
-				4049AC682C7C851D007D216B /* ImageCell.swift */,
-				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
+				40F4EA732C8134DD008A85A4 /* ViewControllers */,
+				40F4EA722C8134BD008A85A4 /* Cells */,
 				402963562C80369D00211F2E /* ManagerModel */,
-				400E0DCE2B31D7C70024AD39 /* Constants.swift */,
-				40724F0D2C78521100EA81DB /* Tips.swift */,
-				405946632B2EBABC00A6B1F9 /* Extension.swift */,
+				40F4EA712C8134B2008A85A4 /* Misc */,
 				4049AC6C2C7E84EC007D216B /* Enums.swift */,
 				405945BF2B2C54DB00A6B1F9 /* KanshuReader.xcdatamodeld */,
 				407D6D952C7493CC00F8A5B9 /* data */,
@@ -171,6 +167,39 @@
 			path = data;
 			sourceTree = "<group>";
 		};
+		40F4EA712C8134B2008A85A4 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				400E0DCE2B31D7C70024AD39 /* Constants.swift */,
+				40724F0D2C78521100EA81DB /* Tips.swift */,
+				405946632B2EBABC00A6B1F9 /* Extension.swift */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
+		40F4EA722C8134BD008A85A4 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				4049AC682C7C851D007D216B /* ImageCell.swift */,
+				400E0EA22B36D2BC0024AD39 /* BookCell.swift */,
+				407D6D962C756BFB00F8A5B9 /* Page.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		40F4EA732C8134DD008A85A4 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
+				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
+				4049AC642C7C5874007D216B /* HReaderViewController.swift */,
+				405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */,
+				400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */,
+				4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -191,6 +220,7 @@
 			packageProductDependencies = (
 				405946052B2C679C00A6B1F9 /* ZIPFoundation */,
 				400E0E992B3559270024AD39 /* SwiftyTesseract */,
+				4029635A2C8077ED00211F2E /* Unrar */,
 			);
 			productName = ManhuaReader;
 			productReference = 40724F0A2C76F66E00EA81DB /* Kanshu Reader.app */;
@@ -223,6 +253,7 @@
 			packageReferences = (
 				405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */,
+				402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */,
 			);
 			productRefGroup = 405945AA2B2C54DA00A6B1F9;
 			projectDirPath = "";
@@ -276,6 +307,7 @@
 				4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */,
 				400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */,
 				405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */,
+				402963582C806E6700211F2E /* Unzipper.swift in Sources */,
 				405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,6 +462,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KanshuReader/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -467,6 +500,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KanshuReader/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -521,6 +555,14 @@
 				minimumVersion = 4.0.1;
 			};
 		};
+		402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mtgto/Unrar.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.16;
+			};
+		};
 		405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
@@ -536,6 +578,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */;
 			productName = SwiftyTesseract;
+		};
+		4029635A2C8077ED00211F2E /* Unrar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */;
+			productName = Unrar;
 		};
 		405946052B2C679C00A6B1F9 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

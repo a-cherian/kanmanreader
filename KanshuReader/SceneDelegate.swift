@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let URLContexts = connectionOptions.urlContexts
         if let url = URLContexts.first?.url {
-            let book = BookmarkManager.shared.createBook(from: url)
+            BookmarkManager.createBook(from: url)
         }
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            let book = BookmarkManager.shared.createBook(from: url)
+            BookmarkManager.createBook(from: url)
         }
     }
 

@@ -7,7 +7,6 @@
 
 import UIKit
 import UniformTypeIdentifiers
-import ZIPFoundation
 
 class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BookCellDelegate {
     
@@ -69,7 +68,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
     
     @objc func refreshData() {
-        books = BookmarkManager.shared.retrieveBooks()
+        books = BookmarkManager.retrieveBooks()
         documentCollectionView.reloadData()
     }
     
@@ -93,8 +92,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
 
     @objc func didTapImport() {
-        let fileTypes: [UTType] = [UTType.zip, UTType(importedAs: "com.acherian.cbz")].compactMap { $0 }
-//        UTType(importedAs: "com.acherian.cbz")
+        let fileTypes: [UTType] = [.zip, .archive, UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
         
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
         documentPicker.delegate = self
@@ -105,7 +103,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         let books = urls.compactMap { url in
-            return BookmarkManager.shared.createBook(from: url)
+            return BookmarkManager.createBook(from: url)
         }
         
         if(urls.count == 1 && books.count == 1) {
@@ -126,7 +124,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         if let url = book.url {
             book.lastOpened = Date()
             CoreDataManager.shared.updateBook(book: book)
-            let images = BookmarkManager.shared.getImages(for: url).images
+            let images = BookmarkManager.getImages(for: url)?.images ?? []
             self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
         }
     }
@@ -202,7 +200,14 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         }))
         present(alert, animated: true, completion: nil)
     }
-    
+}
+
+
+
+
+
+
+extension DocumentSelectionViewController {
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true)
     }
@@ -250,6 +255,4 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
             return UIMenu(title: "", children: [renameAction, resetAction, deleteAction])
         }
     }
-
 }
-

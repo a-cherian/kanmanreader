@@ -7,15 +7,12 @@
 
 import Foundation
 import UIKit
-import ZIPFoundation
 
 struct BookmarkManager {
-    
-    static let shared = BookmarkManager()
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
     @discardableResult
-    func createBook(from url: URL, name: String? = nil) -> Book? {
+    static func createBook(from url: URL, name: String? = nil) -> Book? {
         let books = CoreDataManager.shared.fetchBooks()
         
         var book = books?.first(where: { $0.url == url })
@@ -23,7 +20,7 @@ struct BookmarkManager {
         if book == nil {
             createBookmark(url: url)
             let name = name ?? getFileName(for: url)
-            let (cover, images) = getImages(for: url)
+            guard let (cover, images) = getImages(for: url) else { return nil }
             book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url)
         } else {
             CoreDataManager.shared.updateBook(book: book)
@@ -32,14 +29,14 @@ struct BookmarkManager {
         return book
     }
     
-    func createTutorial() {
+    static func createTutorial() {
         guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
         
         var book = CoreDataManager.shared.fetchTutorial()
         
         if book == nil {
             let name = "Sample Tutorial"
-            let (cover, images) = getImages(for: sampleUrl)
+            guard let (cover, images) = getImages(for: sampleUrl) else { return }
             book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl)
         } else {
             book?.url = sampleUrl
@@ -47,70 +44,25 @@ struct BookmarkManager {
         }
     }
     
-    func relinkTutorial() {
+    static func relinkTutorial() {
         guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
         
-        var book = CoreDataManager.shared.fetchTutorial()
+        let book = CoreDataManager.shared.fetchTutorial()
         book?.url = sampleUrl
         CoreDataManager.shared.updateBook(book: book)
     }
     
-    func getImages(for url: URL, isApp: Bool = false) -> (data: Data, images: [UIImage]) {
+    static func getImages(for url: URL, isApp: Bool = false) -> (data: Data, images: [UIImage])? {
         guard url.startAccessingSecurityScopedResource() else {
-            return extractImages(for: url)
+            return Unzipper.extractImages(for: url)
         }
         
         defer { url.stopAccessingSecurityScopedResource() }
         
-        return extractImages(for: url)
+        return Unzipper.extractImages(for: url)
     }
     
-    func extractImages(for url: URL) -> (data: Data, images: [UIImage]) {
-        guard let archive = Archive(url: url, accessMode: .read) else { 
-            print("?")
-            return (Data(), [])
-        }
-        
-        var images: [UIImage] = []
-        
-        // sort by filename
-        var entries = archive.sorted(by: { ($0.path).compare($1.path) == .orderedAscending })
-        
-        // filter out directory & extraneous files
-        entries = entries.filter { entry in
-            let isMacFile = entry.path.hasPrefix("__MACOSX")
-            
-            let imageSuffixes = [".jpg", ".jpeg", ".png", ".webp", ".tiff", ".heic", ".bmp"]
-            var isImageFile = false
-            imageSuffixes.forEach { imageSuffix in
-                isImageFile = isImageFile || entry.path.hasSuffix(imageSuffix)
-            }
-            
-            return isImageFile && !isMacFile
-        }
-        
-        var cover: Data = Data([])
-        
-        for i in 0..<entries.count {
-            let entry = entries[i]
-            
-            var extractedData: Data = Data([])
-            
-            do {
-                _ = try archive.extract(entry) { extractedData.append($0) }
-                if let image = UIImage(data: extractedData) {
-                    images.append(image)
-                }
-                if(i == 0) { cover = extractedData }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        
-        return (cover, images)
-    }
-    
-    func readBookmarks() -> [URL] {
+    static func readBookmarks() -> [URL] {
         let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
         
         let urls: [URL] = files?.compactMap {file in
@@ -119,7 +71,7 @@ struct BookmarkManager {
                 var isStale = false
                 let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
                 
-                guard !isStale && BookmarkManager.LINK_CHECKING else {
+                guard !isStale && LINK_CHECKING else {
                     if(!url.isTutorial) { deleteBook(for: url) }
                     return nil
                 }
@@ -127,7 +79,7 @@ struct BookmarkManager {
                 return url
             }
             catch {
-                if(BookmarkManager.LINK_CHECKING) {
+                if(LINK_CHECKING) {
                     deleteBook(for: file)
                 }
                 print(error.localizedDescription)
@@ -138,10 +90,10 @@ struct BookmarkManager {
         return urls
     }
     
-    func retrieveBooks() -> [Book] {
+    static func retrieveBooks() -> [Book] {
         let books = CoreDataManager.shared.fetchBooks()
         
-        if(BookmarkManager.LINK_CHECKING) {
+        if(LINK_CHECKING) {
             let urls = readBookmarks()
             
             let matchedBooks: [Book] = books?.compactMap { book in
@@ -152,7 +104,7 @@ struct BookmarkManager {
             
             books?.forEach { book in
                 if(!matchedBooks.contains(book)) {
-                    BookmarkManager.shared.deleteBook(for: book.url)
+                    deleteBook(for: book.url)
                 }
             }
             
@@ -162,7 +114,7 @@ struct BookmarkManager {
         return books ?? []
     }
     
-    func createBookmark(url: URL) {
+    static func createBookmark(url: URL) {
         guard url.startAccessingSecurityScopedResource() else {
             writeBookmark(url: url)
             return
@@ -175,7 +127,7 @@ struct BookmarkManager {
         writeBookmark(url: url)
     }
     
-    func writeBookmark(url: URL) {
+    static func writeBookmark(url: URL) {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
@@ -187,14 +139,13 @@ struct BookmarkManager {
         }
     }
     
-    func deleteBook(for url: URL?) {
+    static func deleteBook(for url: URL?) {
         guard let file = url else { return }
-        print(url)
         deleteBookmark(url: file)
         CoreDataManager.shared.deleteBook(for: file)
     }
     
-    func deleteBookmark(url: URL) {
+    static func deleteBookmark(url: URL) {
         let fm = FileManager.default
         do {
             let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(generateUUID(for: url))
@@ -207,11 +158,11 @@ struct BookmarkManager {
         }
     }
     
-    private func getAppSandboxDirectory() -> URL {
+    static private func getAppSandboxDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
-    func deleteBookmarks() {
+    static func deleteBookmarks() {
         let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
         let fm = FileManager.default
 
@@ -225,13 +176,13 @@ struct BookmarkManager {
         }
     }
     
-    func generateUUID(for url: URL) -> String {
+    static func generateUUID(for url: URL) -> String {
         var uuid = url.absoluteString.replacing("/", with: "")
         uuid = uuid.replacing(":", with: "")
         return uuid
     }
     
-    func getFileName(for url: URL?) -> String {
+    static func getFileName(for url: URL?) -> String {
         guard let url = url else { return "" }
         return (url.lastPathComponent as NSString).deletingPathExtension
     }

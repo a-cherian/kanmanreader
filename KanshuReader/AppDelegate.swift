@@ -141,11 +141,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let loadedSample = userDefaults.string(forKey: Constants.LOADED_SAMPLE_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
-            BookmarkManager.shared.createTutorial()
+            BookmarkManager.createTutorial()
             userDefaults.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
         }
         else {
-            BookmarkManager.shared.relinkTutorial()
+            BookmarkManager.relinkTutorial()
         }
     }
 
