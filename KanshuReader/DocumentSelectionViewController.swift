@@ -59,14 +59,16 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshData), name: UIApplication.didBecomeActiveNotification, object: nil)
         hidesBottomBarWhenPushed = true
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
         hidesBottomBarWhenPushed = false
     }
     
-    func refreshData() {
+    @objc func refreshData() {
         books = BookmarkManager.shared.retrieveBooks()
         documentCollectionView.reloadData()
     }
@@ -84,7 +86,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         documentCollectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             documentCollectionView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            documentCollectionView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
+            documentCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             documentCollectionView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             documentCollectionView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor)
         ])
