@@ -29,14 +29,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navBar.barTintColor = UIColor.black
         navBar.backgroundColor = UIColor.black
         navBar.isTranslucent = false
-        
+
         let documents = DocumentSelectionViewController()
-        documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
-        documents.tabBarItem.title = "Books"
         let documentsNav = UINavigationController(rootViewController: documents)
-        
         window.rootViewController = documentsNav
-//        window.rootViewController = TabBarController()
         
         self.window = window
         window.makeKeyAndVisible()
@@ -80,7 +76,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-
-
 }
 

@@ -15,7 +15,7 @@ protocol Reader: UIViewController {
     var currentImage: UIImage { get }
 }
 
-class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate, PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate, ReaderPrefsDelegate {
+class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     var book: Book
     
     var tipManager: TipManager?
@@ -267,6 +267,26 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         self.navigationController?.popViewController(animated: true)
     }
     
+    func closeBook() {
+        book.lastPage = Int64(reader.position)
+        book.lastOpened = Date()
+        book.preferences = preferences.string
+        CoreDataManager.shared.updateBook(book: book)
+    }
+    
+    func isModal(_ vc: UIViewController) -> Bool {
+        return vc.presentingViewController?.presentedViewController == vc
+            || (vc.navigationController != nil && vc.navigationController?.presentingViewController?.presentedViewController == vc.navigationController)
+            || vc.tabBarController?.presentingViewController is UITabBarController
+    }
+}
+
+
+
+
+
+
+extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate, ReaderPrefsDelegate {
     func didPerformVision(image: UIImage) {
         if let hReader = reader as? HReaderViewController {
             hReader.currentPage.imageView.image = image
@@ -348,20 +368,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         }
     }
     
-    func closeBook() {
-        book.lastPage = Int64(reader.position)
-        book.lastOpened = Date()
-        book.preferences = preferences.string
-        CoreDataManager.shared.updateBook(book: book)
-    }
-    
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return .none
-    }
-    
-    func isModal(_ vc: UIViewController) -> Bool {
-        return vc.presentingViewController?.presentedViewController == vc
-            || (vc.navigationController != nil && vc.navigationController?.presentingViewController?.presentedViewController == vc.navigationController)
-            || vc.tabBarController?.presentingViewController is UITabBarController
     }
 }

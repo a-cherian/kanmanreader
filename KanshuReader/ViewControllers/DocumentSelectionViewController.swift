@@ -8,7 +8,7 @@
 import UIKit
 import UniformTypeIdentifiers
 
-class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, BookCellDelegate {
+class DocumentSelectionViewController: UIViewController, BookCellDelegate {
     
     var books: [Book] = []
     
@@ -16,8 +16,9 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
         
         button.backgroundColor = .black
+        button.tintColor = .white
         button.layer.cornerRadius = 10
-        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderColor = Constants.accentColor.cgColor
         button.layer.borderWidth = 2
         button.setImage(UIImage(systemName: "doc.badge.plus"), for: .normal)
         
@@ -33,7 +34,7 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         
         let collection = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         collection.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 15)
-        collection.backgroundColor = .white
+        collection.backgroundColor = .clear
         collection.tintColor = .black
         collection.showsVerticalScrollIndicator = false
         collection.dataSource = self
@@ -41,6 +42,18 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         collection.register(BookCell.self, forCellWithReuseIdentifier: BookCell.identifier)
         
         return collection
+    }()
+    
+    lazy var emptyLabel: UILabel = {
+        let label = UILabel()
+        
+        label.textColor = .black
+        label.attributedText = getEmptyLabelText()
+        label.textAlignment = .center
+        label.numberOfLines = 5
+        label.lineBreakMode = .byWordWrapping
+        
+        return label
     }()
     
     override func viewDidLoad() {
@@ -62,6 +75,8 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     override func viewDidAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshData), name: UIApplication.didBecomeActiveNotification, object: nil)
         hidesBottomBarWhenPushed = true
+        
+        checkOnboarding()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -72,14 +87,18 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     @objc func refreshData() {
         books = BookmarkManager.retrieveBooks()
         documentCollectionView.reloadData()
+        
+        emptyLabel.isHidden = books.count > 0 && !(books.count == 1 && books[0].isTutorial)
     }
     
     func addSubviews() {
         view.addSubview(importButton)
+        view.addSubview(emptyLabel)
         view.addSubview(documentCollectionView)
     }
 
     func configureUI() {
+        configureEmptyLabel()
         configureDocumentCollectionView()
     }
     
@@ -92,6 +111,35 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
             documentCollectionView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor)
         ])
     }
+    
+    func configureEmptyLabel() {
+        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            emptyLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            emptyLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            emptyLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
+            emptyLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20)
+        ])
+    }
+    
+    func checkOnboarding() {
+        let userDefaults = UserDefaults.standard
+        userDefaults.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY) // TO DO: remove once done testing
+        let hasOnboarded = userDefaults.bool(forKey: Constants.HAS_ONBOARDED_KEY)
+        
+        if(!hasOnboarded) {
+            let onboardingViewController = OnboardingViewController()
+            if let presentationController = onboardingViewController.presentationController as? UISheetPresentationController {
+                presentationController.detents = [.large()]
+                presentationController.prefersGrabberVisible = true
+                presentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+            }
+            
+            self.present(onboardingViewController, animated: true)
+            
+            userDefaults.setValue(true, forKey: Constants.HAS_ONBOARDED_KEY)
+        }
+    }
 
     @objc func didTapImport() {
         let fileTypes: [UTType] = [.zip, .archive, UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
@@ -101,20 +149,6 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         documentPicker.allowsMultipleSelection = true
         documentPicker.modalPresentationStyle = .fullScreen
         present(documentPicker, animated: true, completion: nil)
-    }
-    
-    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let books = urls.compactMap { url in
-            return BookmarkManager.createBook(from: url)
-        }
-        
-        if(urls.count == 1 && books.count == 1) {
-            controller.dismiss(animated: true, completion: {
-                self.openBook(books[0])
-            })
-        }
-        
-        refreshData()
     }
     
     func didTapBook(position: Int) {
@@ -202,6 +236,20 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
         }))
         present(alert, animated: true, completion: nil)
     }
+    
+    func getEmptyLabelText() -> NSAttributedString {
+        let attachment:NSTextAttachment = NSTextAttachment()
+        attachment.image = UIImage(systemName: "doc.badge.plus")
+
+        let string = NSMutableAttributedString(string: "This library is feeling a little empty!\n\n Click ")
+        let attachmentString = NSAttributedString(attachment: attachment)
+        let endPortion = NSAttributedString(string: " to add comics in ZIP, RAR, CBR, or CBZ format.")
+        
+        string.append(attachmentString)
+        string.append(endPortion)
+
+        return string
+    }
 }
 
 
@@ -209,7 +257,21 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
 
 
 
-extension DocumentSelectionViewController {
+extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        let books = urls.compactMap { url in
+            return BookmarkManager.createBook(from: url)
+        }
+        
+        if(urls.count == 1 && books.count == 1) {
+            controller.dismiss(animated: true, completion: {
+                self.openBook(books[0])
+            })
+        }
+        
+        refreshData()
+    }
+    
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true)
     }
