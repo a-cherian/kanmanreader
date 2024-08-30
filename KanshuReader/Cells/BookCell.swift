@@ -20,23 +20,29 @@ class BookCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "[Title]"
         label.textColor = .white
-        label.textAlignment = .left
+        label.textAlignment = .center
+        label.font = label.font.withSize(15)
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 2
+        
         return label
     }()
     
     lazy var coverView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "fi-sr-neutral"))
         imageView.tintColor = .white
-        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 10
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     
     lazy var progress: UILabel = {
         let label = UILabel()
-        label.text = "[Progress]"
-        label.numberOfLines = 5
+        label.text = "[Pages]"
         label.textColor = .white
-        label.textAlignment = .left
+        label.textAlignment = .center
+        label.font = label.font.withSize(15)
         return label
     }()
     
@@ -73,9 +79,11 @@ class BookCell: UICollectionViewCell {
     func configureTitle() {
         title.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            title.centerXAnchor.constraint(equalTo: centerXAnchor),
-            title.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            title.heightAnchor.constraint(equalToConstant: 20)
+            title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            title.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            title.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            title.bottomAnchor.constraint(equalTo: coverView.topAnchor, constant: -15),
+            title.heightAnchor.constraint(lessThanOrEqualToConstant: 40)
         ])
     }
     
@@ -83,16 +91,16 @@ class BookCell: UICollectionViewCell {
         coverView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             coverView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            coverView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            coverView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6),
-            coverView.widthAnchor.constraint(equalTo: coverView.heightAnchor),
+            coverView.bottomAnchor.constraint(equalTo: progress.topAnchor, constant: -10),
+            coverView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -30)
         ])
     }
     
     func configureProgress() {
         progress.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            progress.centerXAnchor.constraint(equalTo: centerXAnchor),
+            progress.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            progress.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             progress.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
             progress.heightAnchor.constraint(equalToConstant: 20)
         ])

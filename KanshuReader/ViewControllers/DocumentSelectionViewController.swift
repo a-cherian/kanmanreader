@@ -28,9 +28,11 @@ class DocumentSelectionViewController: UIViewController, UIDocumentPickerDelegat
     lazy var documentCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        layout.itemSize = CGSize(width: min(UIScreen.main.bounds.width/2.5, UIScreen.main.bounds.height/5), height: UIScreen.main.bounds.height / 3)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: -5, bottom: 10, right: -5)
         
         let collection = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+        collection.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 15)
         collection.backgroundColor = .white
         collection.tintColor = .black
         collection.showsVerticalScrollIndicator = false
@@ -224,24 +226,11 @@ extension DocumentSelectionViewController {
         cell.delegate = self
         
         cell.title.text = book.name
-        cell.progress.text = "Progress: " + String(book.lastPage + 1) + " / " + String(book.totalPages)
+        cell.progress.text = "Pages: " + String(book.lastPage + 1) + " / " + String(book.totalPages)
         
         cell.coverView.image = UIImage(data: book.cover ?? Data()) ?? UIImage()
         
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.size.width
-        let cellWidth: CGFloat = 160
-        let cellHeight: CGFloat = 250
-        
-        let marginsAndInsets = documentCollectionView.safeAreaInsets.left + documentCollectionView.safeAreaInsets.right + 20
-        let twoRowWidth = ((collectionView.bounds.size.width - marginsAndInsets) / CGFloat(2)).rounded(.down)
-        
-        if twoRowWidth < cellWidth { return CGSize(width: width * 0.8, height: width * 0.8 * (cellHeight / cellWidth)) }
-        
-        return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView,
