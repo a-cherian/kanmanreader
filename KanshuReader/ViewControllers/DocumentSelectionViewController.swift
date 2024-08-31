@@ -123,9 +123,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
     }
     
     func checkOnboarding() {
-        let userDefaults = UserDefaults.standard
-        userDefaults.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY) // TO DO: remove once done testing
-        let hasOnboarded = userDefaults.bool(forKey: Constants.HAS_ONBOARDED_KEY)
+        let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
         
         if(!hasOnboarded) {
             let onboardingViewController = OnboardingViewController()
@@ -137,7 +135,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
             
             self.present(onboardingViewController, animated: true)
             
-            userDefaults.setValue(true, forKey: Constants.HAS_ONBOARDED_KEY)
+            UserDefaults.standard.setValue(true, forKey: Constants.HAS_ONBOARDED_KEY)
         }
     }
 

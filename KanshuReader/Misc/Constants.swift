@@ -16,6 +16,8 @@ struct Constants {
     static let LATEST_DICT_UPDATE = "2024-08-19"
     
     static let HAS_ONBOARDED_KEY = "hasOnboarded"
+    static let PRIORITIZE_TRADITIONAL_KEY = "prioritizeTraditional"
+    static let DISPLAY_SECONDARY_KEY = "displaySecondary"
     
     
     // COLORS

@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         loadItems()
+        configureInitialLaunch()
         
         return true
     }
@@ -86,9 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func loadDictionary() {
-        let userDefaults = UserDefaults.standard
-        
-        let currentDictVersion = userDefaults.string(forKey: Constants.LATEST_DICT_UPDATE_KEY)
+        let currentDictVersion = UserDefaults.standard.string(forKey: Constants.LATEST_DICT_UPDATE_KEY)
         
         if(currentDictVersion != Constants.LATEST_DICT_UPDATE) {
             print("Updating dictionary...")
@@ -129,23 +128,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             Task {
                 await CoreDataManager.shared.createDict(dictData: dict)
-                userDefaults.setValue(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
+                UserDefaults.standard.setValue(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
                 print("Dictionary updated...")
             }
         }
     }
     
     func loadSample() {
-        let userDefaults = UserDefaults.standard
-        
-        let loadedSample = userDefaults.string(forKey: Constants.LOADED_SAMPLE_KEY)
+        let loadedSample = UserDefaults.standard.string(forKey: Constants.LOADED_SAMPLE_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
             BookmarkManager.createTutorial()
-            userDefaults.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
+            UserDefaults.standard.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
         }
         else {
             BookmarkManager.relinkTutorial()
+        }
+    }
+    
+    func configureInitialLaunch() {
+        UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY) // TO DO: remove once done testing
+        let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
+        
+        if(!hasOnboarded) {
+            UserDefaults.standard.setValue(false, forKey: Constants.PRIORITIZE_TRADITIONAL_KEY)
+            UserDefaults.standard.setValue(true, forKey: Constants.DISPLAY_SECONDARY_KEY)
         }
     }
 

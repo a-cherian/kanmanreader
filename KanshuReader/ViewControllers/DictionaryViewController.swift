@@ -200,11 +200,22 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         if(entries.count == 0) { return "" }
         var string = "———————————————\n"
         
+        let prioritizeTraditional = UserDefaults.standard.bool(forKey: Constants.PRIORITIZE_TRADITIONAL_KEY)
+        let displaySecondary = UserDefaults.standard.bool(forKey: Constants.DISPLAY_SECONDARY_KEY)
+        
+        
         for i in 0..<entries.count {
             let entry = entries[i]
-            string += entry.traditional!
-            if entry.traditional != entry.simplified {
-                string += "【" +  entry.simplified! + "】"
+            
+            var hanziPrimary = entry.simplified!
+            var hanziSecondary = entry.simplified!
+            
+            if(prioritizeTraditional) { hanziPrimary = entry.traditional! }
+            else { hanziSecondary = entry.traditional! }
+            
+            string += hanziPrimary
+            if hanziPrimary != hanziSecondary && displaySecondary {
+                string += "【" +  hanziSecondary + "】"
             }
             
             string += " - "
