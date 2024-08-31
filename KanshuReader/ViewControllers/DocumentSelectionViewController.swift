@@ -11,6 +11,7 @@ import UniformTypeIdentifiers
 class DocumentSelectionViewController: UIViewController, BookCellDelegate {
     
     var books: [Book] = []
+    var selectedBook: Book? = nil
     
     lazy var importButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
@@ -193,7 +194,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
     func resetAction(_ book: Book) {
         let alert = UIAlertController(
             title: "Reset book progress",
-            message: "This will reset this book's progress to 0. Do you wish to proceed?",
+            message: "This will reset this book's progress to the start. Do you wish to proceed?",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
@@ -235,6 +236,20 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
         present(alert, animated: true, completion: nil)
     }
     
+    func changeCover(_ book: Book) {
+        selectedBook = book
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        present(imagePicker, animated: true)
+    }
+    
+    func pickedCover(_ image: UIImage) {
+        selectedBook?.cover = image.pngData()
+        CoreDataManager.shared.updateBook(book: selectedBook)
+        refreshData()
+    }
+    
     func getEmptyLabelText() -> NSAttributedString {
         let attachment:NSTextAttachment = NSTextAttachment()
         attachment.image = UIImage(systemName: "doc.badge.plus")
@@ -255,7 +270,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
 
 
 
-extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         let books = urls.compactMap { url in
             return BookmarkManager.createBook(from: url)
@@ -298,10 +313,19 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
                          point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
             let book = self.books[indexPath.item]
+            
             let renameAction = UIAction(title: "Rename") { _ in self.renameAction(book) }
+            let changeCoverAction = UIAction(title: "Change Cover") { _ in self.changeCover(book) }
             let resetAction = UIAction(title: "Reset Progress") { _ in self.resetAction(book) }
             let deleteAction = UIAction(title: "Delete") { _ in self.deleteAction(book) }
-            return UIMenu(title: "", children: [renameAction, resetAction, deleteAction])
+            
+            return UIMenu(title: "", children: [renameAction, changeCoverAction, resetAction, deleteAction])
         }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.originalImage] as? UIImage else { return }
+        pickedCover(image)
+        dismiss(animated: true)
     }
 }
