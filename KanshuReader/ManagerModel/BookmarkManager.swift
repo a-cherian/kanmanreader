@@ -18,10 +18,11 @@ struct BookmarkManager {
         var book = books?.first(where: { $0.url == url })
         
         if book == nil {
-            createBookmark(url: url)
             let name = name ?? getFileName(for: url)
+            guard let uuid = createBookmark(url: url) else { return nil }
             guard let (cover, images) = getImages(for: url) else { return nil }
-            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url)
+            
+            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
         } else {
             CoreDataManager.shared.updateBook(book: book)
         }
@@ -37,7 +38,7 @@ struct BookmarkManager {
         if book == nil {
             let name = "Sample Tutorial"
             guard let (cover, images) = getImages(for: sampleUrl) else { return }
-            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl)
+            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl, uuid: "Tutorial")
         } else {
             book?.url = sampleUrl
             CoreDataManager.shared.updateBook(book: book)
@@ -73,7 +74,7 @@ struct BookmarkManager {
                 let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
                 
                 guard !isStale && LINK_CHECKING else {
-                    if(!url.isTutorial) { deleteBook(for: url) }
+                    deleteBook(url: url)
                     return nil
                 }
                 
@@ -81,7 +82,7 @@ struct BookmarkManager {
             }
             catch {
                 if(LINK_CHECKING) {
-                    deleteBook(for: file)
+                    deleteBook(url: file)
                 }
                 print("Failed to read bookmark: \(error.localizedDescription)")
                 return nil
@@ -105,7 +106,7 @@ struct BookmarkManager {
             
             books?.forEach { book in
                 if(!matchedBooks.contains(book)) {
-                    deleteBook(for: book.url)
+                    deleteBook(book: book)
                 }
             }
             
@@ -115,36 +116,44 @@ struct BookmarkManager {
         return books ?? []
     }
     
-    static func createBookmark(url: URL) {
-        guard url.startAccessingSecurityScopedResource() else { return }
+    static func createBookmark(url: URL) -> String? {
+        guard url.startAccessingSecurityScopedResource() else { return nil }
         
         defer { url.stopAccessingSecurityScopedResource() }
         
-        writeBookmark(url: url)
+        return writeBookmark(url: url)
     }
     
-    static func writeBookmark(url: URL) {
+    static func writeBookmark(url: URL) -> String? {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
             let uuid = generateUUID(for: url)
             try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
+            return uuid
         }
         catch {
             print("Error creating the bookmark: \(error)")
+            return nil
         }
     }
     
-    static func deleteBook(for url: URL?) {
-        guard let file = url else { return }
-        deleteBookmark(url: file)
-        CoreDataManager.shared.deleteBook(for: file)
+    static func deleteBook(url: URL?) {
+        guard let book = CoreDataManager.shared.fetchBook(url: url) else { return }
+        deleteBook(book: book)
     }
     
-    static func deleteBookmark(url: URL) {
+    static func deleteBook(book: Book) {
+        deleteBookmark(uuid: book.uuid)
+        CoreDataManager.shared.deleteBook(book: book)
+    }
+    
+    static func deleteBookmark(uuid: String?) {
+        guard let uuid = uuid else { return }
+        
         let fm = FileManager.default
         do {
-            let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(generateUUID(for: url))
+            let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(uuid)
             if(fm.fileExists(atPath: bookmarkURL.path))
             {
                 try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
@@ -161,7 +170,6 @@ struct BookmarkManager {
     static func deleteBookmarks() {
         let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
         let fm = FileManager.default
-
         
         files?.forEach { file in
             do {
@@ -173,8 +181,7 @@ struct BookmarkManager {
     }
     
     static func generateUUID(for url: URL) -> String {
-        var uuid = url.absoluteString.replacing("/", with: "")
-        uuid = uuid.replacing(":", with: "")
+        var uuid = UUID().uuidString
         return uuid
     }
     
@@ -186,7 +193,7 @@ struct BookmarkManager {
 
 extension Book {
     var isTutorial: Bool {
-        url?.lastPathComponent.hasPrefix(Constants.TUTORIAL_FILENAME) ?? false
+        uuid == "Tutorial"
     }
 }
 

@@ -22,7 +22,7 @@ struct CoreDataManager {
     }()
     
     @discardableResult
-    func createBook(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences()) -> Book? {
+    func createBook(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences(), uuid: String? = "") -> Book? {
         let context = persistentContainer.viewContext
         
         let book = NSEntityDescription.insertNewObject(forEntityName: "Book", into: context) as! Book
@@ -34,6 +34,7 @@ struct CoreDataManager {
         book.url = url
         book.lastOpened = lastOpened
         book.preferences = prefs.string
+        book.uuid = uuid
         
         do {
             try context.save()
@@ -45,12 +46,22 @@ struct CoreDataManager {
         return nil
     }
     
-    func fetchBook(for name: String) -> Book? {
-        
+    func fetchBook(name: String) -> Book? {
+        let predicate = NSPredicate(format: "name == %@", argumentArray: [name])
+        return fetchBook(predicate: predicate)
+    }
+    
+    func fetchBook(url: URL?) -> Book? {
+        guard let url = url else { return nil }
+        let predicate = NSPredicate(format: "url == %@", argumentArray: [url])
+        return fetchBook(predicate: predicate)
+    }
+    
+    func fetchBook(predicate: NSPredicate) -> Book? {
         let context = persistentContainer.viewContext
         
         let request = Book.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@", argumentArray: [name])
+        request.predicate = predicate
         
         do {
             let results = try context.fetch(request)

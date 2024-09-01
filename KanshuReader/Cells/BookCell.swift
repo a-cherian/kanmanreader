@@ -22,8 +22,7 @@ class BookCell: UICollectionViewCell {
         label.textColor = .white
         label.textAlignment = .center
         label.font = label.font.withSize(15)
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingMiddle
         
         return label
     }()
