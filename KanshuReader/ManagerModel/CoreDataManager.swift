@@ -57,7 +57,7 @@ struct CoreDataManager {
             return results.first
         }
         catch {
-            debugPrint(error)
+            debugPrint("Failed to fetch: \(error)")
         }
         
         return nil
@@ -134,7 +134,7 @@ struct CoreDataManager {
             try context.save()
         }
         catch {
-            debugPrint(error)
+            debugPrint("Failed to delete: \(error)")
         }
     }
     

@@ -53,7 +53,7 @@ struct Unzipper {
                     }
                     if(i == 0) { cover = extractedData }
                 } catch {
-                    print(error.localizedDescription)
+                    print("Failed to extract image: \(error.localizedDescription)")
                 }
             }
             
@@ -94,7 +94,7 @@ struct Unzipper {
                     }
                     if(i == 0) { cover = extractedData }
                 } catch {
-                    print(error.localizedDescription)
+                    print("Failed to extract image: \(error.localizedDescription)")
                 }
             }
             

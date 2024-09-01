@@ -63,7 +63,8 @@ struct BookmarkManager {
     }
     
     static func readBookmarks() -> [URL] {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
+        let fm = FileManager.default
+        let files = try? fm.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
         
         let urls: [URL] = files?.compactMap {file in
             do {
@@ -82,7 +83,7 @@ struct BookmarkManager {
                 if(LINK_CHECKING) {
                     deleteBook(for: file)
                 }
-                print(error.localizedDescription)
+                print("Failed to read bookmark: \(error.localizedDescription)")
                 return nil
             }
         }  ?? []
@@ -115,14 +116,9 @@ struct BookmarkManager {
     }
     
     static func createBookmark(url: URL) {
-        guard url.startAccessingSecurityScopedResource() else {
-            writeBookmark(url: url)
-            return
-        }
+        guard url.startAccessingSecurityScopedResource() else { return }
         
-        defer {
-            url.stopAccessingSecurityScopedResource()
-        }
+        defer { url.stopAccessingSecurityScopedResource() }
         
         writeBookmark(url: url)
     }
@@ -135,7 +131,7 @@ struct BookmarkManager {
             try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
         }
         catch {
-            print("Error creating the bookmark")
+            print("Error creating the bookmark: \(error)")
         }
     }
     
@@ -154,7 +150,7 @@ struct BookmarkManager {
                 try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
             }
         } catch {
-            print(error)
+            print("Failed to delete bookmark: \(error)")
         }
     }
     
@@ -171,7 +167,7 @@ struct BookmarkManager {
             do {
                 try fm.removeItem(at: file)
             } catch {
-                print(error)
+                print("Failed to delete file: \(error)")
             }
         }
     }
