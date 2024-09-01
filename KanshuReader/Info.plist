@@ -41,7 +41,7 @@
 			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.archive</string>
+				<string>public.rar</string>
 			</array>
 		</dict>
 	</array>

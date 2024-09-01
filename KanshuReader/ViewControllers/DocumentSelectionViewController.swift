@@ -141,7 +141,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
     }
 
     @objc func didTapImport() {
-        let fileTypes: [UTType] = [.zip, .archive, UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
+        let fileTypes: [UTType] = [.zip, UTType(filenameExtension: "rar"), UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
         
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
         documentPicker.delegate = self
