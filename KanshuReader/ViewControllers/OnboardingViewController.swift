@@ -10,15 +10,14 @@ import UIKit
 class OnboardingViewController: UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     
     let pages: [UIViewController] = [OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！",
-                                                                  image: UIImage(systemName: "doc.badge.plus"),
+                                                                  imageName: "Onboard_1",
                                                                   text: "Import manhua in CBZ/CBR/ZIP/RAR formats"),
-                                     OnboardingPageViewController(title: "Seamlessly read manhua", image: UIImage(systemName: "book.pages"), text: "Scan and extract Chinese text at any time"),
+                                     OnboardingPageViewController(title: "Seamlessly read manhua",
+                                                                  imageName: "Onboard_2",
+                                                                  text: "Scan and extract Chinese text at any time"),
                                      OnboardingPageViewController(title: "Expand your knowledge",
-                                                                  image: UIImage(systemName: "rectangle.and.text.magnifyingglass"),
-                                                                  text: "Look up English definitions for unfamiliar Chinese words with just a tap"),
-                                     OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！",
-                                                                  image: UIImage(systemName: "character.book.closed.fill.zh"),
-                                                                  text: "Click “Sample Tutorial” to try it out for yourself"),
+                                                                  imageName: "Onboard_3",
+                                                                  text: "Look up English definitions for unfamiliar Chinese words with one tap"),
                                      SampleTipViewController()]
     
     lazy var pageControl: UIPageControl = {
@@ -163,8 +162,11 @@ class OnboardingPageViewController: UIViewController {
     
     lazy var imageView: UIImageView = {
         let view = UIImageView()
-        view.tintColor = .gray
+        
         view.contentMode = .scaleAspectFit
+        view.layer.cornerRadius = 25
+        view.clipsToBounds = true
+        
         return view
     }()
     
@@ -179,12 +181,17 @@ class OnboardingPageViewController: UIViewController {
         return label
     }()
     
-    init(title: String = "", image: UIImage? = nil, text: String = "") {
+    init(title: String = "", imageName: String = "", text: String = "") {
         super.init(nibName: nil, bundle: nil)
         
         titleView.text = title
-        imageView.image = image
         labelView.text = text
+        if(UIDevice.current.userInterfaceIdiom == .pad) {
+            setImage(UIImage(named: "iPad_" + imageName))
+        }
+        else {
+            setImage(UIImage(named: "iPhone_" + imageName))
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -215,32 +222,42 @@ class OnboardingPageViewController: UIViewController {
     func configureTitleView() {
         titleView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-//            titleView.bottomAnchor.constraint(equalTo: titleView.topAnchor, constant: 50),
-            titleView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            titleView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
-            titleView.heightAnchor.constraint(lessThanOrEqualToConstant: 100),
+            titleView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
+            titleView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleView.heightAnchor.constraint(equalToConstant: 100),
+            titleView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100)
         ])
     }
     
     func configureImageView() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 10),
 //            imageView.bottomAnchor.constraint(equalTo: labelView.topAnchor, constant: 50),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.heightAnchor.constraint(greaterThanOrEqualTo: imageView.widthAnchor),
-            imageView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100)
+//            imageView.heightAnchor.constraint(greaterThanOrEqualTo: imageView.widthAnchor),
+            imageView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -25)
         ])
     }
     
     func configureLabelView() {
         labelView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            labelView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
-            labelView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            labelView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor)
+            labelView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
+            labelView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60),
+            labelView.heightAnchor.constraint(equalToConstant: 100),
+            labelView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100)
+        ])
+    }
+    
+    func setImage(_ image: UIImage?) {
+        guard let image = image else { return }
+        
+        imageView.image = image;
+        let aspectRatio = image.size.height / image.size.width
+        NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: aspectRatio)
         ])
     }
 }
@@ -321,7 +338,6 @@ class SampleTipViewController: UIViewController {
     func configureButtonView() {
         buttonView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-//            buttonView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
             buttonView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             buttonView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             buttonView.heightAnchor.constraint(equalToConstant: 50),
@@ -334,7 +350,7 @@ class SampleTipViewController: UIViewController {
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            containerView.heightAnchor.constraint(equalToConstant: 200),
+            containerView.heightAnchor.constraint(equalToConstant: 175),
             containerView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
     }

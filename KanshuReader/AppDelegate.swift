@@ -147,7 +147,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func configureInitialLaunch() {
-//        UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY) // TO DO: remove once done testing
         let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
         
         if(!hasOnboarded) {

@@ -334,7 +334,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         guard let vc = dismissed as? OnboardingViewController else { return nil }
         
         if(vc.shouldPresentSample()) {
-            guard let tutorial = CoreDataManager.shared.fetchBook(name: "Sample Tutorial") else { return nil }
+            guard let tutorial = CoreDataManager.shared.fetchBook(name: "Sample Tutorial") ?? BookmarkManager.createTutorial() else { return nil }
             openBook(tutorial)
         }
         

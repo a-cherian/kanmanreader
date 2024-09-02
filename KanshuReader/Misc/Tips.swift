@@ -36,7 +36,7 @@ struct BoxTip: Tip {
     }
     
     var message: Text? {
-        Text("Convert the boxed regions into text that can be copied or searched.")
+        Text("Convert the boxed regions into text that can be copied or searched")
     }
     
     var image: Image? {
@@ -58,7 +58,7 @@ struct DictionaryTip: Tip {
     }
     
     var message: Text? {
-        Text("Tap on any word to pull up a definition for the word.")
+        Text("Tap on any word to pull up a definition for the word")
     }
     
     var image: Image? {

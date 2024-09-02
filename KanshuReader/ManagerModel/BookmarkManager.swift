@@ -30,19 +30,22 @@ struct BookmarkManager {
         return book
     }
     
-    static func createTutorial() {
-        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
+    @discardableResult
+    static func createTutorial() -> Book? {
+        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return nil }
         
         var book = CoreDataManager.shared.fetchTutorial()
         
         if book == nil {
             let name = "Sample Tutorial"
-            guard let (cover, images) = getImages(for: sampleUrl) else { return }
+            guard let (cover, images) = getImages(for: sampleUrl) else { return nil }
             book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl, uuid: "Tutorial")
         } else {
             book?.url = sampleUrl
             CoreDataManager.shared.updateBook(book: book)
         }
+        
+        return book
     }
     
     static func relinkTutorial() {
