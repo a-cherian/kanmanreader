@@ -8,7 +8,7 @@
 import UIKit
 import UniformTypeIdentifiers
 
-class DocumentSelectionViewController: UIViewController, BookCellDelegate {
+class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIViewControllerTransitioningDelegate {
     
     var books: [Book] = []
     var selectedBook: Book? = nil
@@ -128,6 +128,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate {
         
         if(!hasOnboarded) {
             let onboardingViewController = OnboardingViewController()
+            onboardingViewController.transitioningDelegate = self
             if let presentationController = onboardingViewController.presentationController as? UISheetPresentationController {
                 presentationController.detents = [.large()]
                 presentationController.prefersGrabberVisible = true
@@ -327,5 +328,16 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         guard let image = info[.originalImage] as? UIImage else { return }
         pickedCover(image)
         dismiss(animated: true)
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard let vc = dismissed as? OnboardingViewController else { return nil }
+        
+        if(vc.shouldPresentSample()) {
+            guard let tutorial = CoreDataManager.shared.fetchBook(name: "Sample Tutorial") else { return nil }
+            openBook(tutorial)
+        }
+        
+        return nil
     }
 }

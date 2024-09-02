@@ -10,15 +10,16 @@ import UIKit
 class OnboardingViewController: UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     
     let pages: [UIViewController] = [OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！",
-                                                                  image: UIImage(systemName: "pencil.and.scribble"),
-                                                                  text: "Import files that contain images that have Chinese text"),
-                                     OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！", image: UIImage(systemName: "book.pages"), text: "Easily flip through images and scan for Chinese text"),
+                                                                  image: UIImage(systemName: "doc.badge.plus"),
+                                                                  text: "Import manhua in CBZ/CBR/ZIP/RAR formats"),
+                                     OnboardingPageViewController(title: "Seamlessly read manhua", image: UIImage(systemName: "book.pages"), text: "Scan and extract Chinese text at any time"),
+                                     OnboardingPageViewController(title: "Expand your knowledge",
+                                                                  image: UIImage(systemName: "rectangle.and.text.magnifyingglass"),
+                                                                  text: "Look up English definitions for unfamiliar Chinese words with just a tap"),
                                      OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！",
-                                                                  image: UIImage(systemName: "apple.terminal.on.rectangle.fill"),
-                                                                  text: "Look up unfamiliar words and expand your understanding of Chinese!"),
-                                     OnboardingPageViewController(title: "Welcome to Kanshu Reader!\n欢迎来到看书阅读器！",
-                                                                  image: UIImage(systemName: "skateboard.fill"),
-                                                                  text: "Click “Sample Tutorial” to try it out for yourself")]
+                                                                  image: UIImage(systemName: "character.book.closed.fill.zh"),
+                                                                  text: "Click “Sample Tutorial” to try it out for yourself"),
+                                     SampleTipViewController()]
     
     lazy var pageControl: UIPageControl = {
         let control = UIPageControl()
@@ -98,6 +99,10 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDelega
     
     @objc func didSkip(_ sender: UIPageControl) {
         dismiss(animated: true)
+    }
+    
+    func shouldPresentSample() -> Bool {
+        return (pages[pages.count - 1] as? SampleTipViewController)?.shouldPresentSample ?? false
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
@@ -211,28 +216,131 @@ class OnboardingPageViewController: UIViewController {
         titleView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             titleView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+//            titleView.bottomAnchor.constraint(equalTo: titleView.topAnchor, constant: 50),
             titleView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
-            titleView.heightAnchor.constraint(equalToConstant: 100),
+            titleView.heightAnchor.constraint(lessThanOrEqualToConstant: 100),
         ])
     }
     
     func configureImageView() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 50),
+            imageView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
+//            imageView.bottomAnchor.constraint(equalTo: labelView.topAnchor, constant: 50),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: min(UIScreen.main.bounds.height / 2, UIScreen.main.bounds.width - 100)),
-            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
+            imageView.heightAnchor.constraint(greaterThanOrEqualTo: imageView.widthAnchor),
+            imageView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -100)
         ])
     }
     
     func configureLabelView() {
         labelView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            labelView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 50),
+            labelView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            labelView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
             labelView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
             labelView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor)
         ])
+    }
+}
+
+
+
+
+
+class SampleTipViewController: UIViewController {
+    var shouldPresentSample = false
+    
+    lazy var containerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    lazy var titleView: UILabel = {
+        let label = UILabel()
+        
+        label.textColor = .black
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.font = UIFont.boldSystemFont(ofSize: label.font.pointSize * 1.25)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
+        label.text = "Check out a sample file to try it out for yourself!"
+        
+        return label
+    }()
+    
+    lazy var buttonView: UIButton = {
+        let button = UIButton()
+        
+        button.backgroundColor = .black
+        button.tintColor = .white
+        button.layer.cornerRadius = 10
+        button.layer.borderColor = Constants.accentColor.cgColor
+        button.layer.borderWidth = 2
+        button.setTitle("Go to tutorial", for: .normal)
+        
+        button.addTarget(self, action: #selector(didTapSample), for: .touchUpInside)
+        
+        return button
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .white
+        
+        addSubviews()
+        configureUI()
+    }
+    
+    func addSubviews() {
+        view.addSubview(containerView)
+        containerView.addSubview(titleView)
+        containerView.addSubview(buttonView)
+    }
+    
+    func configureUI() {
+        configureContainerView()
+        configureTitleView()
+        configureButtonView()
+    }
+    
+    func configureTitleView() {
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            titleView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            titleView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            titleView.heightAnchor.constraint(equalToConstant: 100),
+            titleView.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -100)
+        ])
+    }
+    
+    func configureButtonView() {
+        buttonView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+//            buttonView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
+            buttonView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            buttonView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            buttonView.heightAnchor.constraint(equalToConstant: 50),
+            buttonView.widthAnchor.constraint(equalToConstant: 250)
+        ])
+    }
+    
+    func configureContainerView() {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            containerView.heightAnchor.constraint(equalToConstant: 200),
+            containerView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+    }
+    
+    @objc func didTapSample() {
+        shouldPresentSample = true
+        dismiss(animated: true)
     }
 }
