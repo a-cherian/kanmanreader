@@ -132,7 +132,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if(book.isTutorial) {
+        if(book.isTutorial || !TipManager.hasStartedTips()) {
             tipManager = TipManager()
             tipManager?.delegate = self
         }

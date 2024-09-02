@@ -46,6 +46,7 @@ class TipManager {
         BoxTip.boxesGenerated = false
         DictionaryTip.tipEnabled = true
         DictionaryTip.dictOpened = false
+        UserDefaults.standard.setValue(true, forKey: Constants.STARTED_TIPS_KEY)
     }
     
     func startTasks() {
@@ -75,5 +76,9 @@ class TipManager {
         OCRTip.tipEnabled = false
         BoxTip.tipEnabled = false
         DictionaryTip.tipEnabled = false
+    }
+    
+    static func hasStartedTips() -> Bool {
+        return UserDefaults.standard.bool(forKey: Constants.STARTED_TIPS_KEY)
     }
 }
