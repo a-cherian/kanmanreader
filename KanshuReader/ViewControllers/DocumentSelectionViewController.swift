@@ -131,6 +131,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
             onboardingViewController.transitioningDelegate = self
             if let presentationController = onboardingViewController.presentationController as? UISheetPresentationController {
                 presentationController.detents = [.large()]
+                presentationController.prefersEdgeAttachedInCompactHeight = true
                 presentationController.prefersGrabberVisible = true
                 presentationController.prefersScrollingExpandsWhenScrolledToEdge = false
             }

@@ -63,6 +63,12 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
         tableView.reloadData()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        stopVisionMode()
+    }
+    
     func add(view addView: UIView) {
         view.addSubview(addView)
         configure(view: addView)

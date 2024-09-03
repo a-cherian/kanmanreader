@@ -232,6 +232,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         dictionaryViewController = DictionaryViewController(text: text)
         if let presentationController = dictionaryViewController.presentationController as? UISheetPresentationController {
             presentationController.detents = [.medium(), .large()]
+            presentationController.prefersEdgeAttachedInCompactHeight = true
             presentationController.prefersGrabberVisible = true
             presentationController.prefersScrollingExpandsWhenScrolledToEdge = false
         }

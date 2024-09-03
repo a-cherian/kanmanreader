@@ -43,6 +43,15 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        self.currentPage = createPage(position: position)
+        rDelegate?.didFlipPage()
+        setViewControllers([currentPage], direction: .forward, animated: false)
+        view.setNeedsLayout()
+    }
+    
     func createPage(position: Int) -> Page {
         let newPage = Page()
         newPage.setImage(pages[position])

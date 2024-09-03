@@ -86,6 +86,7 @@ struct CustomTipViewStyle: TipViewStyle {
                 .foregroundStyle(.secondary)
         }
         .padding()
+        .preferredColorScheme(.dark)
     }
 }
 
