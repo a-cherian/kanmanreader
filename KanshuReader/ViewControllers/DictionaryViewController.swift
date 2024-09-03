@@ -41,17 +41,11 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         return textView
     }()
     
-    lazy var dictionaryTextView: UITextView = {
-        let textView = UITextView()
-        textView.text = ""
-        textView.backgroundColor = .white
-        textView.textColor = .black
-        textView.textAlignment = .left
-        textView.font = Constants.zhFontRegularSmall
-        textView.isEditable = false
-        textView.isUserInteractionEnabled = false
-        textView.isScrollEnabled = false
-        return textView
+    lazy var wordStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        return stackView
     }()
     
     lazy var copyButton: UIButton = {
@@ -68,7 +62,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     
     init(text: String) {
         super.init(nibName: nil, bundle: nil)
-        ocrTextView.text = "\n" + text
+        ocrTextView.text = text
     }
     
     required init?(coder: NSCoder) {
@@ -96,7 +90,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         view.addSubview(copyButton)
         scrollView.addSubview(contentView)
         contentView.addSubview(ocrTextView)
-        contentView.addSubview(dictionaryTextView)
+        contentView.addSubview(wordStackView)
     }
     
     func configureUI() {
@@ -104,7 +98,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         configureContentView()
         configureCopyButton()
         configureOCRTextView()
-        configureDictionaryLabel()
+        configureWordStackView()
     }
     
     func configureScrollView() {
@@ -132,7 +126,6 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         ocrTextView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             ocrTextView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            ocrTextView.bottomAnchor.constraint(equalTo: dictionaryTextView.topAnchor),
             ocrTextView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             ocrTextView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
         ])
@@ -140,14 +133,14 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         ocrTextView.sizeToFit()
     }
     
-    func configureDictionaryLabel() {
-        dictionaryTextView.translatesAutoresizingMaskIntoConstraints = false
+    func configureWordStackView() {
+        wordStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            dictionaryTextView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
-            dictionaryTextView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            dictionaryTextView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
+            wordStackView.topAnchor.constraint(equalTo: ocrTextView.bottomAnchor),
+            wordStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            wordStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            wordStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
         ])
-        dictionaryTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
     
     func configureCopyButton() {
@@ -175,9 +168,10 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     @objc func didTapWords(_ tapGesture: UITapGestureRecognizer) {
         let point = tapGesture.location(in: ocrTextView)
         
+        wordStackView.removeAllSubviews()
+        
         guard let detectedWord = getWordAtPosition(point) else {
             ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
-            dictionaryTextView.text = ""
             return
         }
         
@@ -188,7 +182,6 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         
         if(entries.count == 0) {
             ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
-            dictionaryTextView.text = ""
             return
         }
         
@@ -197,10 +190,39 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
             else { return $1 }
         })
         let trimmedWord = String(detectedWord.prefix(upTo: String.Index(utf16Offset: longestDetectedWord.traditional?.count ?? 0, in: detectedWord)))
+        
         ocrTextView.attributedText = generateAttributedString(with: trimmedWord, targetString: ocrTextView.text)
-        dictionaryTextView.text = generateTranslationString(entries: entries)
+        
+        populateWordStack(entries: entries)
         
         DictionaryTip.tipEnabled = false
+    }
+    
+    func populateWordStack(entries: [DictEntry]) {
+        for i in 0..<entries.count {
+            let entry = entries[i]
+            
+            if(i == 0) {
+                addLineToWordStack()
+            }
+            
+            let wordView = WordView(word: entry)
+            wordStackView.addArrangedSubview(wordView)
+            
+            if((i < entries.count - 1 && entry.simplified != entries[i + 1].simplified)) {
+                addLineToWordStack()
+            }
+        }
+    }
+    
+    func addLineToWordStack() {
+        let line = UIView()
+        line.backgroundColor = .black
+        line.layer.cornerRadius = 2.5
+        wordStackView.addArrangedSubview(line)
+        line.translatesAutoresizingMaskIntoConstraints = false
+        line.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        line.widthAnchor.constraint(lessThanOrEqualTo: wordStackView.widthAnchor).isActive = true
     }
     
     func generateTranslationString(entries: [DictEntry]) -> String {
@@ -280,7 +302,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         if(ocrTextView.bounds.contains(touchPoint)) { return }
         
         ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
-        dictionaryTextView.text = ""
+        wordStackView.removeAllSubviews()
     }
     
     func textViewDidChangeSelection(_ textView: UITextView) {

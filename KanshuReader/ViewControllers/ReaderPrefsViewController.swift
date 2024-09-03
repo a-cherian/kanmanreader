@@ -155,7 +155,6 @@ class ToggleView: UIView {
     }
     
     func configureView() {
-        accessoryView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: 60)
         ])

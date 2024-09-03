@@ -276,3 +276,16 @@ extension NSLayoutConstraint
         return self
     }
 }
+
+extension UIStackView {
+    func remove(subview: UIView) {
+        removeArrangedSubview(subview)
+        subview.removeFromSuperview()
+    }
+    
+    func removeAllSubviews() {
+        self.subviews.forEach {subview in
+            remove(subview: subview)
+        }
+    }
+}
