@@ -12,7 +12,7 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         loadItems()
         configureInitialLaunch()
         
@@ -154,6 +154,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.setValue(true, forKey: Constants.DISPLAY_SECONDARY_KEY)
         }
     }
+    
+    func restoreToInitial() {
+        UserDefaults.standard.setValue("", forKey: Constants.LOADED_SAMPLE_KEY)
+        UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY)
+        UserDefaults.standard.setValue(false, forKey: Constants.STARTED_TIPS_KEY)
+        
+        CoreDataManager.shared.deleteAllBooks()
+        BookmarkManager.deleteBookmarks()
+    }
 
 }
-

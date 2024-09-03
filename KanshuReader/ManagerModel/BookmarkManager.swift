@@ -21,6 +21,7 @@ struct BookmarkManager {
             let name = name ?? getFileName(for: url)
             guard let uuid = createBookmark(url: url) else { return nil }
             guard let (cover, images) = getImages(for: url) else { return nil }
+            if(images.count == 0 ) { return nil }
             
             book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
         } else {
@@ -71,6 +72,7 @@ struct BookmarkManager {
         let files = try? fm.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
         
         let urls: [URL] = files?.compactMap {file in
+            if(file.lastPathComponent == "Inbox") { return nil}
             do {
                 let bookmarkData = try Data(contentsOf: file)
                 var isStale = false
@@ -175,6 +177,7 @@ struct BookmarkManager {
         let fm = FileManager.default
         
         files?.forEach { file in
+            if(file.lastPathComponent == "Inbox") { return }
             do {
                 try fm.removeItem(at: file)
             } catch {

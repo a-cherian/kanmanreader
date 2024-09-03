@@ -59,7 +59,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         
         button.setImage(UIImage(systemName: "list.clipboard.fill"), for: .normal)
         button.tintColor = .black
-        button.showsTouchWhenHighlighted = true
+        button.layer.cornerRadius = 10
         
         button.addTarget(self, action: #selector(didTapCopy), for: .touchUpInside)
         
@@ -163,6 +163,13 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     @objc func didTapCopy() {
         let pasteboard = UIPasteboard.general
         pasteboard.string = ocrTextView.text
+        
+        UIView.animate(withDuration: 0.5) { //1
+            self.copyButton.backgroundColor = .white
+        }
+        UIView.animate(withDuration: 0.5) { //1
+            self.copyButton.backgroundColor = .clear
+        }
     }
     
     @objc func didTapWords(_ tapGesture: UITapGestureRecognizer) {

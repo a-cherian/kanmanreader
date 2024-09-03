@@ -64,7 +64,7 @@ class PinyinConverter: NSObject {
         for (baseVowelArray) in accentArray {
             let base = baseVowelArray[0]
             let vowel = baseVowelArray[1]
-            let offset = word.range(of: base)?.lowerBound.encodedOffset
+            let offset = word.range(of: base)?.lowerBound.utf16Offset(in: word)
             if (offset != nil && offset! >= 0) {
                 let vowelCharMatch = vowelRegex.firstMatch(in: vowel, options: [], range: NSRange(location: 0, length: (vowel as NSString).length))
                 let vowelChar = (vowel as NSString).substring(with: vowelCharMatch!.range) // This should always match, so safe to force unwrap

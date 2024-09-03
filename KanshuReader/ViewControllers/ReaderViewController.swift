@@ -83,8 +83,10 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         button.setImage(UIImage(systemName: "arrow.left")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        button.tintColor = .white
+        
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        button.configuration? = config
         
         button.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
         
