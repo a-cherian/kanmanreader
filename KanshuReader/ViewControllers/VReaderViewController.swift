@@ -15,7 +15,8 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
     var startPosition: Int = 0
     var position: Int {
         let cell = tableView.visibleCells.first as! ImageCell
-        return cell.position
+        
+        return max(min(cell.position, pages.count - 1), 0)
     }
     var currentImage: UIImage { return pages[position] }
     var currentPage: Page = Page()

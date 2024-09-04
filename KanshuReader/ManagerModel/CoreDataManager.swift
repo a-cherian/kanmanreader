@@ -22,23 +22,23 @@ struct CoreDataManager {
     }()
     
     @discardableResult
-    func createBook(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences(), uuid: String? = "") -> Book? {
+    func createComic(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences(), uuid: String? = "") -> Comic? {
         let context = persistentContainer.viewContext
         
-        let book = NSEntityDescription.insertNewObject(forEntityName: "Book", into: context) as! Book
+        let comic = NSEntityDescription.insertNewObject(forEntityName: "Comic", into: context) as! Comic
         
-        book.name = name
-        book.lastPage = Int64(lastPage)
-        book.totalPages = Int64(totalPages)
-        book.cover = cover
-        book.url = url
-        book.lastOpened = lastOpened
-        book.preferences = prefs.string
-        book.uuid = uuid
+        comic.name = name
+        comic.lastPage = Int64(lastPage)
+        comic.totalPages = Int64(totalPages)
+        comic.cover = cover
+        comic.url = url
+        comic.lastOpened = lastOpened
+        comic.preferences = prefs.string
+        comic.uuid = uuid
         
         do {
             try context.save()
-            return book
+            return comic
         } catch let createError {
             print("Failed to create: \(createError)")
         }
@@ -46,21 +46,21 @@ struct CoreDataManager {
         return nil
     }
     
-    func fetchBook(name: String) -> Book? {
+    func fetchComic(name: String) -> Comic? {
         let predicate = NSPredicate(format: "name == %@", argumentArray: [name])
-        return fetchBook(predicate: predicate)
+        return fetchComic(predicate: predicate)
     }
     
-    func fetchBook(url: URL?) -> Book? {
+    func fetchComic(url: URL?) -> Comic? {
         guard let url = url else { return nil }
         let predicate = NSPredicate(format: "url == %@", argumentArray: [url])
-        return fetchBook(predicate: predicate)
+        return fetchComic(predicate: predicate)
     }
     
-    func fetchBook(predicate: NSPredicate) -> Book? {
+    func fetchComic(predicate: NSPredicate) -> Comic? {
         let context = persistentContainer.viewContext
         
-        let request = Book.fetchRequest()
+        let request = Comic.fetchRequest()
         request.predicate = predicate
         
         do {
@@ -74,14 +74,14 @@ struct CoreDataManager {
         return nil
     }
     
-    func fetchBooks() -> [Book]? {
+    func fetchComics() -> [Comic]? {
         let context = persistentContainer.viewContext
         
-        let fetchRequest = NSFetchRequest<Book>(entityName: "Book")
+        let fetchRequest = NSFetchRequest<Comic>(entityName: "Comic")
         
         do {
-            let books = try context.fetch(fetchRequest)
-            return books
+            let comics = try context.fetch(fetchRequest)
+            return comics
         } catch let fetchError {
             print("Failed to fetch: \(fetchError)")
         }
@@ -89,11 +89,11 @@ struct CoreDataManager {
         return nil
     }
     
-    func fetchTutorial() -> Book? {
+    func fetchTutorial() -> Comic? {
         
         let context = persistentContainer.viewContext
         
-        let request = Book.fetchRequest()
+        let request = Comic.fetchRequest()
         request.predicate = NSPredicate(format: "url CONTAINS %@", argumentArray: [Constants.TUTORIAL_FILENAME])
         
         do {
@@ -107,8 +107,8 @@ struct CoreDataManager {
         return nil
     }
     
-    func updateBook(book: Book?) {
-        guard let _ = book else { return }
+    func updateComic(comic: Comic?) {
+        guard let _ = comic else { return }
         let context = persistentContainer.viewContext
         
         do {
@@ -118,9 +118,9 @@ struct CoreDataManager {
         }
     }
     
-    func deleteBook(book: Book) {
+    func deleteComic(comic: Comic) {
         let context = persistentContainer.viewContext
-        context.delete(book)
+        context.delete(comic)
         
         do {
             try context.save()
@@ -129,17 +129,17 @@ struct CoreDataManager {
         }
     }
     
-    func deleteBook(for url: URL) {
+    func deleteComic(for url: URL) {
         let context = persistentContainer.viewContext
         
-        let request = Book.fetchRequest()
+        let request = Comic.fetchRequest()
         request.predicate = NSPredicate(format: "url == %@", argumentArray: [url])
         
         do {
             let results = try context.fetch(request)
             
-            results.forEach { book in
-                deleteBook(book: book)
+            results.forEach { comic in
+                deleteComic(comic: comic)
             }
             
             try context.save()
@@ -149,10 +149,10 @@ struct CoreDataManager {
         }
     }
     
-    func deleteAllBooks() {
+    func deleteAllComics() {
         let context = persistentContainer.viewContext
         
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Book")
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Comic")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 
         do {

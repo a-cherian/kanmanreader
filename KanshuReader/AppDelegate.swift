@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY)
         UserDefaults.standard.setValue(false, forKey: Constants.STARTED_TIPS_KEY)
         
-        CoreDataManager.shared.deleteAllBooks()
+        CoreDataManager.shared.deleteAllComics()
         BookmarkManager.deleteBookmarks()
     }
 

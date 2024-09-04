@@ -8,10 +8,10 @@
 import UIKit
 import UniformTypeIdentifiers
 
-class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIViewControllerTransitioningDelegate {
+class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIViewControllerTransitioningDelegate {
     
-    var books: [Book] = []
-    var selectedBook: Book? = nil
+    var comics: [Comic] = []
+    var selectedComic: Comic? = nil
     
     lazy var importButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
@@ -40,7 +40,7 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
         collection.showsVerticalScrollIndicator = false
         collection.dataSource = self
         collection.delegate = self
-        collection.register(BookCell.self, forCellWithReuseIdentifier: BookCell.identifier)
+        collection.register(ComicCell.self, forCellWithReuseIdentifier: ComicCell.identifier)
         
         return collection
     }()
@@ -86,10 +86,10 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
     }
     
     @objc func refreshData() {
-        books = BookmarkManager.retrieveBooks()
+        comics = BookmarkManager.retrieveComics()
         documentCollectionView.reloadData()
         
-        emptyLabel.isHidden = books.count > 0 && !(books.count == 1 && books[0].isTutorial)
+        emptyLabel.isHidden = comics.count > 0 && !(comics.count == 1 && comics[0].isTutorial)
     }
     
     func addSubviews() {
@@ -154,36 +154,36 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
         present(documentPicker, animated: true, completion: nil)
     }
     
-    func didTapBook(position: Int) {
-        let book = books[position]
-        openBook(book)
+    func didTapComic(position: Int) {
+        let comic = comics[position]
+        openComic(comic)
     }
     
-    func openBook(_ book: Book) {
-        if let url = book.url {
-            book.lastOpened = Date()
-            CoreDataManager.shared.updateBook(book: book)
+    func openComic(_ comic: Comic) {
+        if let url = comic.url {
+            comic.lastOpened = Date()
+            CoreDataManager.shared.updateComic(comic: comic)
             let images = BookmarkManager.getImages(for: url)?.images ?? []
-            self.navigationController?.pushViewController(ReaderViewController(images: images, book: book), animated: true)
+            self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
         }
     }
     
-    func renameAction(_ book: Book) {
+    func renameAction(_ comic: Comic) {
         let alert = UIAlertController(
-            title: "Rename book",
-            message: "Enter a new title for your book.",
+            title: "Rename comic",
+            message: "Enter a new title for your comic.",
             preferredStyle: .alert
         )
         alert.addTextField { (textField) in
-            textField.text = book.name
+            textField.text = comic.name
         }
         alert.addAction(UIAlertAction(
             title: "OK",
             style: .default,
             handler: { _ in
                 let name = alert.textFields?[0].text
-                book.name = name
-                CoreDataManager.shared.updateBook(book: book)
+                comic.name = name
+                CoreDataManager.shared.updateComic(comic: comic)
                 self.refreshData()
         }))
         alert.addAction(UIAlertAction(
@@ -195,18 +195,18 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
         present(alert, animated: true, completion: nil)
     }
     
-    func resetAction(_ book: Book) {
+    func resetAction(_ comic: Comic) {
         let alert = UIAlertController(
-            title: "Reset book progress",
-            message: "This will reset this book's progress to the start. Do you wish to proceed?",
+            title: "Reset comic progress",
+            message: "This will reset this comic's progress to the start. Do you wish to proceed?",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
             title: "Reset",
             style: .destructive,
             handler: { _ in
-                book.lastPage = 0
-                CoreDataManager.shared.updateBook(book: book)
+                comic.lastPage = 0
+                CoreDataManager.shared.updateComic(comic: comic)
                 self.refreshData()
         }))
         alert.addAction(UIAlertAction(
@@ -218,17 +218,17 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
         present(alert, animated: true, completion: nil)
     }
     
-    func deleteAction(_ book: Book) {
+    func deleteAction(_ comic: Comic) {
         let alert = UIAlertController(
             title: "Confirm deletion",
-            message: "This will delete this book. This action is irreversible. Do you wish to proceed?",
+            message: "This will delete this comic. This action is irreversible. Do you wish to proceed?",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
             title: "Delete",
             style: .destructive,
             handler: { _ in
-                CoreDataManager.shared.deleteBook(book: book)
+                CoreDataManager.shared.deleteComic(comic: comic)
                 self.refreshData()
         }))
         alert.addAction(UIAlertAction(
@@ -240,8 +240,8 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
         present(alert, animated: true, completion: nil)
     }
     
-    func changeCover(_ book: Book) {
-        selectedBook = book
+    func changeCover(_ comic: Comic) {
+        selectedComic = comic
         
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -249,8 +249,8 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
     }
     
     func pickedCover(_ image: UIImage) {
-        selectedBook?.cover = image.pngData()
-        CoreDataManager.shared.updateBook(book: selectedBook)
+        selectedComic?.cover = image.pngData()
+        CoreDataManager.shared.updateComic(comic: selectedComic)
         refreshData()
     }
     
@@ -276,13 +276,13 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
 
 extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let books = urls.compactMap { url in
-            return BookmarkManager.createBook(from: url)
+        let comics = urls.compactMap { url in
+            return BookmarkManager.createComic(from: url)
         }
         
-        if(urls.count == 1 && books.count == 1) {
+        if(urls.count == 1 && comics.count == 1) {
             controller.dismiss(animated: true, completion: {
-                self.openBook(books[0])
+                self.openComic(comics[0])
             })
         }
         
@@ -294,20 +294,20 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return books.count
+        return comics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let book = books[indexPath.item]
+        let comic = comics[indexPath.item]
         
-        let cell = documentCollectionView.dequeueReusableCell(withReuseIdentifier: BookCell.identifier, for: indexPath) as! BookCell
+        let cell = documentCollectionView.dequeueReusableCell(withReuseIdentifier: ComicCell.identifier, for: indexPath) as! ComicCell
         cell.tag = indexPath.item
         cell.delegate = self
         
-        cell.title.text = book.name
-        cell.progress.text = "Pages: " + String(book.lastPage + 1) + " / " + String(book.totalPages)
+        cell.title.text = comic.name
+        cell.progress.text = "Pages: " + String(comic.lastPage + 1) + " / " + String(comic.totalPages)
         
-        cell.coverView.image = UIImage(data: book.cover ?? Data()) ?? UIImage()
+        cell.coverView.image = UIImage(data: comic.cover ?? Data()) ?? UIImage()
         
         return cell
     }
@@ -316,12 +316,12 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
                          contextMenuConfigurationForItemAt indexPath: IndexPath,
                          point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            let book = self.books[indexPath.item]
+            let comic = self.comics[indexPath.item]
             
-            let renameAction = UIAction(title: "Rename") { _ in self.renameAction(book) }
-            let changeCoverAction = UIAction(title: "Change Cover") { _ in self.changeCover(book) }
-            let resetAction = UIAction(title: "Reset Progress") { _ in self.resetAction(book) }
-            let deleteAction = UIAction(title: "Delete") { _ in self.deleteAction(book) }
+            let renameAction = UIAction(title: "Rename") { _ in self.renameAction(comic) }
+            let changeCoverAction = UIAction(title: "Change Cover") { _ in self.changeCover(comic) }
+            let resetAction = UIAction(title: "Reset Progress") { _ in self.resetAction(comic) }
+            let deleteAction = UIAction(title: "Delete") { _ in self.deleteAction(comic) }
             
             return UIMenu(title: "", children: [renameAction, changeCoverAction, resetAction, deleteAction])
         }
@@ -337,8 +337,8 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         guard let vc = dismissed as? OnboardingViewController else { return nil }
         
         if(vc.shouldPresentSample()) {
-            guard let tutorial = CoreDataManager.shared.fetchBook(name: "Sample Tutorial") ?? BookmarkManager.createTutorial() else { return nil }
-            openBook(tutorial)
+            guard let tutorial = CoreDataManager.shared.fetchComic(name: "Sample Tutorial") ?? BookmarkManager.createTutorial() else { return nil }
+            openComic(tutorial)
         }
         
         return nil

@@ -1,5 +1,5 @@
 //
-//  BookCell.swift
+//  ComicCell.swift
 //  KanshuReader
 //
 //  Created by AC on 12/23/23.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol BookCellDelegate: AnyObject {
-    func didTapBook(position: Int)
+protocol ComicCellDelegate: AnyObject {
+    func didTapComic(position: Int)
 }
 
-class BookCell: UICollectionViewCell {
+class ComicCell: UICollectionViewCell {
     
-    weak var delegate: BookCellDelegate?
-    static let identifier = "book"
+    weak var delegate: ComicCellDelegate?
+    static let identifier = "comic"
     
     lazy var title: UILabel = {
         let label = UILabel()
@@ -110,7 +110,7 @@ class BookCell: UICollectionViewCell {
     }
     
     @objc func didTap() {
-        delegate?.didTapBook(position: tag)
+        delegate?.didTapComic(position: tag)
     }
 }
 

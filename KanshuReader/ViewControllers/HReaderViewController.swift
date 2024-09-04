@@ -18,7 +18,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     var pages: [UIImage] = []
     var position: Int {
-        currentPage.position
+        max(min(currentPage.position, pages.count - 1), 0)
     }
     var currentImage: UIImage { return pages[position] }
     var currentPage: Page = Page()

@@ -16,7 +16,7 @@ protocol Reader: UIViewController {
 }
 
 class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate {
-    var book: Book
+    var comic: Comic
     
     var tipManager: TipManager?
     var textRecognizer = TextRecognizer()
@@ -72,6 +72,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         var config = UIButton.Configuration.plain()
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        config.baseForegroundColor = Constants.accentColor
         button.configuration? = config
         
         button.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
@@ -79,18 +80,18 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         return button
     }()
     
-    init(images: [UIImage] = [], book: Book) {
-        self.book = book
+    init(images: [UIImage] = [], comic: Comic) {
+        self.comic = comic
         
         super.init(nibName: nil, bundle: nil)
         
         
-        preferences = ReaderPreferences(from: book.preferences)
+        preferences = ReaderPreferences(from: comic.preferences)
         if preferences.scrollDirection == .horizontal {
-            reader = HReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+            reader = HReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
         }
         else if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: images, position: Int(book.lastPage), parent: self)
+            reader = VReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
         }
         
         textRecognizer.delegate = self
@@ -121,7 +122,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if(book.isTutorial || !TipManager.hasStartedTips()) {
+        if(comic.isTutorial || !TipManager.hasStartedTips()) {
             tipManager = TipManager()
             tipManager?.delegate = self
         }
@@ -132,7 +133,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        closeBook()
+        closeComic()
     }
 
     
@@ -271,11 +272,11 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         self.navigationController?.popViewController(animated: true)
     }
     
-    func closeBook() {
-        book.lastPage = Int64(reader.position)
-        book.lastOpened = Date()
-        book.preferences = preferences.string
-        CoreDataManager.shared.updateBook(book: book)
+    func closeComic() {
+        comic.lastPage = Int64(reader.position)
+        comic.lastOpened = Date()
+        comic.preferences = preferences.string
+        CoreDataManager.shared.updateComic(comic: comic)
     }
     
     func isModal(_ vc: UIViewController) -> Bool {

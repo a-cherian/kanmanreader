@@ -1,5 +1,5 @@
 //
-//  BookManager.swift
+//  BookmarkManager.swift
 //  KanshuReader
 //
 //  Created by AC on 8/23/24.
@@ -12,54 +12,55 @@ struct BookmarkManager {
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
     @discardableResult
-    static func createBook(from url: URL, name: String? = nil) -> Book? {
-        let books = CoreDataManager.shared.fetchBooks()
+    static func createComic(from url: URL, name: String? = nil) -> Comic? {
+        let comics = CoreDataManager.shared.fetchComics()
         
-        var book = books?.first(where: { $0.url == url })
+        var comic = comics?.first(where: { $0.url == url })
         
-        if book == nil {
+        if comic == nil {
             let name = name ?? getFileName(for: url)
             guard let uuid = createBookmark(url: url) else { return nil }
             guard let (cover, images) = getImages(for: url) else { return nil }
             if(images.count == 0 ) { return nil }
             
-            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
+            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
         } else {
-            CoreDataManager.shared.updateBook(book: book)
+            CoreDataManager.shared.updateComic(comic: comic)
         }
         
-        return book
+        return comic
     }
     
     @discardableResult
-    static func createTutorial() -> Book? {
+    static func createTutorial() -> Comic? {
         guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return nil }
         
-        var book = CoreDataManager.shared.fetchTutorial()
+        var comic = CoreDataManager.shared.fetchTutorial()
         
-        if book == nil {
+        if comic == nil {
             let name = "Sample Tutorial"
             guard let (cover, images) = getImages(for: sampleUrl) else { return nil }
-            book = CoreDataManager.shared.createBook(name: name, totalPages: images.count, cover: cover, url: sampleUrl, uuid: "Tutorial")
+            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, url: sampleUrl, uuid: "Tutorial")
         } else {
-            book?.url = sampleUrl
-            CoreDataManager.shared.updateBook(book: book)
+            comic?.url = sampleUrl
+            CoreDataManager.shared.updateComic(comic: comic)
         }
         
-        return book
+        return comic
     }
     
     static func relinkTutorial() {
         guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
         
-        let book = CoreDataManager.shared.fetchTutorial()
-        book?.url = sampleUrl
-        CoreDataManager.shared.updateBook(book: book)
+        let comic = CoreDataManager.shared.fetchTutorial()
+        comic?.url = sampleUrl
+        CoreDataManager.shared.updateComic(comic: comic)
     }
     
     static func getImages(for url: URL, isApp: Bool = false) -> (data: Data, images: [UIImage])? {
         guard url.startAccessingSecurityScopedResource() else {
-            return Unzipper.extractImages(for: url)
+            if(url.isTutorial) { return Unzipper.extractImages(for: url) }
+            else { return nil}
         }
         
         defer { url.stopAccessingSecurityScopedResource() }
@@ -79,7 +80,7 @@ struct BookmarkManager {
                 let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
                 
                 guard !isStale && LINK_CHECKING else {
-                    deleteBook(url: url)
+                    deleteComic(url: url)
                     return nil
                 }
                 
@@ -87,7 +88,7 @@ struct BookmarkManager {
             }
             catch {
                 if(LINK_CHECKING) {
-                    deleteBook(url: file)
+                    deleteComic(url: file)
                 }
                 print("Failed to read bookmark: \(error.localizedDescription)")
                 return nil
@@ -97,28 +98,28 @@ struct BookmarkManager {
         return urls
     }
     
-    static func retrieveBooks() -> [Book] {
-        let books = CoreDataManager.shared.fetchBooks()
+    static func retrieveComics() -> [Comic] {
+        let comics = CoreDataManager.shared.fetchComics()
         
         if(LINK_CHECKING) {
             let urls = readBookmarks()
             
-            let matchedBooks: [Book] = books?.compactMap { book in
-                if book.isTutorial { return book }
-                guard let _ = urls.first(where: { book.url == $0 } ) else { return nil}
-                return book
+            let matchedComics: [Comic] = comics?.compactMap { comic in
+                if comic.isTutorial { return comic }
+                guard let _ = urls.first(where: { comic.url == $0 } ) else { return nil}
+                return comic
             } ?? []
             
-            books?.forEach { book in
-                if(!matchedBooks.contains(book)) {
-                    deleteBook(book: book)
+            comics?.forEach { comic in
+                if(!matchedComics.contains(comic)) {
+                    deleteComic(comic: comic)
                 }
             }
             
-            return matchedBooks.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
+            return matchedComics.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
         }
         
-        return books ?? []
+        return comics ?? []
     }
     
     static func createBookmark(url: URL) -> String? {
@@ -143,14 +144,14 @@ struct BookmarkManager {
         }
     }
     
-    static func deleteBook(url: URL?) {
-        guard let book = CoreDataManager.shared.fetchBook(url: url) else { return }
-        deleteBook(book: book)
+    static func deleteComic(url: URL?) {
+        guard let comic = CoreDataManager.shared.fetchComic(url: url) else { return }
+        deleteComic(comic: comic)
     }
     
-    static func deleteBook(book: Book) {
-        deleteBookmark(uuid: book.uuid)
-        CoreDataManager.shared.deleteBook(book: book)
+    static func deleteComic(comic: Comic) {
+        deleteBookmark(uuid: comic.uuid)
+        CoreDataManager.shared.deleteComic(comic: comic)
     }
     
     static func deleteBookmark(uuid: String?) {
@@ -197,7 +198,7 @@ struct BookmarkManager {
     }
 }
 
-extension Book {
+extension Comic {
     var isTutorial: Bool {
         uuid == "Tutorial"
     }

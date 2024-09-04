@@ -54,11 +54,11 @@ struct DictionaryTip: Tip {
     @Parameter static var dictOpened: Bool = false
     
     var title: Text {
-        Text("Look up unfamiliar words")
+        Text("Tap on unfamiliar words")
     }
     
     var message: Text? {
-        Text("Tap on any word to pull up a definition for the word")
+        Text("Pull up a definition for Chinese words by tapping on them")
     }
     
     var image: Image? {
