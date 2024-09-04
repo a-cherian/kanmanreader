@@ -76,7 +76,6 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
     }
     
     func configureScrollView() {
-        scrollView.contentSize = imageView.bounds.size
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

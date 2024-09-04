@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 struct Constants {
     // USERDEFAULTS KEYS
@@ -23,6 +24,8 @@ struct Constants {
     
     // COLORS
     static let accentColor = UIColor(red: 166 / 255.0, green: 221 / 255.0, blue: 171 / 255.0, alpha: 1.0)
+    static let darkAccentColor = UIColor(red: 120 / 255.0, green: 148 / 255.0, blue: 134 / 255.0, alpha: 1.0)
+    static let suiDarkAccentColor = Color(red: 120 / 255.0, green: 148 / 255.0, blue: 134 / 255.0)
     static let lightBlueColor = UIColor(red: 139 / 255.0, green: 232 / 255.0, blue: 223 / 255.0, alpha: 1.0)
     
     

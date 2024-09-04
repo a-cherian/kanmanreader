@@ -143,6 +143,8 @@ class DocumentSelectionViewController: UIViewController, BookCellDelegate, UIVie
     }
 
     @objc func didTapImport() {
+        importButton.animateBackgroundFlash()
+        
         let fileTypes: [UTType] = [.zip, UTType(filenameExtension: "rar"), UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
         
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)

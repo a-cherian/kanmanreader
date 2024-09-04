@@ -289,3 +289,16 @@ extension UIStackView {
         }
     }
 }
+
+extension UIButton {
+    func animateBackgroundFlash(flashColor: UIColor = .white, duration: CGFloat = 0.5) {
+        let initialBackground = self.backgroundColor
+        
+        UIView.animate(withDuration: duration / 2, delay: 0, options: .allowUserInteraction) { //1
+            self.backgroundColor = flashColor
+        }
+        UIView.animate(withDuration: duration / 2) { //1
+            self.backgroundColor = initialBackground
+        }
+    }
+}

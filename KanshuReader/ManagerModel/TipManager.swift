@@ -24,20 +24,6 @@ class TipManager {
     var boxTipTask: Task<Void, Never>?
     var dictTipTask: Task<Void, Never>?
     
-    lazy var boxTipView: TipUIView = {
-        let view = TipUIView(boxTip)
-        view.viewStyle = CustomTipViewStyle()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    lazy var dictTipView: TipUIView = {
-        let view = TipUIView(dictTip)
-        view.viewStyle = CustomTipViewStyle()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     init() {
         try? Tips.resetDatastore()
         try? Tips.configure()

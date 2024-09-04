@@ -35,23 +35,9 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         return controller
     }()
     
+    var ocrTipView: TipUIView?
     var boxTipView: TipUIView?
     var dictTipView: TipUIView?
-    
-    lazy var ocrButton: UIButton = {
-        let button = UIButton()
-        
-        button.setImage(UIImage(systemName: "rectangle.and.text.magnifyingglass"), for: .normal)
-        button.backgroundColor = .black
-        button.tintColor = .white
-        button.layer.cornerRadius = 10
-        button.layer.borderColor = Constants.accentColor.cgColor
-        button.layer.borderWidth = 2
-        
-        button.addTarget(self, action: #selector(didTapOCR), for: .touchUpInside)
-        
-        return button
-    }()
     
     lazy var prefsButton: UIButton = {
         let button = UIButton()
@@ -71,8 +57,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     lazy var ocrView: UIView = {
         let view = UIView()
         
-        view.addSubview(ocrButton)
         view.addSubview(prefsButton)
+        view.addSubview(UIView())
         
         return view
     }()
@@ -119,13 +105,14 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         view.backgroundColor = .black
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ocrView)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: prefsButton)
         
         prefsViewController.popoverPresentationController?.delegate = self
         prefsViewController.delegate = self
         
         configureUI()
         addReader()
+        addGestureRecognizers()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -152,6 +139,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     func addReader() {
         addChild(reader)
         view.addSubview(reader.view)
+        configureReader()
         reader.didMove(toParent: self)
     }
     
@@ -162,18 +150,16 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     func configureUI() {
-        configureOCRButton()
         configurePrefsButton()
     }
     
-    func configureOCRButton() {
-        ocrButton.translatesAutoresizingMaskIntoConstraints = false
+    func configureReader() {
+        reader.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            ocrButton.topAnchor.constraint(equalTo: ocrView.topAnchor),
-            ocrButton.bottomAnchor.constraint(equalTo: ocrView.bottomAnchor),
-            ocrButton.trailingAnchor.constraint(equalTo: ocrView.trailingAnchor),
-            ocrButton.heightAnchor.constraint(equalToConstant: 35),
-            ocrButton.widthAnchor.constraint(equalTo: ocrButton.heightAnchor),
+            reader.view.topAnchor.constraint(equalTo: view.topAnchor),
+            reader.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            reader.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            reader.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
@@ -182,24 +168,38 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         NSLayoutConstraint.activate([
             prefsButton.topAnchor.constraint(equalTo: ocrView.topAnchor),
             prefsButton.bottomAnchor.constraint(equalTo: ocrView.bottomAnchor),
-            prefsButton.leadingAnchor.constraint(equalTo: ocrView.leadingAnchor),
-            prefsButton.trailingAnchor.constraint(equalTo: ocrButton.leadingAnchor, constant: -20),
+            prefsButton.trailingAnchor.constraint(equalTo: ocrView.trailingAnchor),
             prefsButton.heightAnchor.constraint(equalToConstant: 35),
             prefsButton.widthAnchor.constraint(equalTo: prefsButton.heightAnchor)
         ])
     }
     
+    func addGestureRecognizers() {
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didTapOCR))
+        longPressGesture.minimumPressDuration = 0.3
+        view.addGestureRecognizer(longPressGesture)
+    }
+    
     func displayOCRTip(_ tip: any Tip) {
-        let controller = TipUIPopoverViewController(tip, sourceItem: ocrButton)
-        controller.viewStyle = CustomTipViewStyle()
-        controller.popoverPresentationController?.passthroughViews = [ocrButton]
-        present(controller, animated: true)
+        prefsButton.isUserInteractionEnabled = false
+        ocrTipView = TipUIView(tip)
+        if let ocrTipView = ocrTipView {
+            ocrTipView.viewStyle = BorderTipViewStyle()
+            ocrTipView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(ocrTipView)
+            view.addConstraints([
+                ocrTipView.topAnchor.constraint(equalTo: view.centerYAnchor),
+                ocrTipView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                ocrTipView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                ocrTipView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            ])
+        }
     }
     
     func displayBoxTip(_ tip: any Tip) {
         boxTipView = TipUIView(tip)
         if let boxTipView = boxTipView {
-            boxTipView.viewStyle = CustomTipViewStyle()
+            boxTipView.viewStyle = BorderTipViewStyle()
             boxTipView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(boxTipView)
             view.addConstraints([
@@ -213,7 +213,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     func displayDictTip(_ tip: any Tip) {
         dictTipView = TipUIView(tip)
         if let dictTipView = dictTipView {
-            dictTipView.viewStyle = CustomTipViewStyle()
+            dictTipView.viewStyle = BorderTipViewStyle()
             dictTipView.translatesAutoresizingMaskIntoConstraints = false
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let currentWindow = windowScene.windows.first(where: { $0.isKeyWindow })
             {
@@ -261,6 +261,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
             pvc.sourceView = prefsButton
             
             if(!isModal(prefsViewController)) {
+                prefsButton.animateBackgroundFlash()
                 self.present(prefsViewController, animated: true)
             }
         }
@@ -315,9 +316,8 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
     func didDismiss(tip: any Tip) {
         switch tip{
         case is OCRTip:
-            if presentedViewController is TipUIPopoverViewController {
-                dismiss(animated: true)
-            }
+            ocrTipView?.removeFromSuperview()
+            prefsButton.isUserInteractionEnabled = true
         case is BoxTip:
             boxTipView?.removeFromSuperview()
         case is DictionaryTip:

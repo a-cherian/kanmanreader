@@ -12,11 +12,11 @@ struct OCRTip: Tip {
     @Parameter static var tipEnabled: Bool = true
     
     var title: Text {
-        Text("Click to search for text")
+        Text("Hold down to search for text")
     }
     
     var message: Text? {
-        Text("Identify regions of Chinese text on the page")
+        Text("Long press the page to identify regions of Chinese text")
     }
     
     var image: Image? {
@@ -90,3 +90,62 @@ struct CustomTipViewStyle: TipViewStyle {
     }
 }
 
+struct BorderTipViewStyle: TipViewStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                configuration.image
+                configuration.title
+                    .fontWeight(.bold)
+            }
+ 
+            configuration.message?
+                .font(.body)
+                .fontWeight(.regular)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .preferredColorScheme(.dark)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(Constants.suiDarkAccentColor, lineWidth: 3)
+        )
+
+    }
+}
+
+extension TipUIPopoverViewController {
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let borderColor = Constants.darkAccentColor.cgColor
+        let fillColor = UIColor.clear.cgColor
+        let lineWidth = 6.0
+        
+        let isBorderLayer = view.superview?.superview?.layer.sublayers?.map { subl in
+            guard let sublayer = subl as? CAShapeLayer else { return false }
+            
+            if(sublayer.lineWidth != lineWidth) { return false }
+            if(sublayer.fillColor != fillColor) { return false }
+            if(sublayer.strokeColor != borderColor) { return false }
+            
+            
+            return true
+        }
+        
+        let hasBorderLayer = isBorderLayer?.contains(true) ?? false
+        
+        if(!hasBorderLayer) {
+            guard let shapeLayer = view.superview?.superview?.mask?.layer as? CAShapeLayer else { return }
+            let borderLayer = CAShapeLayer()
+            
+            borderLayer.path = shapeLayer.path
+            borderLayer.lineWidth = lineWidth
+            borderLayer.strokeColor = borderColor
+            borderLayer.fillColor = fillColor
+            borderLayer.frame = shapeLayer.bounds
+            view.superview?.superview?.layer.addSublayer(borderLayer)
+        }
+    }
+}

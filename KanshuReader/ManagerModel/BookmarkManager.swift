@@ -187,7 +187,7 @@ struct BookmarkManager {
     }
     
     static func generateUUID(for url: URL) -> String {
-        var uuid = UUID().uuidString
+        let uuid = UUID().uuidString
         return uuid
     }
     
