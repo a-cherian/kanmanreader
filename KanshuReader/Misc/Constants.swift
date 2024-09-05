@@ -17,7 +17,7 @@ struct Constants {
     static let LATEST_DICT_UPDATE = "2024-08-19"
     
     static let HAS_ONBOARDED_KEY = "hasOnboarded"
-    static let STARTED_TIPS_KEY = "startedTips"
+    static let FINISHED_TIPS_KEY = "finishedTips"
     static let PRIORITIZE_TRADITIONAL_KEY = "prioritizeTraditional"
     static let DISPLAY_SECONDARY_KEY = "displaySecondary"
     
@@ -34,6 +34,7 @@ struct Constants {
     static let smallFont: CGFloat = 20
     static let zhFontRegularSmall = UIFont(name: "PingFangTC-Regular", size: smallFont)
     static let zhFontRegularLarge = UIFont(name: "PingFangTC-Regular", size: largeFont)
+    static let zhFontBoldSmall = UIFont(name: "PingFangTC-Semibold", size: smallFont)
     static let zhFontBoldLarge = UIFont(name: "PingFangTC-Semibold", size: largeFont)
     
     

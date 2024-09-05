@@ -12,19 +12,37 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     var comics: [Comic] = []
     var selectedComic: Comic? = nil
+    var isSelecting = false
     
-    lazy var importButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 35, height: 35))
+    lazy var importButton = {
+        let item = UIBarButtonItem(image: UIImage(systemName: "doc.badge.plus"), style: .plain, target: self, action: #selector(didTapImport))
+        return item
+    }()
+    
+    lazy var selectButton = {
+        let item = UIBarButtonItem(image: UIImage(systemName: "checkmark.circle"), style: .plain, target: self, action: #selector(didTapSelect))
+        return item
+    }()
+    
+    lazy var moreButton = {
+        let tutorialAction = UIAction(title: "Tutorial") { _ in self.openTutorial() }
+        let aboutAction = UIAction(title: "About") { _ in self.openAbout() }
+        let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: [aboutAction, tutorialAction])
         
-        button.backgroundColor = .black
-        button.tintColor = .white
-        button.layer.cornerRadius = 10
-        button.layer.borderColor = Constants.accentColor.cgColor
-        button.layer.borderWidth = 2
-        button.setImage(UIImage(systemName: "doc.badge.plus"), for: .normal)
-        
-        button.addTarget(self, action: #selector(didTapImport), for: .touchUpInside)
-        return button
+        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis"), target: self, action: nil, menu: menu)
+        return item
+    }()
+    
+    lazy var deleteButton = {
+        let deleteAction = UIAction(title: "About") { _ in self.didTapDelete() }
+        let item = UIBarButtonItem(systemItem: .trash, primaryAction: deleteAction)
+        item.tintColor = .red
+        return item
+    }()
+    
+    lazy var cancelButton = {
+        let item = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapSelect))
+        return item
     }()
     
     lazy var documentCollectionView: UICollectionView = {
@@ -61,7 +79,8 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         super.viewDidLoad()
         view.backgroundColor = .white
         view.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: importButton)
+        
+        disableSelectionMode()
         
         refreshData()
         
@@ -93,11 +112,10 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func addSubviews() {
-        view.addSubview(importButton)
-        view.addSubview(emptyLabel)
         view.addSubview(documentCollectionView)
+        view.addSubview(emptyLabel)
     }
-
+    
     func configureUI() {
         configureEmptyLabel()
         configureDocumentCollectionView()
@@ -141,17 +159,78 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
             UserDefaults.standard.setValue(true, forKey: Constants.HAS_ONBOARDED_KEY)
         }
     }
-
+    
+    func disableSelectionMode() {
+        documentCollectionView.allowsSelection = false
+        documentCollectionView.allowsMultipleSelection = false
+        navigationItem.rightBarButtonItems = [moreButton, selectButton]
+        navigationItem.leftBarButtonItems = [importButton]
+//        navigationController?.setToolbarHidden(true, animated: false)
+    }
+    
+    func enableSelectionMode() {
+        documentCollectionView.allowsSelection = true
+        documentCollectionView.allowsMultipleSelection = true
+        navigationItem.rightBarButtonItems = [cancelButton]
+        navigationItem.leftBarButtonItems = [deleteButton]
+//        navigationItem.leftBarButtonItems = []
+//        toolbarItems = [UIBarButtonItem(systemItem: .flexibleSpace), deleteButton]
+//        navigationController?.setToolbarHidden(false, animated: false)
+    }
+    
     @objc func didTapImport() {
-        importButton.animateBackgroundFlash()
-        
         let fileTypes: [UTType] = [.zip, UTType(filenameExtension: "rar"), UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
         
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
+        let documentPicker = KSRDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
         documentPicker.delegate = self
         documentPicker.allowsMultipleSelection = true
         documentPicker.modalPresentationStyle = .fullScreen
         present(documentPicker, animated: true, completion: nil)
+    }
+    
+    @objc func didTapSelect() {
+        isSelecting = !isSelecting
+        
+        if(isSelecting) {
+            enableSelectionMode()
+        }
+        else {
+            disableSelectionMode()
+        }
+        
+        refreshData()
+    }
+    
+    @objc func didTapDelete() {
+        let selected = documentCollectionView.indexPathsForSelectedItems
+        let comicsToDelete = selected?.compactMap { indexPath in
+            self.comics[indexPath.item]
+        } ?? []
+        
+        if comicsToDelete.count == 0  { return }
+        
+        let alert = UIAlertController(
+            title: "Confirm deletion",
+            message: "This will delete \(comicsToDelete.count) comics. This action is irreversible. Do you wish to proceed?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "Delete",
+            style: .destructive,
+            handler: { _ in
+                comicsToDelete.forEach { comic in
+                    CoreDataManager.shared.deleteComic(comic: comic)
+                }
+                self.refreshData()
+                self.disableSelectionMode()
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
     }
     
     func didTapComic(position: Int) {
@@ -218,6 +297,23 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         present(alert, animated: true, completion: nil)
     }
     
+    func openTutorial() {
+        guard let tutorial = CoreDataManager.shared.fetchComic(name: "Sample Tutorial") ?? BookmarkManager.createTutorial() else { return }
+        openComic(tutorial)
+    }
+    
+    func openAbout() {
+        let aboutViewController = AboutViewController()
+        if let presentationController = aboutViewController.presentationController as? UISheetPresentationController {
+            presentationController.detents = [.medium(), .large()]
+            presentationController.prefersEdgeAttachedInCompactHeight = true
+            presentationController.prefersGrabberVisible = true
+            presentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+        
+        self.present(aboutViewController, animated: true)
+    }
+    
     func deleteAction(_ comic: Comic) {
         let alert = UIAlertController(
             title: "Confirm deletion",
@@ -256,7 +352,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     func getEmptyLabelText() -> NSAttributedString {
         let attachment:NSTextAttachment = NSTextAttachment()
-        attachment.image = UIImage(systemName: "doc.badge.plus")
+        attachment.image = UIImage(systemName: "plus.circle")
 
         let string = NSMutableAttributedString(string: "This library is feeling a little empty!\n\n Click ")
         let attachmentString = NSAttributedString(attachment: attachment)
@@ -274,7 +370,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
 
 
 
-extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         let comics = urls.compactMap { url in
             return BookmarkManager.createComic(from: url)
@@ -303,11 +399,14 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         let cell = documentCollectionView.dequeueReusableCell(withReuseIdentifier: ComicCell.identifier, for: indexPath) as! ComicCell
         cell.tag = indexPath.item
         cell.delegate = self
+        cell.gestureRecognizers?.first?.delegate = self
         
         cell.title.text = comic.name
         cell.progress.text = "Pages: " + String(comic.lastPage + 1) + " / " + String(comic.totalPages)
         
         cell.coverView.image = UIImage(data: comic.cover ?? Data()) ?? UIImage()
+        
+        cell.selectView.isHidden = !isSelecting
         
         return cell
     }
@@ -337,10 +436,14 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         guard let vc = dismissed as? OnboardingViewController else { return nil }
         
         if(vc.shouldPresentSample()) {
-            guard let tutorial = CoreDataManager.shared.fetchComic(name: "Sample Tutorial") ?? BookmarkManager.createTutorial() else { return nil }
-            openComic(tutorial)
+            openTutorial()
         }
         
         return nil
     }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return !isSelecting
+    }
+
 }

@@ -32,7 +32,6 @@ class TipManager {
         BoxTip.boxesGenerated = false
         DictionaryTip.tipEnabled = true
         DictionaryTip.dictOpened = false
-        UserDefaults.standard.setValue(true, forKey: Constants.STARTED_TIPS_KEY)
     }
     
     func startTasks() {
@@ -65,6 +64,6 @@ class TipManager {
     }
     
     static func hasStartedTips() -> Bool {
-        return UserDefaults.standard.bool(forKey: Constants.STARTED_TIPS_KEY)
+        return UserDefaults.standard.bool(forKey: Constants.FINISHED_TIPS_KEY)
     }
 }

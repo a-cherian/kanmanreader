@@ -25,10 +25,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let navBar = UINavigationBar.appearance()
-        navBar.barTintColor = UIColor.black
-        navBar.backgroundColor = UIColor.black
-        navBar.isTranslucent = false
+        let navbar = UINavigationBar.appearance()
+        navbar.barTintColor = .black
+        navbar.backgroundColor = .black
+        navbar.isTranslucent = false
+        
+        let toolbar = UIToolbar.appearance()
+        toolbar.barTintColor = .black
+        toolbar.backgroundColor = .black
+        toolbar.isTranslucent = false
 
         let documents = DocumentSelectionViewController()
         let documentsNav = UINavigationController(rootViewController: documents)

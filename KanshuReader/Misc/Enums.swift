@@ -12,6 +12,6 @@ enum Direction: String {
     case vertical
     
     init(with rawValue: String) {
-        self = Direction(rawValue: rawValue) ?? .horizontal
+        self = Direction(rawValue: rawValue) ?? .vertical
     }
 }

@@ -158,7 +158,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func restoreToInitial() {
         UserDefaults.standard.setValue("", forKey: Constants.LOADED_SAMPLE_KEY)
         UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY)
-        UserDefaults.standard.setValue(false, forKey: Constants.STARTED_TIPS_KEY)
+        UserDefaults.standard.setValue(false, forKey: Constants.FINISHED_TIPS_KEY)
         
         CoreDataManager.shared.deleteAllComics()
         BookmarkManager.deleteBookmarks()

@@ -191,6 +191,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         populateWordStack(entries: entries)
         
         DictionaryTip.tipEnabled = false
+        UserDefaults.standard.setValue(true, forKey: Constants.FINISHED_TIPS_KEY)
     }
     
     func populateWordStack(entries: [DictEntry]) {

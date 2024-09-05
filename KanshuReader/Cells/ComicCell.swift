@@ -16,6 +16,17 @@ class ComicCell: UICollectionViewCell {
     weak var delegate: ComicCellDelegate?
     static let identifier = "comic"
     
+    override var isSelected: Bool{
+      didSet {
+          if(isSelected) {
+              selectView.image = UIImage(systemName: "checkmark.circle.fill")
+          }
+          else {
+              selectView.image = UIImage(systemName: "circle")
+          }
+      }
+    }
+    
     lazy var title: UILabel = {
         let label = UILabel()
         label.text = "[Title]"
@@ -35,6 +46,7 @@ class ComicCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.layer.borderColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         imageView.layer.borderWidth = 3
+        imageView.layer.cornerRadius = 5
         
         return imageView
     }()
@@ -46,6 +58,15 @@ class ComicCell: UICollectionViewCell {
         label.textAlignment = .center
         label.font = label.font.withSize(15)
         return label
+    }()
+    
+    lazy var selectView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "circle")
+        imageView.tintColor =  Constants.accentColor
+        imageView.backgroundColor = .black 
+        imageView.layer.cornerRadius = 35 / 2
+        return imageView
     }()
     
     override init(frame: CGRect) {
@@ -67,12 +88,14 @@ class ComicCell: UICollectionViewCell {
         contentView.addSubview(coverView)
         contentView.addSubview(title)
         contentView.addSubview(progress)
+        contentView.addSubview(selectView)
     }
     
     func configureUI(frame: CGRect) {
         configureCoverView()
         configureTitle()
         configureProgress()
+        configureSelectView()
     }
     
     func configureCoverView() {
@@ -102,6 +125,16 @@ class ComicCell: UICollectionViewCell {
             progress.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             progress.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             progress.heightAnchor.constraint(equalToConstant: 20)
+        ])
+    }
+    
+    func configureSelectView() {
+        selectView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            selectView.topAnchor.constraint(equalTo: coverView.topAnchor, constant: 10),
+            selectView.trailingAnchor.constraint(equalTo: coverView.trailingAnchor, constant: -10),
+            selectView.heightAnchor.constraint(equalToConstant: 35),
+            selectView.widthAnchor.constraint(equalToConstant: 35)
         ])
     }
     

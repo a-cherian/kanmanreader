@@ -10,6 +10,45 @@ import SwiftyTesseract
 import libtesseract
 import Vision
 
+class SizingTableView: UITableView {
+
+    override var contentSize: CGSize {
+        didSet {
+            self.invalidateIntrinsicContentSize()
+        }
+    }
+
+    override var intrinsicContentSize: CGSize {
+        self.layoutIfNeeded()
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height + 20)
+    }
+
+}
+
+
+final class KSRDocumentPickerViewController: UIDocumentPickerViewController {
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let toolbar = UIToolbar.appearance()
+        toolbar.barTintColor = .black
+        toolbar.backgroundColor = .black
+        toolbar.isTranslucent = true
+
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        let toolbar = UIToolbar.appearance()
+        toolbar.barTintColor = .black
+        toolbar.backgroundColor = .black
+        toolbar.isTranslucent = false
+    }
+}
+
+
 extension UIView {
     func makeCircular() {
         self.layer.cornerRadius = self.bounds.size.width / 2.0

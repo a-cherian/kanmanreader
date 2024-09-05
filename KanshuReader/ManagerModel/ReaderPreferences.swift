@@ -11,12 +11,12 @@ class ReaderPreferences {
     static let SCROLL_DIR_POS = 0
     static let TEXT_DIR_POS = 1
     
-    var scrollDirection: Direction = .horizontal
+    var scrollDirection: Direction = .vertical
     var textDirection: Direction = .horizontal
     
     var string: String { ReaderPreferences.generateString(scrollDir: scrollDirection, textDir: textDirection) }
     
-    init(scroll: Direction = .horizontal, text: Direction = .horizontal) {
+    init(scroll: Direction = .vertical, text: Direction = .horizontal) {
         scrollDirection = scroll
         textDirection = text
     }
@@ -31,7 +31,7 @@ class ReaderPreferences {
         textDirection = Direction(with: prefsOptions[ReaderPreferences.TEXT_DIR_POS][1])
     }
     
-    static func generateString(scrollDir: Direction = .horizontal, textDir: Direction = .vertical) -> String {
+    static func generateString(scrollDir: Direction = .vertical, textDir: Direction = .vertical) -> String {
         let scrollDirStr = "scrollDirection_" + scrollDir.rawValue
         let textDirStr = "textDirection_" + textDir.rawValue
         
