@@ -59,7 +59,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let appName = NSMutableAttributedString(string: "Kanman Reader\n")
         appName.addAttribute(NSAttributedString.Key.font, value: Constants.zhFontBoldLarge as Any, range: NSRange(location: 0, length: appName.length))
         
-        let version = NSAttributedString(string: "v" + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""))
+        let version = NSAttributedString(string: "v" + Constants.APP_VERSION)
         let copyright = NSAttributedString(string: "\n© 2024 Akash Cherian")
 
         headerText.append(appName)
@@ -72,7 +72,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func getCredits() -> NSMutableAttributedString {
         let creditText = NSMutableAttributedString(string: "")
 
-        let appName = NSMutableAttributedString(string: "Acknowledgements\n\n")
+        let appName = NSMutableAttributedString(string: "Acknowledgments\n\n")
         appName.addAttribute(NSAttributedString.Key.font, value: Constants.zhFontBoldSmall as Any, range: NSRange(location: 0, length: appName.length))
         let ccceDict = NSAttributedString(string: "CC-CEDICT Dictionary from mdbg.net, distributed under a Creative Commons license, see http://creativecommons.org/licenses/by-sa/4.0/ for details.")
 

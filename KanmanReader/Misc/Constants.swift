@@ -9,6 +9,9 @@ import UIKit
 import SwiftUI
 
 struct Constants {
+    // APP INFO
+    static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    
     // USERDEFAULTS KEYS
     static let LOADED_SAMPLE_KEY = "loadedSample"
     static let LOADED_SAMPLE = "v1.0"
