@@ -28,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navbar = UINavigationBar.appearance()
         navbar.barTintColor = .black
         navbar.backgroundColor = .black
+        navbar.tintColor = Constants.accentColor
         navbar.isTranslucent = false
         
         let toolbar = UIToolbar.appearance()
