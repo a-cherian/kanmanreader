@@ -1,5 +1,5 @@
 //
-//  BookmarkManager.swift
+//  ComicFileManager.swift
 //  KanmanReader
 //
 //  Created by AC on 8/23/24.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct BookmarkManager {
+struct ComicFileManager {
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
     @discardableResult
@@ -23,7 +23,7 @@ struct BookmarkManager {
             guard let (cover, images) = getImages(for: url, openInPlace: openInPlace) else { return nil }
             if(images.count == 0 ) { return nil }
             
-            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
+            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, uuid: uuid)
         } else {
             CoreDataManager.shared.updateComic(comic: comic)
         }
@@ -39,26 +39,16 @@ struct BookmarkManager {
         
         if comic == nil {
             let name = "Tutorial"
-            guard let (cover, images) = getImages(for: sampleUrl) else { return nil }
-            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, url: sampleUrl, prefs: ReaderPreferences(scroll: .horizontal), uuid: "Tutorial")
-        } else {
-            comic?.url = sampleUrl
-            CoreDataManager.shared.updateComic(comic: comic)
+            guard let (cover, images) = getImages(for: sampleUrl, openInPlace: false) else { return nil }
+            guard let uuid = createBookmark(url: sampleUrl, openInPlace: false) else { return nil }
+            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, prefs: ReaderPreferences(scroll: .horizontal), uuid: uuid)
         }
         
         return comic
     }
     
-    static func relinkTutorial() {
-        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return }
-        
-        let comic = CoreDataManager.shared.fetchTutorial()
-        comic?.url = sampleUrl
-        CoreDataManager.shared.updateComic(comic: comic)
-    }
-    
     static func getImages(for url: URL, openInPlace: Bool = true) -> (data: Data, images: [UIImage])? {
-        if(!openInPlace || url.isTutorial) { return Unzipper.extractImages(for: url) }
+        if(!openInPlace) { return Unzipper.extractImages(for: url) }
         
         guard url.startAccessingSecurityScopedResource() else { return nil }
         
@@ -67,58 +57,23 @@ struct BookmarkManager {
         return Unzipper.extractImages(for: url)
     }
     
-    static func readBookmarks() -> [URL] {
-        let fm = FileManager.default
-        let files = try? fm.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
-        
-        let urls: [URL] = files?.compactMap {file in
-            if(file.lastPathComponent == "Inbox") { return nil}
-            do {
-                let bookmarkData = try Data(contentsOf: file)
-                var isStale = false
-                let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-                
-                guard !isStale && LINK_CHECKING else {
-                    deleteComic(url: url)
-                    return nil
-                }
-                
-                return url
-            }
-            catch {
-                if(LINK_CHECKING) {
-                    deleteComic(url: file)
-                }
-                print("Failed to read bookmark: \(error.localizedDescription)")
-                return nil
-            }
-        }  ?? []
-        
-        return urls
-    }
-    
     static func retrieveComics() -> [Comic] {
-        let comics = CoreDataManager.shared.fetchComics()
+        var comics = CoreDataManager.shared.fetchComics()
         
         if(LINK_CHECKING) {
-            let urls = readBookmarks()
-            
-            let matchedComics: [Comic] = comics?.compactMap { comic in
-                if comic.isTutorial { return comic }
-                guard let _ = urls.first(where: { comic.url == $0 } ) else { return nil}
-                return comic
-            } ?? []
-            
-            comics?.forEach { comic in
-                if(!matchedComics.contains(comic)) {
-                    deleteComic(comic: comic)
+            comics = comics?.compactMap { comic in
+                if comic.url == nil {
+                    print("??")
+                    ComicFileManager.deleteComic(comic: comic)
+                    return nil
+                }
+                else {
+                    return comic
                 }
             }
-            
-            return matchedComics.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) })
         }
         
-        return comics ?? []
+        return comics?.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) }) ?? []
     }
     
     static func createBookmark(url: URL, openInPlace: Bool = true) -> String? {
@@ -136,7 +91,7 @@ struct BookmarkManager {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
             let uuid = generateUUID(for: url)
-            try bookmarkData.write(to: getAppSandboxDirectory().appendingPathComponent(uuid))
+            try bookmarkData.write(to: getBookmarkDirectory().appendingPathComponent(uuid))
             return uuid
         }
         catch {
@@ -160,9 +115,12 @@ struct BookmarkManager {
         
         let fm = FileManager.default
         do {
-            let bookmarkURL = getAppSandboxDirectory().appendingPathComponent(uuid)
+            
+            let bookmarkURL = getBookmarkDirectory().appendingPathComponent(uuid)
+            print(bookmarkURL.path)
             if(fm.fileExists(atPath: bookmarkURL.path))
             {
+                print("sup")
                 try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
             }
         } catch {
@@ -170,16 +128,40 @@ struct BookmarkManager {
         }
     }
     
-    static private func getAppSandboxDirectory() -> URL {
+    static func getAppSandboxDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
+    static func getBookmarkDirectory() -> URL {
+        return getCreateDirectory(name: ".Bookmarks")
+    }
+    
+    static func getBooksDirectory() -> URL {
+        return getCreateDirectory(name: "Books")
+    }
+    
+    static func getCreateDirectory(name: String) -> URL {
+        let directory = getAppSandboxDirectory().appendingPathComponent(name)
+        
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: directory.path) {
+            do {
+                try fileManager.createDirectory(atPath: directory.path, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch {
+                print("Failed to create \(name) directory: \(error)")
+                return getAppSandboxDirectory()
+            }
+        }
+        
+        return directory
+    }
+    
     static func deleteBookmarks() {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getAppSandboxDirectory(), includingPropertiesForKeys: nil)
+        let files = try? FileManager.default.contentsOfDirectory(at:  getBookmarkDirectory(), includingPropertiesForKeys: nil)
         let fm = FileManager.default
         
         files?.forEach { file in
-            if(file.lastPathComponent == "Inbox") { return }
             do {
                 try fm.removeItem(at: file)
             } catch {
@@ -197,11 +179,60 @@ struct BookmarkManager {
         guard let url = url else { return "" }
         return (url.lastPathComponent as NSString).deletingPathExtension
     }
+    
+    static func moveToBooks(url: URL) -> URL {
+        let fm = FileManager.default
+        
+        do {
+            let newURL = getBooksDirectory().appendingPathComponent(url.lastPathComponent)
+            try fm.moveItem(at: url, to: getBooksDirectory().appendingPathComponent(url.lastPathComponent))
+            return newURL
+        } catch {
+            print("Failed to move file: \(error)")
+            return url
+        }
+    }
+    
+    static func clearInbox() {
+        let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent("Inbox"), includingPropertiesForKeys: nil)
+        let fm = FileManager.default
+        print("Files deleted: \(files?.count ?? 0)")
+        
+        files?.forEach { file in
+            do {
+                try fm.removeItem(at: file)
+            } catch {
+                print("Failed to delete file: \(error)")
+            }
+        }
+    }
 }
 
 extension Comic {
     var isTutorial: Bool {
-        uuid == "Tutorial"
+        url?.lastPathComponent.contains(Constants.TUTORIAL_FILENAME) ?? false
+    }
+    
+    var url: URL? {
+        guard let uuid = uuid else { return nil }
+        
+        let file = ComicFileManager.getBookmarkDirectory().appendingPathComponent(uuid)
+        
+        do {
+            let bookmarkData = try Data(contentsOf: file)
+            var isStale = false
+            let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
+            
+            guard !isStale else {
+                return nil
+            }
+            
+            return url
+        }
+        catch {
+            print("Failed to read bookmark: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 
