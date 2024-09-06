@@ -12,15 +12,15 @@ struct BookmarkManager {
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
     @discardableResult
-    static func createComic(from url: URL, name: String? = nil) -> Comic? {
+    static func createComic(from url: URL, name: String? = nil, openInPlace: Bool = true) -> Comic? {
         let comics = CoreDataManager.shared.fetchComics()
         
         var comic = comics?.first(where: { $0.url == url })
         
         if comic == nil {
             let name = name ?? getFileName(for: url)
-            guard let uuid = createBookmark(url: url) else { return nil }
-            guard let (cover, images) = getImages(for: url) else { return nil }
+            guard let uuid = createBookmark(url: url, openInPlace: openInPlace) else { return nil }
+            guard let (cover, images) = getImages(for: url, openInPlace: openInPlace) else { return nil }
             if(images.count == 0 ) { return nil }
             
             comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, url: url, uuid: uuid)
@@ -57,11 +57,10 @@ struct BookmarkManager {
         CoreDataManager.shared.updateComic(comic: comic)
     }
     
-    static func getImages(for url: URL, isApp: Bool = false) -> (data: Data, images: [UIImage])? {
-        guard url.startAccessingSecurityScopedResource() else {
-            if(url.isTutorial) { return Unzipper.extractImages(for: url) }
-            else { return nil}
-        }
+    static func getImages(for url: URL, openInPlace: Bool = true) -> (data: Data, images: [UIImage])? {
+        if(!openInPlace || url.isTutorial) { return Unzipper.extractImages(for: url) }
+        
+        guard url.startAccessingSecurityScopedResource() else { return nil }
         
         defer { url.stopAccessingSecurityScopedResource() }
         
@@ -122,7 +121,9 @@ struct BookmarkManager {
         return comics ?? []
     }
     
-    static func createBookmark(url: URL) -> String? {
+    static func createBookmark(url: URL, openInPlace: Bool = true) -> String? {
+        if(!openInPlace) { return writeBookmark(url: url) }
+        
         guard url.startAccessingSecurityScopedResource() else { return nil }
         
         defer { url.stopAccessingSecurityScopedResource() }
