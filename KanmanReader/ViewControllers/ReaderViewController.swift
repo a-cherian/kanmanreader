@@ -176,7 +176,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     func addGestureRecognizers() {
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didTapOCR))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didTapOCR(_:)))
         longPressGesture.minimumPressDuration = 0.3
         view.addGestureRecognizer(longPressGesture)
     }
@@ -241,15 +241,17 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         self.present(dictionaryViewController, animated: true)
     }
     
-    @objc func didTapOCR() {
+    @objc func didTapOCR(_ sender: UILongPressGestureRecognizer) {
         if let hReader = reader as? HReaderViewController {
             let image = hReader.currentImage
             zoomedRect = image.getZoomedRect(from: reader.currentPage)
             textRecognizer.requestInitialVision(for: image, with: zoomedRect)
+            hReader.currentPage.didSingleTap(sender)
         }
         else if let vReader = reader as? VReaderViewController {
             guard let image = vReader.tableView.screenshot() else { return }
             textRecognizer.requestInitialVision(for: image)
+            vReader.didSingleTap(sender)
         }
     }
     
