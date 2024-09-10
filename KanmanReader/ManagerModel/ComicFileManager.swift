@@ -63,7 +63,6 @@ struct ComicFileManager {
         if(LINK_CHECKING) {
             comics = comics?.compactMap { comic in
                 if comic.url == nil {
-                    print("??")
                     ComicFileManager.deleteComic(comic: comic)
                     return nil
                 }
@@ -117,10 +116,8 @@ struct ComicFileManager {
         do {
             
             let bookmarkURL = getBookmarkDirectory().appendingPathComponent(uuid)
-            print(bookmarkURL.path)
             if(fm.fileExists(atPath: bookmarkURL.path))
             {
-                print("sup")
                 try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
             }
         } catch {
@@ -136,8 +133,8 @@ struct ComicFileManager {
         return getCreateDirectory(name: ".Bookmarks")
     }
     
-    static func getBooksDirectory() -> URL {
-        return getCreateDirectory(name: "Books")
+    static func getManhuaDirectory() -> URL {
+        return getCreateDirectory(name: "Manhua")
     }
     
     static func getCreateDirectory(name: String) -> URL {
@@ -180,23 +177,34 @@ struct ComicFileManager {
         return (url.lastPathComponent as NSString).deletingPathExtension
     }
     
-    static func moveToBooks(url: URL) -> URL {
-        let fm = FileManager.default
+    static func loadManhuaDirectory() {
+        let files = try? FileManager.default.contentsOfDirectory(at: getManhuaDirectory(), includingPropertiesForKeys: nil)
         
-        do {
-            let newURL = getBooksDirectory().appendingPathComponent(url.lastPathComponent)
-            try fm.moveItem(at: url, to: getBooksDirectory().appendingPathComponent(url.lastPathComponent))
-            return newURL
-        } catch {
-            print("Failed to move file: \(error)")
-            return url
+        files?.forEach { file in
+            createComic(from: file, openInPlace: false)
         }
     }
     
-    static func clearInbox() {
-        let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent("Inbox"), includingPropertiesForKeys: nil)
+    static func moveToBooks(url: URL) -> URL? {
         let fm = FileManager.default
-        print("Files deleted: \(files?.count ?? 0)")
+        
+        do {
+            let newURL = getManhuaDirectory().appendingPathComponent(url.lastPathComponent)
+            if(!fm.fileExists(atPath: newURL.path))
+            {
+                try fm.moveItem(at: url, to: getManhuaDirectory().appendingPathComponent(url.lastPathComponent))
+                return newURL
+            }
+            else { return nil }
+        } catch {
+            print("Failed to move file: \(error)")
+            return nil
+        }
+    }
+    
+    static func clearDirectory(name: String) {
+        let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent(name), includingPropertiesForKeys: nil)
+        let fm = FileManager.default
         
         files?.forEach { file in
             do {
@@ -205,6 +213,14 @@ struct ComicFileManager {
                 print("Failed to delete file: \(error)")
             }
         }
+    }
+    
+    static func clearInbox() {
+        clearDirectory(name: "Inbox")
+    }
+    
+    static func clearTrash() {
+        clearDirectory(name: ".Trash")
     }
 }
 

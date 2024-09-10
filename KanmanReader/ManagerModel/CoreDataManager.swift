@@ -22,7 +22,7 @@ struct CoreDataManager {
     }()
     
     @discardableResult
-    func createComic(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, url: URL, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences(), uuid: String? = "") -> Comic? {
+    func createComic(name: String, lastPage: Int = 0, totalPages: Int, cover: Data, lastOpened: Date = Date(), prefs: ReaderPreferences = ReaderPreferences(), uuid: String? = "") -> Comic? {
         let context = persistentContainer.viewContext
         
         let comic = NSEntityDescription.insertNewObject(forEntityName: "Comic", into: context) as! Comic
@@ -31,7 +31,6 @@ struct CoreDataManager {
         comic.lastPage = Int64(lastPage)
         comic.totalPages = Int64(totalPages)
         comic.cover = cover
-        comic.url = url
         comic.lastOpened = lastOpened
         comic.preferences = prefs.string
         comic.uuid = uuid
@@ -94,7 +93,7 @@ struct CoreDataManager {
         let context = persistentContainer.viewContext
         
         let request = Comic.fetchRequest()
-        request.predicate = NSPredicate(format: "url CONTAINS %@", argumentArray: [Constants.TUTORIAL_FILENAME])
+        request.predicate = NSPredicate(format: "name == %@", argumentArray: ["Tutorial"])
         
         do {
             let results = try context.fetch(request)

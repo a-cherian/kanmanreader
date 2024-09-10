@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        checkFiles()
         loadItems()
         configureInitialLaunch()
         
@@ -138,11 +139,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let loadedSample = UserDefaults.standard.string(forKey: Constants.LOADED_SAMPLE_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
-            BookmarkManager.createTutorial()
+            ComicFileManager.createTutorial()
             UserDefaults.standard.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
         }
-        else {
-            BookmarkManager.relinkTutorial()
+    }
+    
+    func checkFiles() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            ComicFileManager.clearTrash()
+            ComicFileManager.loadManhuaDirectory()
         }
     }
     
@@ -161,7 +166,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.setValue(false, forKey: Constants.FINISHED_TIPS_KEY)
         
         CoreDataManager.shared.deleteAllComics()
-        BookmarkManager.deleteBookmarks()
+        ComicFileManager.deleteBookmarks()
     }
 
 }

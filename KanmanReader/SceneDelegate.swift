@@ -18,8 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
         let URLContexts = connectionOptions.urlContexts
-        if let url = URLContexts.first?.url {
-            BookmarkManager.createComic(from: url)
+        if let urlContext = URLContexts.first {
+            ComicFileManager.createComic(from: urlContext.url, openInPlace: urlContext.options.openInPlace)
         }
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -48,7 +48,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let urlContext = URLContexts.first {
-            BookmarkManager.createComic(from: urlContext.url, openInPlace: urlContext.options.openInPlace)
+            var url = urlContext.url
+            if(!urlContext.options.openInPlace) {
+                guard var url = ComicFileManager.moveToBooks(url: urlContext.url) else {
+                    ComicFileManager.clearInbox()
+                    return
+                }
+            }
+            ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace)
         }
     }
 

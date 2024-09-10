@@ -108,7 +108,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     @objc func refreshData() {
-        comics = BookmarkManager.retrieveComics()
+        comics = ComicFileManager.retrieveComics()
         documentCollectionView.reloadData()
         
         emptyLabel.isHidden = comics.count > 0 && !(comics.count == 1 && comics[0].isTutorial)
@@ -216,7 +216,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         
         let alert = UIAlertController(
             title: "Confirm deletion",
-            message: "This will delete \(comicsToDelete.count) comics. This action is irreversible. Do you wish to proceed?",
+            message: "This will remove \(comicsToDelete.count) of your manhua from your library. This action is irreversible. Do you wish to proceed?",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
@@ -224,7 +224,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
             style: .destructive,
             handler: { _ in
                 comicsToDelete.forEach { comic in
-                    CoreDataManager.shared.deleteComic(comic: comic)
+                    ComicFileManager.deleteComic(comic: comic)
                 }
                 self.refreshData()
                 self.disableSelectionMode()
@@ -247,7 +247,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         if let url = comic.url {
             comic.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: comic)
-            let images = BookmarkManager.getImages(for: url)?.images ?? []
+            guard let images = ComicFileManager.getImages(for: url)?.images else { return }
             self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
         }
     }
@@ -303,7 +303,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func openTutorial() {
-        guard let tutorial = CoreDataManager.shared.fetchComic(name: "Tutorial") ?? BookmarkManager.createTutorial() else { return }
+        guard let tutorial = CoreDataManager.shared.fetchComic(name: "Tutorial") ?? ComicFileManager.createTutorial() else { return }
         openComic(tutorial)
     }
     
@@ -322,14 +322,14 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     func deleteAction(_ comic: Comic) {
         let alert = UIAlertController(
             title: "Confirm deletion",
-            message: "This will delete this comic. This action is irreversible. Do you wish to proceed?",
+            message: "This will remove this manhua from your library. This action is irreversible. Do you wish to proceed?",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
             title: "Delete",
             style: .destructive,
             handler: { _ in
-                CoreDataManager.shared.deleteComic(comic: comic)
+                ComicFileManager.deleteComic(comic: comic)
                 self.refreshData()
         }))
         alert.addAction(UIAlertAction(
@@ -361,7 +361,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
 
         let string = NSMutableAttributedString(string: "This library is feeling a little empty!\n\n Click ")
         let attachmentString = NSAttributedString(attachment: attachment)
-        let endPortion = NSAttributedString(string: " to add comics in ZIP, RAR, CBR, or CBZ format.")
+        let endPortion = NSAttributedString(string: " to add manhua in ZIP, RAR, CBR, or CBZ format.")
         
         string.append(attachmentString)
         string.append(endPortion)
@@ -377,9 +377,10 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
 
 extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let comics = urls.compactMap { url in
-            return BookmarkManager.createComic(from: url)
-        }
+        let comics = urls.sorted(by: { $0.lastPathComponent > $1.lastPathComponent })
+                         .compactMap { url in
+                             return ComicFileManager.createComic(from: url)
+                         }
         
         if(urls.count == 1 && comics.count == 1) {
             controller.dismiss(animated: true, completion: {

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Constants {
     // APP INFO
-    static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     
     // USERDEFAULTS KEYS
     static let LOADED_SAMPLE_KEY = "loadedSample"

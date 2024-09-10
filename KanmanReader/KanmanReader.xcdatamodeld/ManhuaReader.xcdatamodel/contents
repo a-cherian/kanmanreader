@@ -7,7 +7,6 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="preferences" attributeType="String" defaultValueString="scrollDirection_horizontal:textDirection_horizontal"/>
         <attribute name="totalPages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="url" attributeType="URI" defaultValueString="default"/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="DictEntry" representedClassName="DictEntry" syncable="YES" codeGenerationType="class">

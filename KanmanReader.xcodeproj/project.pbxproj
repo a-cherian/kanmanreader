@@ -32,7 +32,7 @@
 		405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 405946052B2C679C00A6B1F9 /* ZIPFoundation */; };
 		405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */; };
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
-		405A7A972C7979E500A40D24 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A962C7979E500A40D24 /* BookmarkManager.swift */; };
+		405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A962C7979E500A40D24 /* ComicFileManager.swift */; };
 		405A7A9B2C79B95B00A40D24 /* kanman-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 405A7A9A2C79B95B00A40D24 /* kanman-tutorial-sample.zip */; };
 		405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9D2C7B04AE00A40D24 /* TipManager.swift */; };
 		405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */; };
@@ -82,7 +82,7 @@
 		405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentSelectionViewController.swift; sourceTree = "<group>"; };
 		4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
 		405946632B2EBABC00A6B1F9 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
-		405A7A962C7979E500A40D24 /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
+		405A7A962C7979E500A40D24 /* ComicFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicFileManager.swift; sourceTree = "<group>"; };
 		405A7A9A2C79B95B00A40D24 /* kanman-tutorial-sample.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "kanman-tutorial-sample.zip"; sourceTree = "<group>"; };
 		405A7A9C2C79E46100A40D24 /* KanmanReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KanmanReader.entitlements; sourceTree = "<group>"; };
 		405A7A9D2C7B04AE00A40D24 /* TipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipManager.swift; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 				405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */,
 				405A7A9D2C7B04AE00A40D24 /* TipManager.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
-				405A7A962C7979E500A40D24 /* BookmarkManager.swift */,
+				405A7A962C7979E500A40D24 /* ComicFileManager.swift */,
 				402963572C806E6700211F2E /* Unzipper.swift */,
 			);
 			path = ManagerModel;
@@ -298,7 +298,7 @@
 				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
 				400E0EA32B36D2BC0024AD39 /* ComicCell.swift in Sources */,
 				405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */,
-				405A7A972C7979E500A40D24 /* BookmarkManager.swift in Sources */,
+				405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */,
 				4049AC692C7C851D007D216B /* ImageCell.swift in Sources */,
 				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
 				402963552C80369100211F2E /* ReaderPreferences.swift in Sources */,
@@ -479,6 +479,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -517,6 +518,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
