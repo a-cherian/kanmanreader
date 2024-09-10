@@ -36,7 +36,7 @@ struct Unzipper {
             
             // filter out directory & extraneous files
             entries = entries.filter { entry in
-                return shouldKeepFile(fileName: entry.path)
+                return entry.type == .file && shouldKeepFile(fileName: entry.path)
             }
             
             var cover: Data = Data([])
@@ -77,7 +77,7 @@ struct Unzipper {
             
             // filter out directory & extraneous files
             entries = entries.filter { entry in
-                return shouldKeepFile(fileName: entry.fileName)
+                return !entry.directory && shouldKeepFile(fileName: entry.fileName)
             }
             
             var cover: Data = Data([])
@@ -111,7 +111,8 @@ struct Unzipper {
 
         var isImageFile = false
         imageSuffixes.forEach { imageSuffix in
-            isImageFile = isImageFile || fileName.hasSuffix(imageSuffix)
+            let pathExt = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+            isImageFile = isImageFile || imageSuffix.contains(pathExt)
         }
         
         return isImageFile && !isMacFile
