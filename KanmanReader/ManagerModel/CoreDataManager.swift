@@ -45,6 +45,39 @@ struct CoreDataManager {
         return nil
     }
     
+    func createComics(comicData: [(name: String, lastPage: Int, totalPages: Int, cover: Data, lastOpened: Date, prefs: String, uuid: String)]) async -> Bool {
+        // Create a private context
+        let context = persistentContainer.newBackgroundContext()
+//        
+        do {
+            let _ = try await context.perform {
+                var i = 0
+                let batchRequest = NSBatchInsertRequest(entityName: "Comic", dictionaryHandler: { dict in
+                    if i < comicData.count {
+                        let comic = ["name": comicData[i].name,
+                                     "lastPage": comicData[i].lastPage,
+                                     "totalPages": comicData[i].totalPages,
+                                     "cover": comicData[i].cover,
+                                     "lastOpened": comicData[i].lastOpened,
+                                     "preferences": comicData[i].prefs,
+                                     "uuid": comicData[i].uuid]
+                        dict.setDictionary(comic)
+                        i += 1
+                        return false
+                    }
+                    return true
+                })
+                batchRequest.resultType = .statusOnly
+                let result = try context.execute(batchRequest) as! NSBatchInsertResult
+                return result.result as! Bool
+            }
+        }
+        catch let createError {
+            print("Failed to create: \(createError)")
+        }
+        return false
+    }
+    
     func fetchComic(name: String) -> Comic? {
         let predicate = NSPredicate(format: "name == %@", argumentArray: [name])
         return fetchComic(predicate: predicate)
@@ -125,26 +158,6 @@ struct CoreDataManager {
             try context.save()
         } catch let saveError {
             print("Failed to update: \(saveError)")
-        }
-    }
-    
-    func deleteComic(for url: URL) {
-        let context = persistentContainer.viewContext
-        
-        let request = Comic.fetchRequest()
-        request.predicate = NSPredicate(format: "url == %@", argumentArray: [url])
-        
-        do {
-            let results = try context.fetch(request)
-            
-            results.forEach { comic in
-                deleteComic(comic: comic)
-            }
-            
-            try context.save()
-        }
-        catch {
-            debugPrint("Failed to delete: \(error)")
         }
     }
     

@@ -24,8 +24,6 @@ struct ComicFileManager {
             if(images.count == 0 ) { return nil }
             
             comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, uuid: uuid)
-        } else {
-            CoreDataManager.shared.updateComic(comic: comic)
         }
         
         return comic
@@ -97,11 +95,6 @@ struct ComicFileManager {
             print("Error creating the bookmark: \(error)")
             return nil
         }
-    }
-    
-    static func deleteComic(url: URL?) {
-        guard let comic = CoreDataManager.shared.fetchComic(url: url) else { return }
-        deleteComic(comic: comic)
     }
     
     static func deleteComic(comic: Comic) {

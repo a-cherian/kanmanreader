@@ -48,9 +48,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let urlContext = URLContexts.first {
-            var url = urlContext.url
+            let url = urlContext.url
             if(!urlContext.options.openInPlace) {
-                guard var url = ComicFileManager.moveToBooks(url: urlContext.url) else {
+                guard ComicFileManager.moveToBooks(url: urlContext.url) != nil else {
                     ComicFileManager.clearInbox()
                     return
                 }
