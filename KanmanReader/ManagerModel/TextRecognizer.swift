@@ -7,7 +7,7 @@
 
 import UIKit
 import Vision
-import SwiftyTesseract
+//import SwiftyTesseract
 
 protocol TextRecognizerDelegate: AnyObject {
     func didPerformVision(image: UIImage)
@@ -16,7 +16,7 @@ protocol TextRecognizerDelegate: AnyObject {
 class TextRecognizer {
     weak var delegate: TextRecognizerDelegate?
     
-    let tesseract = Tesseract(language: .custom("chi_tra_vert"))
+//    let tesseract = Tesseract(language: .custom("chi_tra_vert"))
     
     var detectedText: [(String?, CGRect)] = []
     var unprocessedImage: UIImage? = nil
@@ -110,23 +110,24 @@ class TextRecognizer {
     }
     
     func requestVerticalVision(image: UIImage?, cluster: [CGRect]) -> String {
-        guard let image = image else { return "" }
-        
-        let boxes = getVerticalBoxes(cluster: cluster, original: detectedText)
-        
-        var results = [String](repeating: "", count: boxes.count)
-        for i in 0..<boxes.count {
-            let box = boxes[i]
-            let column = image.crop(rect: box).noiseReducted()
-            let result = tesseract.performOCR(on: column)
-            do {
-                results[i] = try result.get().replacingOccurrences(of: "\n", with: "")
-            } catch {
-                print("Error retrieving the value: \(error)")
-            }
-        }
-        
-        return results.joined()
+        return "" // need to fix tesseract library
+//        guard let image = image else { return "" }
+//        
+//        let boxes = getVerticalBoxes(cluster: cluster, original: detectedText)
+//        
+//        var results = [String](repeating: "", count: boxes.count)
+//        for i in 0..<boxes.count {
+//            let box = boxes[i]
+//            let column = image.crop(rect: box).noiseReducted()
+//            let result = tesseract.performOCR(on: column)
+//            do {
+//                results[i] = try result.get().replacingOccurrences(of: "\n", with: "")
+//            } catch {
+//                print("Error retrieving the value: \(error)")
+//            }
+//        }
+//        
+//        return results.joined()
     }
     
     func getRegion(for location: CGPoint) -> CGRect? {
