@@ -357,11 +357,11 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     func getEmptyLabelText() -> NSAttributedString {
         let attachment:NSTextAttachment = NSTextAttachment()
-        attachment.image = UIImage(systemName: "plus.circle")
+        attachment.image = UIImage(systemName: "doc.badge.plus")
 
-        let string = NSMutableAttributedString(string: "This library is feeling a little empty!\n\n Click ")
+        let string = NSMutableAttributedString(string: "This library is feeling a little empty!\n\n Click the ")
         let attachmentString = NSAttributedString(attachment: attachment)
-        let endPortion = NSAttributedString(string: " to add manhua in ZIP, RAR, CBR, or CBZ format.")
+        let endPortion = NSAttributedString(string: " above to add manhua in ZIP, RAR, CBR, or CBZ format.")
         
         string.append(attachmentString)
         string.append(endPortion)
@@ -377,7 +377,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
 
 extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let comics = urls.sorted(by: { $0.lastPathComponent > $1.lastPathComponent })
+        let comics = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
                          .compactMap { url in
                              return ComicFileManager.createComic(from: url)
                          }

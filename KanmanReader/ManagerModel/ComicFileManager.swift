@@ -278,7 +278,10 @@ extension Comic {
             let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
             
             guard !isStale else {
-                return nil
+                ComicFileManager.deleteBookmark(uuid: self.uuid)
+                self.uuid = try ComicFileManager.createBookmark(url: url)
+                CoreDataManager.shared.updateComic(comic: self)
+                return url
             }
             
             return url
