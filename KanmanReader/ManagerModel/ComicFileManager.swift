@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+enum BookmarkError: Error {
+    case notSecurityScoped
+    case failedWrite
+}
+
 struct ComicFileManager {
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
@@ -15,44 +20,66 @@ struct ComicFileManager {
     static func createComic(from url: URL, name: String? = nil, openInPlace: Bool = true) -> Comic? {
         let comics = CoreDataManager.shared.fetchComics()
         
-        var comic = comics?.first(where: { $0.url == url })
-        
-        if comic == nil {
-            let name = name ?? getFileName(for: url)
-            guard let uuid = createBookmark(url: url, openInPlace: openInPlace) else { return nil }
-            guard let (cover, images) = getImages(for: url, openInPlace: openInPlace) else { return nil }
-            if(images.count == 0 ) { return nil }
+        do {
+            var comic = comics?.first(where: { $0.url == url })
             
-            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, uuid: uuid)
+            if comic == nil {
+                let name = name ?? getFileName(for: url)
+                let uuid = try createBookmark(url: url, openInPlace: openInPlace)
+                let (cover, totalPages) = try getInfo(for: url, openInPlace: openInPlace)
+                if(totalPages == 0 ) { return nil }
+                
+                comic = CoreDataManager.shared.createComic(name: name, totalPages: totalPages, cover: cover, uuid: uuid)
+            }
+            
+            return comic
         }
-        
-        return comic
+        catch {
+            print("Couldn't create comic for \(url): \(error)")
+            return nil
+        }
     }
     
     @discardableResult
     static func createTutorial() -> Comic? {
-        guard let sampleUrl = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return nil }
+        guard let sampleURL = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return nil }
         
-        var comic = CoreDataManager.shared.fetchTutorial()
-        
-        if comic == nil {
-            let name = "Tutorial"
-            guard let (cover, images) = getImages(for: sampleUrl, openInPlace: false) else { return nil }
-            guard let uuid = createBookmark(url: sampleUrl, openInPlace: false) else { return nil }
-            comic = CoreDataManager.shared.createComic(name: name, totalPages: images.count, cover: cover, prefs: ReaderPreferences(scroll: .horizontal), uuid: uuid)
+        do {
+            var comic = CoreDataManager.shared.fetchTutorial()
+            
+            if comic == nil {
+                let name = "Tutorial"
+                let (cover, totalPages) = try getInfo(for: sampleURL, openInPlace: false)
+                let uuid = try createBookmark(url: sampleURL, openInPlace: false)
+                comic = CoreDataManager.shared.createComic(name: name, totalPages: totalPages, cover: cover, prefs: ReaderPreferences(scroll: .horizontal), uuid: uuid)
+            }
+            
+            return comic
         }
-        
-        return comic
+        catch {
+            print("Couldn't create comic for \(sampleURL): \(error)")
+            return nil
+        }
     }
     
-    static func getImages(for url: URL, openInPlace: Bool = true) -> (data: Data, images: [UIImage])? {
-        if(!openInPlace) { return Unzipper.extractImages(for: url) }
+    static func getInfo(for url: URL, openInPlace: Bool = true) throws -> (cover: Data, totalPages: Int) {
+        if(!openInPlace) { return try Unpacker(for: url).extractInfo() }
         
-        guard url.startAccessingSecurityScopedResource() else { return nil }
+        guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
         
         defer { url.stopAccessingSecurityScopedResource() }
         
-        return Unzipper.extractImages(for: url)
+        return try Unpacker(for: url).extractInfo()
+    }
+    
+    static func getImages(for url: URL, openInPlace: Bool = true) throws -> [UIImage]? {
+        if(!openInPlace) { return try Unpacker(for: url).extractImages() }
+        
+        guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
+        
+        defer { url.stopAccessingSecurityScopedResource() }
+        
+        return try Unpacker(for: url).extractImages()
     }
     
     static func retrieveComics() -> [Comic] {
@@ -73,17 +100,17 @@ struct ComicFileManager {
         return comics?.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) }) ?? []
     }
     
-    static func createBookmark(url: URL, openInPlace: Bool = true) -> String? {
-        if(!openInPlace) { return writeBookmark(url: url) }
+    static func createBookmark(url: URL, openInPlace: Bool = true) throws -> String? {
+        if(!openInPlace) { return try writeBookmark(url: url) }
         
-        guard url.startAccessingSecurityScopedResource() else { return nil }
+        guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
         
         defer { url.stopAccessingSecurityScopedResource() }
         
-        return writeBookmark(url: url)
+        return try writeBookmark(url: url)
     }
     
-    static func writeBookmark(url: URL) -> String? {
+    static func writeBookmark(url: URL) throws -> String? {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
@@ -93,29 +120,26 @@ struct ComicFileManager {
         }
         catch {
             print("Error creating the bookmark: \(error)")
-            return nil
+            throw BookmarkError.failedWrite
         }
     }
     
     static func deleteComic(comic: Comic) {
+        if let url = comic.url,
+           let manhuaDirectoryFiles = try? FileManager.default.contentsOfDirectory(at:  getManhuaDirectory(), includingPropertiesForKeys: nil),
+           manhuaDirectoryFiles.contains(url) {
+            deleteFile(url: url)
+        }
+        
         deleteBookmark(uuid: comic.uuid)
         CoreDataManager.shared.deleteComic(comic: comic)
+        
     }
     
     static func deleteBookmark(uuid: String?) {
         guard let uuid = uuid else { return }
         
-        let fm = FileManager.default
-        do {
-            
-            let bookmarkURL = getBookmarkDirectory().appendingPathComponent(uuid)
-            if(fm.fileExists(atPath: bookmarkURL.path))
-            {
-                try fm.removeItem(at: bookmarkURL) // WARNING: this WILL delete files
-            }
-        } catch {
-            print("Failed to delete bookmark: \(error)")
-        }
+        deleteFile(url: getBookmarkDirectory().appendingPathComponent(uuid))
     }
     
     static func getAppSandboxDirectory() -> URL {
@@ -128,6 +152,10 @@ struct ComicFileManager {
     
     static func getManhuaDirectory() -> URL {
         return getCreateDirectory(name: "Manhua")
+    }
+    
+    static func getInboxDirectory() -> URL {
+        return getCreateDirectory(name: "Inbox")
     }
     
     static func getCreateDirectory(name: String) -> URL {
@@ -152,11 +180,7 @@ struct ComicFileManager {
         let fm = FileManager.default
         
         files?.forEach { file in
-            do {
-                try fm.removeItem(at: file)
-            } catch {
-                print("Failed to delete file: \(error)")
-            }
+            deleteFile(url: file)
         }
     }
     
@@ -197,6 +221,7 @@ struct ComicFileManager {
     
     static func clearDirectory(name: String) {
         let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent(name), includingPropertiesForKeys: nil)
+
         let fm = FileManager.default
         
         files?.forEach { file in
@@ -208,12 +233,32 @@ struct ComicFileManager {
         }
     }
     
-    static func clearInbox() {
+    static func loadInbox() {
+        let files = (try? FileManager.default.contentsOfDirectory(at: getInboxDirectory(), includingPropertiesForKeys: nil)) ?? []
+        
+        for file in files {
+            guard let url = ComicFileManager.moveToBooks(url: file) else { continue }
+            ComicFileManager.createComic(from: url, openInPlace: false)
+            
+        }
+        
         clearDirectory(name: "Inbox")
     }
     
     static func clearTrash() {
         clearDirectory(name: ".Trash")
+    }
+    
+    static func deleteFile(url: URL) {
+        let fm = FileManager.default
+        do {
+            if(fm.fileExists(atPath: url.path))
+            {
+                try fm.removeItem(at: url) // WARNING: this WILL delete files
+            }
+        } catch {
+            print("Failed to delete URL \(url): \(error)")
+        }
     }
 }
 

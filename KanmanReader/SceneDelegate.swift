@@ -39,16 +39,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let urlContext = URLContexts.first {
-            let url = urlContext.url
+        importFile: if let urlContext = URLContexts.first {
+            var url = urlContext.url
             if(!urlContext.options.openInPlace) {
-                guard ComicFileManager.moveToBooks(url: urlContext.url) != nil else {
-                    ComicFileManager.clearInbox()
-                    return
-                }
+                guard let movedURL = ComicFileManager.moveToBooks(url: urlContext.url) else { break importFile }
+                url = movedURL
             }
             ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace)
         }
+        ComicFileManager.loadInbox()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
