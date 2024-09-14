@@ -45,7 +45,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 guard let movedURL = ComicFileManager.moveToBooks(url: urlContext.url) else { break importFile }
                 url = movedURL
             }
-            ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace)
+            
+            if let comic = ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace) {
+                comic.lastOpened = Date()
+                CoreDataManager.shared.updateComic(comic: comic)
+                guard let images = try? ComicFileManager.getImages(for: url, openInPlace: urlContext.options.openInPlace) else { return }
+                (self.window?.rootViewController as? UINavigationController)?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
+            }
         }
         ComicFileManager.loadInbox()
     }
