@@ -186,7 +186,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     @objc func didTapImport() {
         let fileTypes: [UTType] = [.zip, UTType(filenameExtension: "rar"), UTType(importedAs: "com.acherian.cbz"), UTType(importedAs: "com.acherian.cbr")].compactMap { $0 }
         
-        let documentPicker = KSRDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
+        let documentPicker = KMRDocumentPickerViewController(forOpeningContentTypes: fileTypes, asCopy: false)
         documentPicker.delegate = self
         documentPicker.allowsMultipleSelection = true
         documentPicker.modalPresentationStyle = .fullScreen

@@ -26,25 +26,20 @@ class SizingTableView: UITableView {
 }
 
 
-final class KSRDocumentPickerViewController: UIDocumentPickerViewController {
+final class KMRDocumentPickerViewController: UIDocumentPickerViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let toolbar = UIToolbar.appearance()
-        toolbar.barTintColor = .black
-        toolbar.backgroundColor = .black
-        toolbar.isTranslucent = true
-
+        resetNavbarAppearance()
+        resetToolbarAppearance()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        let toolbar = UIToolbar.appearance()
-        toolbar.barTintColor = .black
-        toolbar.backgroundColor = .black
-        toolbar.isTranslucent = false
+        configureNavbarAppearance()
+        configureToolbarAppearance()
     }
 }
 
