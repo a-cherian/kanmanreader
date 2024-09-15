@@ -73,7 +73,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let creditText = NSMutableAttributedString(string: "")
 
         let appName = NSMutableAttributedString(string: "Acknowledgments\n\n")
-        appName.addAttribute(NSAttributedString.Key.font, value: Constants.zhFontBoldSmall as Any, range: NSRange(location: 0, length: appName.length))
+        appName.addAttribute(NSAttributedString.Key.font, value: Constants.zhFontBoldMedium as Any, range: NSRange(location: 0, length: appName.length))
         let ccceDict = NSAttributedString(string: "CC-CEDICT Dictionary from mdbg.net, distributed under a Creative Commons license, see http://creativecommons.org/licenses/by-sa/4.0/ for details.")
 
         creditText.append(appName)

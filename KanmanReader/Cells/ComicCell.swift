@@ -15,6 +15,20 @@ class ComicCell: UICollectionViewCell {
     
     weak var delegate: ComicCellDelegate?
     static let identifier = "comic"
+    var chapterNumber: CGFloat? = nil {
+        didSet {
+            if let chapterNumber = chapterNumber {
+                let formatter = NumberFormatter()
+                formatter.numberStyle = .decimal
+                chapterLabel.text = formatter.string(for: chapterNumber)
+                chapterLabel.isHidden = false
+            }
+            else {
+                chapterLabel.text = ""
+                chapterLabel.isHidden = true
+            }
+        }
+    }
     
     override var isSelected: Bool{
       didSet {
@@ -69,6 +83,21 @@ class ComicCell: UICollectionViewCell {
         return imageView
     }()
     
+    lazy var chapterLabel: UILabel = {
+        let label = UILabel()
+        
+        label.backgroundColor = .black
+        label.textColor = Constants.accentColor
+        label.layer.cornerRadius = 5
+        
+        label.clipsToBounds = true
+        label.textAlignment = .center
+        label.font = Constants.zhFontBoldSmall
+        label.text = ""
+        
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .clear
@@ -89,6 +118,7 @@ class ComicCell: UICollectionViewCell {
         contentView.addSubview(title)
         contentView.addSubview(progress)
         contentView.addSubview(selectView)
+        contentView.addSubview(chapterLabel)
     }
     
     func configureUI(frame: CGRect) {
@@ -96,6 +126,7 @@ class ComicCell: UICollectionViewCell {
         configureTitle()
         configureProgress()
         configureSelectView()
+        configureChapterLabel()
     }
     
     func configureCoverView() {
@@ -135,6 +166,16 @@ class ComicCell: UICollectionViewCell {
             selectView.trailingAnchor.constraint(equalTo: coverView.trailingAnchor, constant: -10),
             selectView.heightAnchor.constraint(equalToConstant: 35),
             selectView.widthAnchor.constraint(equalToConstant: 35)
+        ])
+    }
+    
+    func configureChapterLabel() {
+        chapterLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            chapterLabel.topAnchor.constraint(equalTo: coverView.topAnchor),
+            chapterLabel.leadingAnchor.constraint(equalTo: coverView.leadingAnchor),
+            chapterLabel.heightAnchor.constraint(equalToConstant: 35),
+            chapterLabel.widthAnchor.constraint(equalToConstant: 35)
         ])
     }
     

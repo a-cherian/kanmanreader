@@ -196,6 +196,36 @@ extension UIImage {
     }
 }
 
+extension UIAlertController{
+    func show() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let currentWindow = windowScene.windows.first(where: { $0.isKeyWindow }),
+           var topController = currentWindow.rootViewController {
+               while let presentedViewController = topController.presentedViewController {
+                   topController = presentedViewController
+               }
+               topController.present(self, animated: true, completion: nil)
+       }
+   }
+}
+
+extension UITableView {
+    func selectAll(animated: Bool = false) {
+        let totalSections = self.numberOfSections
+        for section in 0 ..< totalSections {
+            let totalRows = self.numberOfRows(inSection: section)
+            for row in 0 ..< totalRows {
+                let indexPath = IndexPath(row: row, section: section)
+                // call the delegate's willSelect, select the row, then call didSelect
+                self.delegate?.tableView?(self, willSelectRowAt: indexPath)
+                self.selectRow(at: indexPath, animated: animated, scrollPosition: .none)
+                self.delegate?.tableView?(self, didSelectRowAt: indexPath)
+            }
+        }
+    }
+
+}
+
 extension CGRect: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(NSCoder.string(for: self))

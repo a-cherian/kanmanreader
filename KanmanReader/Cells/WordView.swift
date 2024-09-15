@@ -23,7 +23,7 @@ class WordView: UIView {
         
         view.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         view.textAlignment = .left
-        view.font = Constants.zhFontRegularSmall
+        view.font = Constants.zhFontRegularMedium
         
         view.isEditable = false
         view.isUserInteractionEnabled = false

@@ -45,7 +45,7 @@ struct CoreDataManager {
         return nil
     }
     
-    func createComics(comicData: [(name: String, lastPage: Int, totalPages: Int, cover: Data, lastOpened: Date, prefs: String, uuid: String)]) async -> Bool {
+    func createComics(comicData: [[AnyHashable : Any]]) async -> Int {
         // Create a private context
         let context = persistentContainer.newBackgroundContext()
 //        
@@ -54,28 +54,35 @@ struct CoreDataManager {
                 var i = 0
                 let batchRequest = NSBatchInsertRequest(entityName: "Comic", dictionaryHandler: { dict in
                     if i < comicData.count {
-                        let comic = ["name": comicData[i].name,
-                                     "lastPage": comicData[i].lastPage,
-                                     "totalPages": comicData[i].totalPages,
-                                     "cover": comicData[i].cover,
-                                     "lastOpened": comicData[i].lastOpened,
-                                     "preferences": comicData[i].prefs,
-                                     "uuid": comicData[i].uuid]
+                        let comic = comicData[i]
                         dict.setDictionary(comic)
                         i += 1
                         return false
                     }
                     return true
                 })
-                batchRequest.resultType = .statusOnly
-                let result = try context.execute(batchRequest) as! NSBatchInsertResult
-                return result.result as! Bool
+//                batchRequest.resultType = .objectIDs
+//                let result = try context.execute(batchRequest) as! NSBatchInsertResult
+//                let changes: [AnyHashable: Any] = [
+//                    NSInsertedObjectsKey: result.result as! [NSManagedObjectID]
+//                ]
+//                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
+                
+                
+                batchRequest.resultType = .objectIDs
+
+                let result = try context.execute(batchRequest) as? NSBatchInsertResult
+                let objectIDArray = result?.result as? [NSManagedObjectID] ?? []
+                let changes: [AnyHashable: Any] = [NSInsertedObjectsKey: objectIDArray]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [persistentContainer.viewContext])
+                
+                return objectIDArray.count
             }
         }
         catch let createError {
             print("Failed to create: \(createError)")
         }
-        return false
+        return 0
     }
     
     func fetchComic(name: String) -> Comic? {
@@ -104,6 +111,38 @@ struct CoreDataManager {
         }
         
         return nil
+    }
+    
+    func getComicResultsController(delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<Comic> {
+        let context = persistentContainer.viewContext
+        
+        // Create a fetch request and sort descriptor for the entity to display
+        // in the table view.
+        let fetchRequest: NSFetchRequest<Comic> = Comic.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "lastOpened", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.fetchBatchSize = 20
+
+
+        // Initialize the fetched results controller with the fetch request and
+        // managed object context.
+        let fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        fetchedResultsController.delegate = delegate
+        
+        // Perform a fetch.
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            // Handle error appropriately. It's useful to use
+            // `fatalError(_:file:line:)` during development.
+            fatalError("Failed to perform fetch: \(error.localizedDescription)")
+        }
+        
+        return fetchedResultsController
     }
     
     func fetchComics() -> [Comic]? {

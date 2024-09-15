@@ -33,11 +33,16 @@ struct Constants {
     
     
     // FONTS
+    static let smallFont: CGFloat = 15
+    static let mediumFont: CGFloat = 20
     static let largeFont: CGFloat = 24
-    static let smallFont: CGFloat = 20
+    
     static let zhFontRegularSmall = UIFont(name: "PingFangTC-Regular", size: smallFont)
+    static let zhFontRegularMedium = UIFont(name: "PingFangTC-Regular", size: mediumFont)
     static let zhFontRegularLarge = UIFont(name: "PingFangTC-Regular", size: largeFont)
+    
     static let zhFontBoldSmall = UIFont(name: "PingFangTC-Semibold", size: smallFont)
+    static let zhFontBoldMedium = UIFont(name: "PingFangTC-Semibold", size: mediumFont)
     static let zhFontBoldLarge = UIFont(name: "PingFangTC-Semibold", size: largeFont)
     
     

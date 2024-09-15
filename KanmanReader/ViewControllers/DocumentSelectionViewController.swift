@@ -7,10 +7,12 @@
 
 import UIKit
 import UniformTypeIdentifiers
+import CoreData
 
 class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIViewControllerTransitioningDelegate {
     
-    var comics: [Comic] = []
+//    var comics: [Comic] = []
+    var comicFetchResultsController = NSFetchedResultsController<Comic>()
     var selectedComic: Comic? = nil
     var isSelecting = false
     
@@ -42,6 +44,11 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     lazy var cancelButton = {
         let item = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapSelect))
+        return item
+    }()
+    
+    lazy var selectAllButton = {
+        let item = UIBarButtonItem(title: "Select All", style: .plain, target: self, action: #selector(didTapSelectAll))
         return item
     }()
     
@@ -85,6 +92,9 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         
         disableSelectionMode()
         
+        comicFetchResultsController = CoreDataManager.shared.getComicResultsController(delegate: self)
+        comicFetchResultsController.delegate = self
+        
         refreshData()
         
         addSubviews()
@@ -92,26 +102,26 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setToolbarHidden(false, animated: false)
         refreshData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshData), name: UIApplication.didBecomeActiveNotification, object: nil)
-        hidesBottomBarWhenPushed = true
         
         checkOnboarding()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self)
-        hidesBottomBarWhenPushed = false
     }
     
     @objc func refreshData() {
-        comics = ComicFileManager.retrieveComics()
+//        comics = ComicFileManager.retrieveComics()
         documentCollectionView.reloadData()
         
-        emptyLabel.isHidden = comics.count > 0 && !(comics.count == 1 && comics[0].isTutorial)
+        let visibleComicCount = comicFetchResultsController.sections?[0].numberOfObjects ?? 0
+        emptyLabel.isHidden = visibleComicCount > 0 && !(visibleComicCount == 1  && comicFetchResultsController.object(at: IndexPath(item: 0, section: 0)).isTutorial)
     }
     
     func addSubviews() {
@@ -167,20 +177,20 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         isSelecting = false
         documentCollectionView.allowsSelection = false
         documentCollectionView.allowsMultipleSelection = false
+        
         navigationItem.rightBarButtonItems = [moreButton, selectButton]
         navigationItem.leftBarButtonItems = [importButton]
-//        navigationController?.setToolbarHidden(true, animated: false)
+        toolbarItems = []
     }
     
     func enableSelectionMode() {
         isSelecting = true
         documentCollectionView.allowsSelection = true
         documentCollectionView.allowsMultipleSelection = true
+        
         navigationItem.rightBarButtonItems = [cancelButton]
-        navigationItem.leftBarButtonItems = [deleteButton]
-//        navigationItem.leftBarButtonItems = []
-//        toolbarItems = [UIBarButtonItem(systemItem: .flexibleSpace), deleteButton]
-//        navigationController?.setToolbarHidden(false, animated: false)
+        navigationItem.leftBarButtonItems = [selectAllButton]
+        toolbarItems = [UIBarButtonItem(systemItem: .flexibleSpace), deleteButton]
     }
     
     @objc func didTapImport() {
@@ -206,10 +216,17 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         refreshData()
     }
     
+    @objc func didTapSelectAll() {
+//        documentCollectionView.selectAll(<#T##sender: Any?##Any?#>)
+        for row in 0..<documentCollectionView.numberOfItems(inSection: 0) {
+            documentCollectionView.selectItem(at: IndexPath(row: row, section: 0), animated: false, scrollPosition: [])
+        }
+    }
+    
     @objc func didTapDelete() {
         let selected = documentCollectionView.indexPathsForSelectedItems
         let comicsToDelete = selected?.compactMap { indexPath in
-            self.comics[indexPath.item]
+            comicFetchResultsController.object(at: indexPath)
         } ?? []
         
         if comicsToDelete.count == 0  { return }
@@ -226,7 +243,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
                 comicsToDelete.forEach { comic in
                     ComicFileManager.deleteComic(comic: comic)
                 }
-                self.refreshData()
                 self.disableSelectionMode()
         }))
         alert.addAction(UIAlertAction(
@@ -239,7 +255,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func didTapComic(position: Int) {
-        let comic = comics[position]
+        let comic = comicFetchResultsController.object(at: IndexPath(item: position, section: 0))
         openComic(comic)
     }
     
@@ -268,7 +284,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
                 let name = alert.textFields?[0].text
                 comic.name = name
                 CoreDataManager.shared.updateComic(comic: comic)
-                self.refreshData()
         }))
         alert.addAction(UIAlertAction(
             title: "Cancel",
@@ -291,7 +306,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
             handler: { _ in
                 comic.lastPage = 0
                 CoreDataManager.shared.updateComic(comic: comic)
-                self.refreshData()
         }))
         alert.addAction(UIAlertAction(
             title: "Cancel",
@@ -330,7 +344,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
             style: .destructive,
             handler: { _ in
                 ComicFileManager.deleteComic(comic: comic)
-                self.refreshData()
         }))
         alert.addAction(UIAlertAction(
             title: "Cancel",
@@ -352,7 +365,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     func pickedCover(_ image: UIImage) {
         selectedComic?.cover = image.pngData()
         CoreDataManager.shared.updateComic(comic: selectedComic)
-        refreshData()
     }
     
     func getEmptyLabelText() -> NSAttributedString {
@@ -375,20 +387,30 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
 
 
 
-extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
+extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+        refreshData()
+    }
+    
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let comics = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
-                         .compactMap { url in
-                             return ComicFileManager.createComic(from: url)
-                         }
+//        let comics = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
+//                         .compactMap { url in
+//                             return ComicFileManager.createComic(from: url)
+//                         }
         
-        if(urls.count == 1 && comics.count == 1) {
+        
+        if(urls.count == 1) {
             controller.dismiss(animated: true, completion: {
-                self.openComic(comics[0])
+                guard let comic = ComicFileManager.createComic(from: urls[0]) else { return }
+                self.openComic(comic)
             })
         }
-        
-        refreshData()
+        else {
+            Task {
+                await ComicFileManager.createComics(for: urls)
+                print("Batch of comics created...")
+            }
+        }
     }
     
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
@@ -396,11 +418,11 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return comics.count
+        return comicFetchResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let comic = comics[indexPath.item]
+        let comic = comicFetchResultsController.object(at: indexPath)
         
         let cell = documentCollectionView.dequeueReusableCell(withReuseIdentifier: ComicCell.identifier, for: indexPath) as! ComicCell
         cell.tag = indexPath.item
@@ -413,7 +435,28 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         cell.coverView.image = UIImage(data: comic.cover ?? Data()) ?? UIImage()
         
         cell.selectView.isHidden = !isSelecting
+        cell.chapterNumber = nil
         
+        // try to scan english chapter number
+        let scanner = Scanner(string: comic.name ?? "")
+        _ = scanner.scanUpToCharacters(from: CharacterSet(charactersIn: "123456789."))
+        if let scannedVal = scanner.scanDouble() {
+            cell.chapterNumber = CGFloat(scannedVal)
+            return cell
+        }
+        
+        // try to scan chinese chapter number
+        if let chineseNumber = comic.name?.firstMatch(of: /[零一二三四五六七八九十百千万亿兆]+/)?.0 as? Substring {
+            let formatter = NumberFormatter()
+            formatter.locale = Locale(identifier: "zh")
+            formatter.numberStyle = .spellOut
+            guard let number = formatter.number(from: String(chineseNumber)) else { return cell }
+            cell.chapterNumber = CGFloat(truncating: number)
+            
+            return cell
+        }
+        
+        cell.chapterNumber = nil
         return cell
     }
     
@@ -421,7 +464,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
                          contextMenuConfigurationForItemAt indexPath: IndexPath,
                          point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            let comic = self.comics[indexPath.item]
+            let comic = self.comicFetchResultsController.object(at: indexPath)
             
             let renameAction = UIAction(title: "Rename") { _ in self.renameAction(comic) }
             let changeCoverAction = UIAction(title: "Change Cover") { _ in self.changeCover(comic) }

@@ -105,6 +105,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         super.viewDidLoad()
         
         view.backgroundColor = .black
+        
+        title = "\(comic.lastPage + 1) / \(comic.totalPages)"
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: prefsButton)
         
@@ -119,6 +121,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         tipManager?.startTasks()
+        navigationController?.setToolbarHidden(true, animated: false)
         NotificationCenter.default.addObserver(self, selector: #selector(closeComic), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
@@ -247,12 +250,12 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
             let image = hReader.currentImage
             zoomedRect = image.getZoomedRect(from: reader.currentPage)
             textRecognizer.requestInitialVision(for: image, with: zoomedRect)
-            hReader.currentPage.didSingleTap(sender)
+            if(!DictionaryTip.tipEnabled) { hReader.currentPage.didSingleTap(sender) }
         }
         else if let vReader = reader as? VReaderViewController {
             guard let image = vReader.tableView.screenshot() else { return }
             textRecognizer.requestInitialVision(for: image)
-            vReader.didSingleTap(sender)
+            if(!DictionaryTip.tipEnabled) { vReader.didSingleTap(sender) }
         }
     }
     
@@ -294,7 +297,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
 
 
 
-extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegate, HReaderDelegate, ReaderPrefsDelegate {
+extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegate, ReaderDelegate, ReaderPrefsDelegate {
     func didPerformVision(image: UIImage) {
         if let hReader = reader as? HReaderViewController {
             hReader.currentPage.imageView.image = image
@@ -343,6 +346,8 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
     func didFlipPage() {
         textRecognizer = TextRecognizer()
         textRecognizer.delegate = self
+        
+        title = "\(reader.position + 1) / \(comic.totalPages)"
     }
     
     func changedScroll(to direction: Direction) {

@@ -10,13 +10,20 @@ import UIKit
 class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UITableViewDelegate {
     
     weak var delegate: PageDelegate?
+    weak var rDelegate: ReaderDelegate?
     
     var pages: [UIImage] = []
     var startPosition: Int = 0
     var position: Int {
-        let cell = tableView.visibleCells.first as! ImageCell
+        guard tableView.window != nil else { return 0 }
         
-        return max(min(cell.position, pages.count - 1), 0)
+        let cell = tableView.visibleCells.first as? ImageCell
+        
+        if let visibleRows = tableView.indexPathsForVisibleRows, visibleRows.contains(where: { $0.item == pages.count - 1 }) {
+            return pages.count - 1
+        }
+        
+        return max(min(cell?.position ?? 0, pages.count - 1), 0)
     }
     var currentImage: UIImage { return pages[position] }
     var currentPage: Page = Page()
@@ -47,10 +54,13 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
         super.init(nibName: nil, bundle: nil)
         
         self.delegate = parent
+        self.rDelegate = parent
         self.pages = images
+
+        addGestureRecognizers()
+        
         tableView.scrollToRow(at: IndexPath(row: position, section: 0), at: .top, animated: false)
         tableView.reloadData()
-        addGestureRecognizers()
     }
     
     required init?(coder: NSCoder) {
@@ -61,7 +71,6 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
         super.viewDidLoad()
         
         add(view: tableView)
-        tableView.reloadData()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -137,7 +146,7 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
             let row = self.tableView.indexPathForRow(at: newOffset)
             
             if let firstCell = tableView.visibleCells.first, row == self.tableView.indexPath(for: firstCell) {
-                self.tableView.setContentOffset(newOffset, animated: true)
+                self.tableView.setContentOffset(newOffset, animated: false)
             }
             else if let row = row {
                 self.tableView.scrollToRow(at: row, at: .top, animated: true)
@@ -157,5 +166,9 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pages.count
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        rDelegate?.didFlipPage()
     }
 }

@@ -8,13 +8,13 @@
 import UIKit
 import TipKit
 
-protocol HReaderDelegate: AnyObject {
+protocol ReaderDelegate: AnyObject {
     func didFlipPage()
 }
 
 class HReaderViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, Reader {
     
-    weak var rDelegate: HReaderDelegate?
+    weak var rDelegate: ReaderDelegate?
     
     var pages: [UIImage] = []
     var position: Int {

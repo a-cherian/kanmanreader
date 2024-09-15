@@ -17,6 +17,24 @@ struct ComicFileManager {
     static let LINK_CHECKING = true // make false when using dummy databases for simulator screenshots
     
     @discardableResult
+    static func createComics(for urls: [URL]) async -> Int {
+        let comics = CoreDataManager.shared.fetchComics()
+        let comicData: [[AnyHashable : Any]] = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
+            .compactMap { url in
+                if comics?.first(where: { $0.url == url }) != nil { return nil }
+                    
+                let name = getFileName(for: url)
+                guard let uuid = try? createBookmark(url: url) else { return nil }
+                guard let (cover, totalPages) = try? getInfo(for: url) else { return nil }
+                if(totalPages == 0 ) { return nil }
+                
+                return ["name": name, "lastPage": 0, "totalPages": totalPages, "cover": cover, "lastOpened": Date(), "preferences": ReaderPreferences().string, "uuid": uuid]
+            }
+
+        return await CoreDataManager.shared.createComics(comicData: comicData)
+    }
+    
+    @discardableResult
     static func createComic(from url: URL, name: String? = nil, openInPlace: Bool = true) -> Comic? {
         let comics = CoreDataManager.shared.fetchComics()
         
@@ -36,6 +54,20 @@ struct ComicFileManager {
         }
         catch {
             print("Couldn't create comic for \(url): \(error)")
+            
+            let alert = UIAlertController(
+                title: "Manhua import failed",
+                message: "Manhua was unable to be imported. Try again, or contact support if the problem persists.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: "OK",
+                style: .default,
+                handler: { _ in
+                // cancel action
+            }))
+            alert.show()
+            
             return nil
         }
     }
@@ -100,7 +132,7 @@ struct ComicFileManager {
         return comics?.sorted(by: { $0.lastOpened ?? Date(timeIntervalSince1970: 0) > $1.lastOpened ?? Date(timeIntervalSince1970: 0) }) ?? []
     }
     
-    static func createBookmark(url: URL, openInPlace: Bool = true) throws -> String? {
+    static func createBookmark(url: URL, openInPlace: Bool = true) throws -> String {
         if(!openInPlace) { return try writeBookmark(url: url) }
         
         guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
@@ -110,7 +142,7 @@ struct ComicFileManager {
         return try writeBookmark(url: url)
     }
     
-    static func writeBookmark(url: URL) throws -> String? {
+    static func writeBookmark(url: URL) throws -> String {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
@@ -177,7 +209,6 @@ struct ComicFileManager {
     
     static func deleteBookmarks() {
         let files = try? FileManager.default.contentsOfDirectory(at:  getBookmarkDirectory(), includingPropertiesForKeys: nil)
-        let fm = FileManager.default
         
         files?.forEach { file in
             deleteFile(url: file)

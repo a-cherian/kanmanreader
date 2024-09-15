@@ -20,7 +20,8 @@ struct OCRTip: Tip {
     }
     
     var image: Image? {
-        Image(systemName: "rectangle.and.text.magnifyingglass")    }
+        Image(systemName: "hand.tap.fill")
+    }
     
     var rules: [Rule] {
         #Rule(Self.$tipEnabled) { $0 == true }
@@ -40,7 +41,7 @@ struct BoxTip: Tip {
     }
     
     var image: Image? {
-        Image(systemName: "list.dash.header.rectangle")
+        Image(systemName: "rectangle.and.hand.point.up.left.filled")
     }
     
     var rules: [Rule] {
