@@ -20,7 +20,7 @@ func configureToolbarAppearance() {
     toolbar.barTintColor = .black
     toolbar.backgroundColor = .black
     toolbar.tintColor = Constants.accentColor
-    toolbar.isTranslucent = false
+    toolbar.isTranslucent = true
 }
 
 func resetNavbarAppearance() {

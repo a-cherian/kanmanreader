@@ -1,5 +1,5 @@
 //
-//  EntryCreationViewController.swift
+//  DocumentSelectionViewController.swift
 //  KanmanReader
 //
 //  Created by AC on 12/15/23.
@@ -58,11 +58,12 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: min(screenWidth / 2.5, screenHeight / 5), height: screenHeight / 3)
-        layout.sectionInset = UIEdgeInsets(top: 10, left: -5, bottom: 10, right: -5)
+        layout.itemSize = CGSize(width: min(screenWidth / 2.5, screenHeight / 5), height: screenHeight / 4)
+        layout.minimumLineSpacing = 20
+        layout.sectionInset = UIEdgeInsets(top: 0, left: -5, bottom: 0, right: -5)
         
         let collection = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
-        collection.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 15)
+        collection.contentInset = UIEdgeInsets(top: 30, left: 15, bottom: 30, right: 15)
         collection.backgroundColor = .clear
         collection.tintColor = .black
         collection.showsVerticalScrollIndicator = false
@@ -90,6 +91,8 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         view.backgroundColor = .white
         view.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         
+        navigationController?.toolbar.frame = navigationController?.tabBarController?.tabBar.frame ?? navigationController?.toolbar.frame ?? .zero
+        
         disableSelectionMode()
         
         comicFetchResultsController = CoreDataManager.shared.getComicResultsController(delegate: self)
@@ -102,22 +105,22 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setToolbarHidden(false, animated: false)
         refreshData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshData), name: UIApplication.didBecomeActiveNotification, object: nil)
         
+        hidesBottomBarWhenPushed = true
         checkOnboarding()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        hidesBottomBarWhenPushed = false
         NotificationCenter.default.removeObserver(self)
     }
     
     @objc func refreshData() {
-//        comics = ComicFileManager.retrieveComics()
         documentCollectionView.reloadData()
         
         let visibleComicCount = comicFetchResultsController.sections?[0].numberOfObjects ?? 0
@@ -181,6 +184,8 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         navigationItem.rightBarButtonItems = [moreButton, selectButton]
         navigationItem.leftBarButtonItems = [importButton]
         toolbarItems = []
+        
+        navigationController?.setToolbarHidden(true, animated: true)
     }
     
     func enableSelectionMode() {
@@ -191,6 +196,8 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         navigationItem.rightBarButtonItems = [cancelButton]
         navigationItem.leftBarButtonItems = [selectAllButton]
         toolbarItems = [UIBarButtonItem(systemItem: .flexibleSpace), deleteButton]
+
+        navigationController?.setToolbarHidden(false, animated: true)
     }
     
     @objc func didTapImport() {
@@ -217,7 +224,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     @objc func didTapSelectAll() {
-//        documentCollectionView.selectAll(<#T##sender: Any?##Any?#>)
         for row in 0..<documentCollectionView.numberOfItems(inSection: 0) {
             documentCollectionView.selectItem(at: IndexPath(row: row, section: 0), animated: false, scrollPosition: [])
         }
@@ -263,9 +269,24 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         if let url = comic.url {
             comic.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: comic)
-            guard let images = try? ComicFileManager.getImages(for: url) else { return }
-            self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
+            if let images = try? ComicFileManager.getImages(for: url) {
+                self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
+                return
+            }
         }
+        
+        let alert = UIAlertController(
+            title: "Could not open manhua",
+            message: "Manhua was unable to be opened. Try re-importing the manhua file, or contact support if the problem persists.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { _ in
+                // cancel action
+            }))
+        alert.show()
     }
     
     func renameAction(_ comic: Comic) {
@@ -393,12 +414,6 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-//        let comics = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
-//                         .compactMap { url in
-//                             return ComicFileManager.createComic(from: url)
-//                         }
-        
-        
         if(urls.count == 1) {
             controller.dismiss(animated: true, completion: {
                 guard let comic = ComicFileManager.createComic(from: urls[0]) else { return }

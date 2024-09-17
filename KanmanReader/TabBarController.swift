@@ -25,10 +25,10 @@ class TabBarController: UITabBarController {
         let documentsNav = UINavigationController(rootViewController: documents)
         
         // vocabulary
-//        let stats = StatsViewController()
-//        stats.tabBarItem.image = UIImage(systemName: "doc.plaintext")
-//        stats.tabBarItem.title = "Saved"
-//        let statsNav = UINavigationController(rootViewController: stats)
+//        let vocab = VocabViewController()
+//        vocab.tabBarItem.image = UIImage(systemName: "doc.plaintext")
+//        vocab.tabBarItem.title = "Saved"
+//        let vocabNav = UINavigationController(rootViewController: vocab)
         
         // settings
 //        let settings = SettingsViewController()

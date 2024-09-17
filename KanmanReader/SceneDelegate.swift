@@ -28,9 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         configureNavbarAppearance()
         configureToolbarAppearance()
 
-        let documents = DocumentSelectionViewController()
-        let documentsNav = UINavigationController(rootViewController: documents)
-        window.rootViewController = documentsNav
+        window.rootViewController = TabBarController()
         
         self.window = window
         window.makeKeyAndVisible()

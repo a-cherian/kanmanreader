@@ -44,7 +44,7 @@ class ComicCell: UICollectionViewCell {
     lazy var title: UILabel = {
         let label = UILabel()
         label.text = "[Title]"
-        label.textColor = .black
+        label.textColor = .white
         label.textAlignment = .center
         label.font = label.font.withSize(15)
         label.lineBreakMode = .byTruncatingMiddle
@@ -68,7 +68,7 @@ class ComicCell: UICollectionViewCell {
     lazy var progress: UILabel = {
         let label = UILabel()
         label.text = "[Pages]"
-        label.textColor = .black
+        label.textColor = .white
         label.textAlignment = .center
         label.font = label.font.withSize(15)
         return label
@@ -81,6 +81,21 @@ class ComicCell: UICollectionViewCell {
         imageView.backgroundColor = .black 
         imageView.layer.cornerRadius = 35 / 2
         return imageView
+    }()
+    
+    lazy var finishedView: UILabel = {
+        let label = UILabel()
+        
+        label.backgroundColor = .black.withAlphaComponent(0.5)
+        label.textColor = .white
+        label.layer.cornerRadius = 5
+        
+        label.clipsToBounds = true
+        label.textAlignment = .center
+        label.font = Constants.zhFontBoldSmall
+        label.text = "Finished"
+        
+        return label
     }()
     
     lazy var chapterLabel: UILabel = {
@@ -100,7 +115,9 @@ class ComicCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .clear
+        contentView.backgroundColor = .black
+        contentView.layer.cornerRadius = 5
+        
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
         addGestureRecognizer(tapGesture)
@@ -132,9 +149,9 @@ class ComicCell: UICollectionViewCell {
     func configureCoverView() {
         coverView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            coverView.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            coverView.topAnchor.constraint(equalTo: topAnchor),
             coverView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            coverView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -30)
+            coverView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor)
         ])
     }
     
@@ -152,7 +169,7 @@ class ComicCell: UICollectionViewCell {
         progress.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             progress.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 5),
-            progress.bottomAnchor.constraint(equalTo: bottomAnchor),
+            progress.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
             progress.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             progress.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             progress.heightAnchor.constraint(equalToConstant: 20)
