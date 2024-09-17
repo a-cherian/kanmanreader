@@ -110,7 +110,7 @@ struct BorderTipViewStyle: TipViewStyle {
         .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Constants.suiDarkAccentColor, lineWidth: 3)
+                .strokeBorder(.darkAccent, lineWidth: 3)
         )
 
     }
@@ -120,7 +120,7 @@ extension TipUIPopoverViewController {
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let borderColor = Constants.darkAccentColor.cgColor
+        let borderColor = UIColor.darkAccent.cgColor
         let fillColor = UIColor.clear.cgColor
         let lineWidth = 6.0
         

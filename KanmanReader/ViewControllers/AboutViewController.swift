@@ -29,7 +29,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.darkAccentColor
+        view.backgroundColor = .darkAccent
         view.layoutMargins = UIEdgeInsets(top: 50, left: 5, bottom: 50, right: 5)
         
         addSubviews()

@@ -11,7 +11,7 @@ func configureNavbarAppearance() {
     let navbar = UINavigationBar.appearance()
     navbar.barTintColor = .black
     navbar.backgroundColor = .black
-    navbar.tintColor = Constants.accentColor
+    navbar.tintColor = UIColor.accent
     navbar.isTranslucent = false
 }
 
@@ -19,7 +19,7 @@ func configureToolbarAppearance() {
     let toolbar = UIToolbar.appearance()
     toolbar.barTintColor = .black
     toolbar.backgroundColor = .black
-    toolbar.tintColor = Constants.accentColor
+    toolbar.tintColor = UIColor.accent
     toolbar.isTranslucent = true
 }
 

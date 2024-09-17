@@ -46,7 +46,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         button.backgroundColor = .black
         button.tintColor = .white
         button.layer.cornerRadius = 10
-        button.layer.borderColor = Constants.accentColor.cgColor
+        button.layer.borderColor = UIColor.accent.cgColor
         button.layer.borderWidth = 2
         
         button.addTarget(self, action: #selector(didTapPrefs), for: .touchUpInside)
@@ -72,7 +72,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         var config = UIButton.Configuration.plain()
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        config.baseForegroundColor = Constants.accentColor
+        config.baseForegroundColor = .accent
         button.configuration? = config
         
         button.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)

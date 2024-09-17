@@ -88,6 +88,8 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Library"
+        
         view.backgroundColor = .white
         view.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         

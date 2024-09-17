@@ -295,7 +295,7 @@ class SampleTipViewController: UIViewController {
         button.backgroundColor = .black
         button.tintColor = .white
         button.layer.cornerRadius = 10
-        button.layer.borderColor = Constants.accentColor.cgColor
+        button.layer.borderColor = UIColor.accent.cgColor
         button.layer.borderWidth = 2
         button.setTitle("Go to tutorial", for: .normal)
         

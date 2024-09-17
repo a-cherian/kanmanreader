@@ -77,8 +77,8 @@ class ComicCell: UICollectionViewCell {
     lazy var selectView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "circle")
-        imageView.tintColor =  Constants.accentColor
-        imageView.backgroundColor = .black 
+        imageView.tintColor =  .accent
+        imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 35 / 2
         return imageView
     }()
@@ -102,7 +102,7 @@ class ComicCell: UICollectionViewCell {
         let label = UILabel()
         
         label.backgroundColor = .black
-        label.textColor = Constants.accentColor
+        label.textColor = .accent
         label.layer.cornerRadius = 5
         
         label.clipsToBounds = true

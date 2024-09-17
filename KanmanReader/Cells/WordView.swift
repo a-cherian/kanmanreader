@@ -18,7 +18,7 @@ class WordView: UIView {
         view.backgroundColor = .white
         view.textColor = .black
         view.layer.cornerRadius = 10
-        view.layer.borderColor = Constants.darkAccentColor.cgColor
+        view.layer.borderColor = UIColor.darkAccent.cgColor
         view.layer.borderWidth = 3
         
         view.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
