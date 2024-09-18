@@ -31,14 +31,13 @@ class TabBarController: UITabBarController {
 //        let vocabNav = UINavigationController(rootViewController: vocab)
         
         // settings
-//        let settings = SettingsViewController()
-//        settings.tabBarItem.image = UIImage(systemName: "gearshape.fill")
-//        settings.tabBarItem.title = "Settings"
-//        let settingsNav = UINavigationController(rootViewController: settings)
+        let settings = SettingsViewController()
+        settings.tabBarItem.image = UIImage(systemName: "gearshape.fill")
+        settings.tabBarItem.title = "Settings"
+        let settingsNav = UINavigationController(rootViewController: settings)
         
         tabBar.backgroundColor = .black
         
-        setViewControllers([documentsNav], animated: true)
+        setViewControllers([documentsNav, settingsNav], animated: true)
     }
-
 }

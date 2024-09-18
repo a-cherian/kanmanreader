@@ -19,10 +19,9 @@ struct Constants {
     static let LATEST_DICT_UPDATE_KEY = "dictDate"
     static let LATEST_DICT_UPDATE = "2024-08-19"
     
+    static let APP_PREFERENCES_KEY = "appPreferences"
     static let HAS_ONBOARDED_KEY = "hasOnboarded"
     static let FINISHED_TIPS_KEY = "finishedTips"
-    static let PRIORITIZE_TRADITIONAL_KEY = "prioritizeTraditional"
-    static let DISPLAY_SECONDARY_KEY = "displaySecondary"
     
     
     // COLORS

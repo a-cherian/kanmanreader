@@ -11,6 +11,7 @@ import CoreData
 
 class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIViewControllerTransitioningDelegate {
     
+    var appPreferences = AppPreferences(from: nil)
 //    var comics: [Comic] = []
     var comicFetchResultsController = NSFetchedResultsController<Comic>()
     var selectedComic: Comic? = nil
@@ -107,6 +108,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        appPreferences = AppPreferences(from: nil)
         refreshData()
     }
     
@@ -268,18 +270,20 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func openComic(_ comic: Comic) {
-        if let url = comic.url {
+        if let url = comic.url, let images = try? ComicFileManager.getImages(for: url) {
             comic.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: comic)
-            if let images = try? ComicFileManager.getImages(for: url) {
-                self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
-                return
-            }
+            comic.lastOpened = Date()
+            CoreDataManager.shared.updateComic(comic: comic)
+            self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
+            return
         }
+        
+        ComicFileManager.deleteComic(comic: comic)
         
         let alert = UIAlertController(
             title: "Could not open manhua",
-            message: "Manhua was unable to be opened. Try re-importing the manhua file, or contact support if the problem persists.",
+            message: "\"\(comic.name ?? "Manhua")\" was unable to be opened, and will be removed from your library. Try re-importing the manhua file, or contact support if the problem persists.",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
@@ -340,7 +344,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func openTutorial() {
-        guard let tutorial = CoreDataManager.shared.fetchComic(name: "Tutorial") ?? ComicFileManager.createTutorial() else { return }
+        guard let tutorial = ComicFileManager.createTutorial() else { return }
         openComic(tutorial)
     }
     
@@ -453,6 +457,8 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         
         cell.selectView.isHidden = !isSelecting
         cell.chapterNumber = nil
+        
+        if(!appPreferences.displayChapterNumbers) { return cell }
         
         // try to scan english chapter number
         let scanner = Scanner(string: comic.name ?? "")

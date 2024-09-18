@@ -10,6 +10,7 @@ import UIKit
 class DictionaryViewController: UIViewController, UITextViewDelegate {
     
     var searchLimit = 8
+    var appPreferences = AppPreferences(from: nil)
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -202,7 +203,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
                 addLineToWordStack()
             }
             
-            let wordView = WordView(word: entry)
+            let wordView = WordView(word: entry, preferences: appPreferences)
             wordStackView.addArrangedSubview(wordView)
             
             if((i < entries.count - 1 && entry.simplified != entries[i + 1].simplified)) {
@@ -219,47 +220,6 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         line.translatesAutoresizingMaskIntoConstraints = false
         line.heightAnchor.constraint(equalToConstant: 5).isActive = true
         line.widthAnchor.constraint(lessThanOrEqualTo: wordStackView.widthAnchor).isActive = true
-    }
-    
-    func generateTranslationString(entries: [DictEntry]) -> String {
-        if(entries.count == 0) { return "" }
-        var string = "———————————————\n"
-        
-        let prioritizeTraditional = UserDefaults.standard.bool(forKey: Constants.PRIORITIZE_TRADITIONAL_KEY)
-        let displaySecondary = UserDefaults.standard.bool(forKey: Constants.DISPLAY_SECONDARY_KEY)
-        
-        
-        for i in 0..<entries.count {
-            let entry = entries[i]
-            
-            var hanziPrimary = entry.simplified!
-            var hanziSecondary = entry.simplified!
-            
-            if(prioritizeTraditional) { hanziPrimary = entry.traditional! }
-            else { hanziSecondary = entry.traditional! }
-            
-            string += hanziPrimary
-            if hanziPrimary != hanziSecondary && displaySecondary {
-                string += "【" +  hanziSecondary + "】"
-            }
-            
-            string += " - "
-            string += PinyinConverter().convert(pinyin: entry.pinyin!)
-            string += "\n"
-            
-            let definitions = entry.definition!.components(separatedBy: "\\")
-            for j in 0..<definitions.count {
-                string += String(j + 1)
-                string += ". " + definitions[j] + "\n"
-            }
-            if(i < entries.count - 1)
-            {
-                if(entry.simplified == entries[i + 1].simplified) { string += "————————\n" }
-                else { string += "========\n" }
-            }
-        }
-        
-        return string
     }
     
     func generateAttributedString(with searchTerm: String, targetString: String) -> NSAttributedString? {

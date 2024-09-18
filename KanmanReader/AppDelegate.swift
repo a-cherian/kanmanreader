@@ -152,17 +152,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func configureInitialLaunch() {
-        let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
+        let appPreferences = UserDefaults.standard.string(forKey: Constants.APP_PREFERENCES_KEY)
         
-        if(!hasOnboarded) {
-            UserDefaults.standard.setValue(false, forKey: Constants.PRIORITIZE_TRADITIONAL_KEY)
-            UserDefaults.standard.setValue(true, forKey: Constants.DISPLAY_SECONDARY_KEY)
+        if(appPreferences == nil) {
+            UserDefaults.standard.setValue(AppPreferences().string, forKey: Constants.APP_PREFERENCES_KEY)
         }
     }
     
     func restoreToInitial() {
-        UserDefaults.standard.setValue("", forKey: Constants.LOADED_SAMPLE_KEY)
+        UserDefaults.standard.setValue(nil, forKey: Constants.LOADED_SAMPLE_KEY)
         UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY)
+        UserDefaults.standard.setValue(nil, forKey: Constants.APP_PREFERENCES_KEY)
         UserDefaults.standard.setValue(false, forKey: Constants.FINISHED_TIPS_KEY)
         
         CoreDataManager.shared.deleteAllComics()

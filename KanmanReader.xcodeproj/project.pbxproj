@@ -14,7 +14,7 @@
 		400E0E9F2B357B160024AD39 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 400E0E9E2B357B160024AD39 /* tessdata */; };
 		400E0EA32B36D2BC0024AD39 /* ComicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0EA22B36D2BC0024AD39 /* ComicCell.swift */; };
 		402963532C8001AF00211F2E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 402963522C8001AF00211F2E /* PrivacyInfo.xcprivacy */; };
-		402963552C80369100211F2E /* ReaderPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963542C80369100211F2E /* ReaderPreferences.swift */; };
+		402963552C80369100211F2E /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963542C80369100211F2E /* Preferences.swift */; };
 		402963582C806E6700211F2E /* Unpacker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963572C806E6700211F2E /* Unpacker.swift */; };
 		4029635B2C8077ED00211F2E /* Unrar in Frameworks */ = {isa = PBXBuildFile; productRef = 4029635A2C8077ED00211F2E /* Unrar */; };
 		4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC642C7C5874007D216B /* HReaderViewController.swift */; };
@@ -44,6 +44,7 @@
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
 		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
 		4084D81D2C89639400928B55 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4084D81C2C89639400928B55 /* AboutViewController.swift */; };
+		40BAE8E22C9A2238002C23C8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */; };
 		40F4EA752C81BD36008A85A4 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */; };
 		40F4EA772C86FCEE008A85A4 /* WordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA762C86FCEE008A85A4 /* WordView.swift */; };
 /* End PBXBuildFile section */
@@ -68,7 +69,7 @@
 		400E0E9E2B357B160024AD39 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		400E0EA22B36D2BC0024AD39 /* ComicCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicCell.swift; sourceTree = "<group>"; };
 		402963522C8001AF00211F2E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		402963542C80369100211F2E /* ReaderPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPreferences.swift; sourceTree = "<group>"; };
+		402963542C80369100211F2E /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		402963572C806E6700211F2E /* Unpacker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unpacker.swift; sourceTree = "<group>"; };
 		4049AC642C7C5874007D216B /* HReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HReaderViewController.swift; sourceTree = "<group>"; };
 		4049AC682C7C851D007D216B /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
 		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		4084D81C2C89639400928B55 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		40F4EA762C86FCEE008A85A4 /* WordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,7 +130,7 @@
 		402963562C80369D00211F2E /* ManagerModel */ = {
 			isa = PBXGroup;
 			children = (
-				402963542C80369100211F2E /* ReaderPreferences.swift */,
+				402963542C80369100211F2E /* Preferences.swift */,
 				405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */,
 				405A7A9D2C7B04AE00A40D24 /* TipManager.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
@@ -207,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				405945FC2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift */,
+				40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */,
 				4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */,
 				4049AC642C7C5874007D216B /* HReaderViewController.swift */,
 				405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */,
@@ -310,7 +313,7 @@
 				405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */,
 				4049AC692C7C851D007D216B /* ImageCell.swift in Sources */,
 				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
-				402963552C80369100211F2E /* ReaderPreferences.swift in Sources */,
+				402963552C80369100211F2E /* Preferences.swift in Sources */,
 				40F4EA772C86FCEE008A85A4 /* WordView.swift in Sources */,
 				4049AC6B2C7E83A3007D216B /* ReaderPrefsViewController.swift in Sources */,
 				4058EC0F2C9545CC00191D21 /* RARExtractor.swift in Sources */,
@@ -323,6 +326,7 @@
 				40F4EA752C81BD36008A85A4 /* OnboardingViewController.swift in Sources */,
 				405945C12B2C54DB00A6B1F9 /* KanmanReader.xcdatamodeld in Sources */,
 				405945F62B2C55F900A6B1F9 /* TabBarController.swift in Sources */,
+				40BAE8E22C9A2238002C23C8 /* SettingsViewController.swift in Sources */,
 				400E0DCF2B31D7C80024AD39 /* Constants.swift in Sources */,
 				405945F42B2C55F900A6B1F9 /* CoreDataManager.swift in Sources */,
 				405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */,

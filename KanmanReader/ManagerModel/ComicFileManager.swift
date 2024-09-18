@@ -75,9 +75,10 @@ struct ComicFileManager {
     @discardableResult
     static func createTutorial() -> Comic? {
         guard let sampleURL = Bundle.main.url(forResource: Constants.TUTORIAL_FILENAME, withExtension: "zip") else { return nil }
+        let comics = CoreDataManager.shared.fetchComics()
         
         do {
-            var comic = CoreDataManager.shared.fetchTutorial()
+            var comic = comics?.first(where: { $0.url == sampleURL })
             
             if comic == nil {
                 let name = "Tutorial"

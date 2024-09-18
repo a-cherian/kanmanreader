@@ -9,11 +9,10 @@ import UIKit
 
 class WordView: UIView {
     var word: DictEntry
+    let appPreferences = AppPreferences(from: nil)
     
     lazy var textView: UITextView = {
         let view = UITextView()
-        
-        view.text = getEntryString()
         
         view.backgroundColor = .white
         view.textColor = .black
@@ -32,10 +31,11 @@ class WordView: UIView {
         return view
     }()
     
-    init(word: DictEntry) {
+    init(word: DictEntry, preferences: AppPreferences) {
         self.word = word
         
         super.init(frame: CGRect.zero)
+        textView.text = getEntryString(preferences: preferences)
         
         addSubviews()
         configureUI()
@@ -64,21 +64,17 @@ class WordView: UIView {
         textView.setContentCompressionResistancePriority(.required, for: NSLayoutConstraint.Axis.vertical)
     }
     
-    func getEntryString() -> String {
-        
-        let prioritizeTraditional = UserDefaults.standard.bool(forKey: Constants.PRIORITIZE_TRADITIONAL_KEY)
-        let displaySecondary = UserDefaults.standard.bool(forKey: Constants.DISPLAY_SECONDARY_KEY)
-        
+    func getEntryString(preferences: AppPreferences) -> String {
         var string = ""
         
         var hanziPrimary = word.simplified!
         var hanziSecondary = word.simplified!
         
-        if(prioritizeTraditional) { hanziPrimary = word.traditional! }
+        if(appPreferences.prioritizeTraditional) { hanziPrimary = word.traditional! }
         else { hanziSecondary = word.traditional! }
         
         string += hanziPrimary
-        if hanziPrimary != hanziSecondary && displaySecondary {
+        if hanziPrimary != hanziSecondary && appPreferences.displayBothScripts {
             string += "【" +  hanziSecondary + "】"
         }
         
