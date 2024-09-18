@@ -27,15 +27,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         return item
     }()
     
-    lazy var moreButton = {
-        let tutorialAction = UIAction(title: "Tutorial") { _ in self.openTutorial() }
-        let aboutAction = UIAction(title: "About") { _ in self.openAbout() }
-        let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: [aboutAction, tutorialAction])
-        
-        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis"), target: self, action: nil, menu: menu)
-        return item
-    }()
-    
     lazy var deleteButton = {
         let deleteAction = UIAction(title: "About") { _ in self.didTapDelete() }
         let item = UIBarButtonItem(systemItem: .trash, primaryAction: deleteAction)
@@ -185,7 +176,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         documentCollectionView.allowsSelection = false
         documentCollectionView.allowsMultipleSelection = false
         
-        navigationItem.rightBarButtonItems = [moreButton, selectButton]
+        navigationItem.rightBarButtonItems = [selectButton]
         navigationItem.leftBarButtonItems = [importButton]
         toolbarItems = []
         
