@@ -115,8 +115,8 @@ class SettingsViewController: UITableViewController {
         if let url = tutorial.url {
             tutorial.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: tutorial)
-            if let images = try? ComicFileManager.getImages(for: url) {
-                self.navigationController?.pushViewController(ReaderViewController(images: images, comic: tutorial), animated: true)
+            if let images = try? ComicFileManager.getImages(for: url), let urls = ComicFileManager.getImageURLs(for: url) {
+                self.navigationController?.pushViewController(ReaderViewController(images: images, urls: urls, comic: tutorial), animated: true)
                 return
             }
         }

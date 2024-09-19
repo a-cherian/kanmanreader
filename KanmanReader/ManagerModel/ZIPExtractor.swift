@@ -10,29 +10,35 @@ import UIKit
 
 struct ZIPExtractor: Extractor {
     var url: URL
-    var archive: Archive
-    var entries: [Entry]
-    
-    init(url: URL) throws {
-        self.url = url
-        archive = try Archive(url: url, accessMode: .read)
-        
+    var archive: Archive? {
+        do {
+            return try Archive(url: url, accessMode: .read)
+        }
+        catch {
+            return nil
+        }
+    }
+    var entries: [Entry] {
         // sort by filename
-        entries = archive.sorted(by: { ($0.path).compare($1.path) == .orderedAscending })
+        var entries = archive?.sorted(by: { ($0.path).compare($1.path) == .orderedAscending })
         
         // filter out directory & extraneous files
-        entries = entries.filter { entry in
+        entries = entries?.filter { entry in
             return entry.type == .file && shouldKeepFile(fileName: entry.path)
         }
         
-        if(entries.count == 0) { throw ExtractError.noValidFiles }
+        return entries ?? []
+    }
+    
+    init(url: URL) throws {
+        self.url = url
     }
     
     func extractInfo() throws -> (cover: Data, totalPages: Int) {
         var cover: Data = Data([])
         
         do {
-            _ = try archive.extract(entries[0]) { cover.append($0) }
+            _ = try archive?.extract(entries[0]) { cover.append($0) }
         } catch {
             print("Failed to extract image: \(error.localizedDescription)")
         }
@@ -49,7 +55,7 @@ struct ZIPExtractor: Extractor {
             var extractedData: Data = Data([])
             
             do {
-                _ = try archive.extract(entry) { extractedData.append($0) }
+                _ = try archive?.extract(entry) { extractedData.append($0) }
                 if let image = UIImage(data: extractedData) {
                     images.append(image)
                 }
@@ -59,5 +65,26 @@ struct ZIPExtractor: Extractor {
         }
         
         return images
+    }
+    
+    func extractData() throws -> [Data] {
+        var data: [Data] = []
+        
+        for i in 0..<entries.count {
+            let entry = entries[i]
+            
+            
+            var extractedData: Data = Data([])
+            
+            do {
+                _ = try archive?.extract(entry) { extractedData.append($0) }
+                data.append(extractedData)
+            } catch {
+                print("Failed to extract image: \(error.localizedDescription)")
+                throw error
+            }
+        }
+        
+        return data
     }
 }

@@ -1,5 +1,5 @@
 //
-//  UIViewExtension.swift
+//  Extension.swift
 //  KanmanReader
 //
 //  Created by AC on 12/16/23.
@@ -9,6 +9,54 @@ import UIKit
 //import SwiftyTesseract
 //import libtesseract
 import Vision
+
+extension Comic {
+    var isTutorial: Bool {
+        url?.lastPathComponent.contains(Constants.TUTORIAL_FILENAME) ?? false
+    }
+    
+    var url: URL? {
+        guard let uuid = uuid else { return nil }
+        
+        let file = ComicFileManager.getBookmarkDirectory().appendingPathComponent(uuid)
+        
+        do {
+            let bookmarkData = try Data(contentsOf: file)
+            var isStale = false
+            let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
+            
+            guard !isStale else {
+                ComicFileManager.deleteBookmark(uuid: self.uuid)
+                self.uuid = try ComicFileManager.createBookmark(url: url)
+                CoreDataManager.shared.updateComic(comic: self)
+                return url
+            }
+            
+            return url
+        }
+        catch {
+            print("Failed to read bookmark: \(error.localizedDescription)")
+            return nil
+        }
+    }
+}
+
+extension URL {
+    var isTutorial: Bool {
+        lastPathComponent.contains(Constants.TUTORIAL_FILENAME)
+    }
+    
+    func loadImage() -> UIImage? {
+       do {
+            let imageData = try Data(contentsOf: self)
+            return UIImage(data: imageData)
+        } catch {
+            print("Error loading image : \(error)")
+        }
+        return nil
+    }
+}
+
 
 class SizingTableView: UITableView {
 

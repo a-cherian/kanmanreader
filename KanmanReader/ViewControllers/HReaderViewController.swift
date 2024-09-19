@@ -16,6 +16,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     weak var rDelegate: ReaderDelegate?
     
+    // TO DO: load from URLs instead of pages
     var pages: [UIImage] = []
     var position: Int {
         max(min(currentPage.position, pages.count - 1), 0)

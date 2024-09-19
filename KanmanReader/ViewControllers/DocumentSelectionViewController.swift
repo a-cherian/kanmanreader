@@ -266,10 +266,10 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func openComic(_ comic: Comic) {
-        if let url = comic.url, let images = try? ComicFileManager.getImages(for: url) {
+        if let url = comic.url, let images = try? ComicFileManager.getImages(for: url), let urls = ComicFileManager.getImageURLs(for: url) {
             comic.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: comic)
-            self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
+            self.navigationController?.pushViewController(ReaderViewController(images: images, urls: urls, comic: comic), animated: true)
             return
         }
        

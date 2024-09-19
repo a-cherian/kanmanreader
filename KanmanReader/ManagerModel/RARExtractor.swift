@@ -15,6 +15,8 @@ struct RARExtractor: Extractor {
     
     init(url: URL) throws {
         self.url = url
+        
+        // TO DO: change archive and entries into computed properties
         archive = try Archive(fileURL: url)
         
         // sort by filename
@@ -62,5 +64,20 @@ struct RARExtractor: Extractor {
         return images
     }
     
-    
+    func extractData() throws -> [Data] {
+        var data: [Data] = []
+        
+        for i in 0..<entries.count {
+            let entry = entries[i]
+            
+            do {
+                try data.append(archive.extract(entry))
+            } catch {
+                print("Failed to extract image: \(error.localizedDescription)")
+                throw error
+            }
+        }
+        
+        return data
+    }
 }

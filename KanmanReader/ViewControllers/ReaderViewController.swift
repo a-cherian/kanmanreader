@@ -80,7 +80,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         return button
     }()
     
-    init(images: [UIImage] = [], comic: Comic) {
+    init(images: [UIImage] = [], urls: [URL?], comic: Comic) {
         self.comic = comic
         
         super.init(nibName: nil, bundle: nil)
@@ -91,7 +91,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
             reader = HReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
         }
         else if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
+            reader = VReaderViewController(urls: urls, position: Int(comic.lastPage), parent: self)
         }
         
         textRecognizer.delegate = self
@@ -279,6 +279,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func closeComic() {
+        ComicFileManager.clearReading()
+        
         comic.lastPage = Int64(reader.position)
         comic.lastOpened = Date()
         comic.preferences = preferences.string
@@ -361,7 +363,8 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
         let lastPosition = reader.position
         removeReader()
         if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: reader.pages, position: lastPosition, parent: self)
+            // TO DO: FIX HERE
+//            reader = VReaderViewController(images: reader.pages, position: lastPosition, parent: self)
         }
         else if preferences.scrollDirection == .horizontal {
             reader = HReaderViewController(images: reader.pages, position: lastPosition, parent: self)

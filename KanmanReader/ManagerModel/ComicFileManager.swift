@@ -103,6 +103,32 @@ struct ComicFileManager {
         return try accessGuardedResource(url, with: { try Unpacker(for: url).extractImages() }, openInPlace: openInPlace) as? [UIImage]
     }
     
+    static func getImageURLs(for url: URL, openInPlace: Bool = true) -> [URL?]? {
+        guard let imageData = try? accessGuardedResource(url, with: Unpacker(for: url).extractData, openInPlace: openInPlace) as? [Data] else { return nil}
+        
+        let fm = FileManager.default
+        let tempDirectory = fm.temporaryDirectory.appending(path: "reading")
+
+        var urls: [URL?] = []
+        for (index, data) in imageData.enumerated() {
+            // Create a destination URL.
+            let targetURL = tempDirectory.appending(path: "\(index)")
+
+            // Copy the file.
+            do {
+                try data.write(to: targetURL)
+                urls.append(targetURL)
+            } catch let error {
+                urls.append(nil)
+                print("Error writing image: \(error)")
+            }
+        }
+        
+        if urls.compactMap({$0}).count == 0 { return nil }
+
+        return urls
+    }
+    
     static func accessGuardedResource(_ url: URL, with function: () throws -> (Any), openInPlace: Bool = true) throws -> Any {
         if(!openInPlace) { return try function() }
         
@@ -140,7 +166,7 @@ struct ComicFileManager {
         return try writeBookmark(url: url)
     }
     
-    static func writeBookmark(url: URL) throws -> String {
+    private static func writeBookmark(url: URL) throws -> String {
         do {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
@@ -194,7 +220,7 @@ struct ComicFileManager {
         return getCreateDirectory(name: "Inbox")
     }
     
-    static func getCreateDirectory(name: String) -> URL {
+    private static func getCreateDirectory(name: String) -> URL {
         let directory = getAppSandboxDirectory().appendingPathComponent(name)
         
         let fileManager = FileManager.default
@@ -219,12 +245,12 @@ struct ComicFileManager {
         }
     }
     
-    static func generateUUID(for url: URL) -> String {
+    private static func generateUUID(for url: URL) -> String {
         let uuid = UUID().uuidString
         return uuid
     }
     
-    static func getFileName(for url: URL?) -> String {
+    private static func getFileName(for url: URL?) -> String {
         guard let url = url else { return "" }
         return (url.lastPathComponent as NSString).deletingPathExtension
     }
@@ -254,10 +280,23 @@ struct ComicFileManager {
         }
     }
     
-    static func clearDirectory(name: String) {
-        let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent(name), includingPropertiesForKeys: nil)
-
+    private static func clearDirectory(name: String) {
         let fm = FileManager.default
+        let files = try? FileManager.default.contentsOfDirectory(at: getAppSandboxDirectory().appendingPathComponent(name), includingPropertiesForKeys: nil)
+        
+        files?.forEach { file in
+            do {
+                try fm.removeItem(at: file)
+            } catch {
+                print("Failed to delete file: \(error)")
+            }
+        }
+    }
+    
+    static func clearReading() {
+        let fm = FileManager.default
+        let files = try? fm.contentsOfDirectory(at: fm.temporaryDirectory.appending(path: "reading"), includingPropertiesForKeys: nil)
+        
         
         files?.forEach { file in
             do {
@@ -284,7 +323,7 @@ struct ComicFileManager {
         clearDirectory(name: ".Trash")
     }
     
-    static func deleteFile(url: URL) {
+    private static func deleteFile(url: URL) {
         let fm = FileManager.default
         do {
             if(fm.fileExists(atPath: url.path))
@@ -294,42 +333,5 @@ struct ComicFileManager {
         } catch {
             print("Failed to delete URL \(url): \(error)")
         }
-    }
-}
-
-extension Comic {
-    var isTutorial: Bool {
-        url?.lastPathComponent.contains(Constants.TUTORIAL_FILENAME) ?? false
-    }
-    
-    var url: URL? {
-        guard let uuid = uuid else { return nil }
-        
-        let file = ComicFileManager.getBookmarkDirectory().appendingPathComponent(uuid)
-        
-        do {
-            let bookmarkData = try Data(contentsOf: file)
-            var isStale = false
-            let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
-            
-            guard !isStale else {
-                ComicFileManager.deleteBookmark(uuid: self.uuid)
-                self.uuid = try ComicFileManager.createBookmark(url: url)
-                CoreDataManager.shared.updateComic(comic: self)
-                return url
-            }
-            
-            return url
-        }
-        catch {
-            print("Failed to read bookmark: \(error.localizedDescription)")
-            return nil
-        }
-    }
-}
-
-extension URL {
-    var isTutorial: Bool {
-        lastPathComponent.contains(Constants.TUTORIAL_FILENAME)
     }
 }

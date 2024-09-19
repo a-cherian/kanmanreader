@@ -22,6 +22,7 @@ protocol Extractor {
     init(url: URL) throws
     func extractInfo() throws -> (cover: Data, totalPages: Int)
     func extractImages() throws -> [UIImage]
+    func extractData() throws -> [Data]
 }
 
 class Unpacker {
@@ -60,6 +61,16 @@ class Unpacker {
     func extractImages() throws -> [UIImage] {
         do {
             return try extractor.extractImages()
+        }
+        catch {
+            print("Failed to extract info for \(extractor.url): \(error).")
+            throw ExtractError.failedExtract
+        }
+    }
+    
+    func extractData() throws -> [Data] {
+        do {
+            return try extractor.extractData()
         }
         catch {
             print("Failed to extract info for \(extractor.url): \(error).")
