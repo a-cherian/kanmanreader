@@ -96,23 +96,20 @@ struct ComicFileManager {
     }
     
     static func getInfo(for url: URL, openInPlace: Bool = true) throws -> (cover: Data, totalPages: Int) {
-        if(!openInPlace) { return try Unpacker(for: url).extractInfo() }
-        
-        guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
-        
-        defer { url.stopAccessingSecurityScopedResource() }
-        
-        return try Unpacker(for: url).extractInfo()
+        return try accessGuardedResource(url, with: { try Unpacker(for: url).extractInfo() }, openInPlace: openInPlace) as? (cover: Data, totalPages: Int) ?? (Data(), 0)
     }
     
     static func getImages(for url: URL, openInPlace: Bool = true) throws -> [UIImage]? {
-        if(!openInPlace) { return try Unpacker(for: url).extractImages() }
+        return try accessGuardedResource(url, with: { try Unpacker(for: url).extractImages() }, openInPlace: openInPlace) as? [UIImage]
+    }
+    
+    static func accessGuardedResource(_ url: URL, with function: () throws -> (Any), openInPlace: Bool = true) throws -> Any {
+        if(!openInPlace) { return try function() }
         
         guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
-        
         defer { url.stopAccessingSecurityScopedResource() }
         
-        return try Unpacker(for: url).extractImages()
+        return try function()
     }
     
     static func retrieveComics() -> [Comic] {

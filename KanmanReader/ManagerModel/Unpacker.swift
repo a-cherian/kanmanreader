@@ -72,10 +72,11 @@ func shouldKeepFile(fileName: String) -> Bool {
     let imageSuffixes = [".jpg", ".jpeg", ".png", ".webp", ".tiff", ".heic", ".bmp"]
 
     let isMacFile = fileName.hasPrefix("__MACOSX")
+    let url = URL(fileURLWithPath: fileName)
 
     var isImageFile = false
     imageSuffixes.forEach { imageSuffix in
-        let pathExt = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+        let pathExt = url.pathExtension.lowercased()
         isImageFile = isImageFile || imageSuffix.contains(pathExt)
     }
     

@@ -273,13 +273,9 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
             return
         }
        
-        if(ComicFileManager.LINK_CHECKING) {
-            ComicFileManager.deleteComic(comic: comic)
-        }
-        
         let alert = UIAlertController(
             title: "Could not open manhua",
-            message: "\"\(comic.name ?? "Manhua")\" was unable to be opened, and will be removed from your library. Try re-importing the manhua file, or contact support if the problem persists.",
+            message: "\"\(comic.name ?? "Manhua")\" was unable to be opened. Try re-importing the manhua file, or contact support if the problem persists.",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(
