@@ -12,8 +12,9 @@ import CoreData
 class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIViewControllerTransitioningDelegate {
     
     var appPreferences = AppPreferences(from: nil)
-//    var comics: [Comic] = []
     var comicFetchResultsController = NSFetchedResultsController<Comic>()
+    var covers: [UIImage?]? = []
+    
     var selectedComic: Comic? = nil
     var isSelecting = false
     
@@ -116,6 +117,10 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     @objc func refreshData() {
+        covers = comicFetchResultsController.fetchedObjects?.map({
+            UIImage(data: $0.cover ?? Data()) ?? UIImage()
+        })
+        
         documentCollectionView.reloadData()
         
         let visibleComicCount = comicFetchResultsController.sections?[0].numberOfObjects ?? 0
@@ -264,13 +269,13 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         if let url = comic.url, let images = try? ComicFileManager.getImages(for: url) {
             comic.lastOpened = Date()
             CoreDataManager.shared.updateComic(comic: comic)
-            comic.lastOpened = Date()
-            CoreDataManager.shared.updateComic(comic: comic)
             self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
             return
         }
-        
-        ComicFileManager.deleteComic(comic: comic)
+       
+        if(ComicFileManager.LINK_CHECKING) {
+            ComicFileManager.deleteComic(comic: comic)
+        }
         
         let alert = UIAlertController(
             title: "Could not open manhua",
@@ -444,7 +449,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         cell.title.text = comic.name
         cell.progress.text = "Pages: " + String(comic.lastPage + 1) + " / " + String(comic.totalPages)
         
-        cell.coverView.image = UIImage(data: comic.cover ?? Data()) ?? UIImage()
+        cell.coverView.image = covers?[indexPath.item]
         
         cell.selectView.isHidden = !isSelecting
         cell.chapterNumber = nil

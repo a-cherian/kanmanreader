@@ -15,9 +15,7 @@ class ImageCell: UITableViewCell {
     weak var delegate: PageDelegate? = nil
     var initialImage = true
     
-    var singleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
-    
-    var aspectConstraint: NSLayoutConstraint? = nil
+    weak var aspectConstraint: NSLayoutConstraint? = nil
     
     var pageView: UIImageView = {
         let view = UIImageView()
@@ -55,7 +53,7 @@ class ImageCell: UITableViewCell {
     }
     
     func addGestureRecognizers() {
-        singleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didSingleTap(_:)))
+        let singleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didSingleTap(_:)))
         singleTapGesture.delegate = self
         singleTapGesture.numberOfTapsRequired = 1
         singleTapGesture.numberOfTouchesRequired = 1

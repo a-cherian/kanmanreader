@@ -357,13 +357,14 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
         case .vertical:
             preferences.scrollDirection = .vertical
         }
-        
+       
+        let lastPosition = reader.position
         removeReader()
         if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: reader.pages, position: reader.position, parent: self)
+            reader = VReaderViewController(images: reader.pages, position: lastPosition, parent: self)
         }
         else if preferences.scrollDirection == .horizontal {
-            reader = HReaderViewController(images: reader.pages, position: reader.position, parent: self)
+            reader = HReaderViewController(images: reader.pages, position: lastPosition, parent: self)
         }
         addReader()
         

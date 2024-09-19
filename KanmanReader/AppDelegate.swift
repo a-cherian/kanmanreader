@@ -139,8 +139,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let loadedSample = UserDefaults.standard.string(forKey: Constants.LOADED_SAMPLE_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
-            ComicFileManager.deleteTutorial()
-            ComicFileManager.createTutorial()
+            if let tutorial = CoreDataManager.shared.fetchTutorial() {
+                ComicFileManager.deleteComic(comic: tutorial)
+                ComicFileManager.createTutorial()
+            }
             UserDefaults.standard.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
         }
     }

@@ -15,12 +15,15 @@ class ComicCell: UICollectionViewCell {
     
     weak var delegate: ComicCellDelegate?
     static let identifier = "comic"
+    let chapterFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
     var chapterNumber: CGFloat? = nil {
         didSet {
             if let chapterNumber = chapterNumber {
-                let formatter = NumberFormatter()
-                formatter.numberStyle = .decimal
-                chapterLabel.text = formatter.string(for: chapterNumber)
+                chapterLabel.text = chapterFormatter.string(for: chapterNumber)
                 chapterLabel.isHidden = false
             }
             else {
@@ -53,7 +56,7 @@ class ComicCell: UICollectionViewCell {
     }()
     
     lazy var coverView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "fi-sr-neutral"))
+        let imageView = UIImageView()
         
         imageView.tintColor = .white
         imageView.contentMode = .scaleAspectFill
@@ -81,21 +84,6 @@ class ComicCell: UICollectionViewCell {
         imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 35 / 2
         return imageView
-    }()
-    
-    lazy var finishedView: UILabel = {
-        let label = UILabel()
-        
-        label.backgroundColor = .black.withAlphaComponent(0.5)
-        label.textColor = .white
-        label.layer.cornerRadius = 5
-        
-        label.clipsToBounds = true
-        label.textAlignment = .center
-        label.font = Constants.zhFontBoldSmall
-        label.text = "Finished"
-        
-        return label
     }()
     
     lazy var chapterLabel: UILabel = {
@@ -194,10 +182,6 @@ class ComicCell: UICollectionViewCell {
             chapterLabel.heightAnchor.constraint(equalToConstant: 35),
             chapterLabel.widthAnchor.constraint(equalToConstant: 35)
         ])
-    }
-    
-    func setIcons(icons: [UIImage]) {
-        coverView.image = icons[0]
     }
     
     @objc func didTap() {
