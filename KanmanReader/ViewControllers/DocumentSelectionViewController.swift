@@ -28,7 +28,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }()
     
     lazy var deleteButton = {
-        let deleteAction = UIAction(title: "About") { _ in self.didTapDelete() }
+        let deleteAction = UIAction(title: "Delete") { _ in self.didTapDelete() }
         let item = UIBarButtonItem(systemItem: .trash, primaryAction: deleteAction)
         item.tintColor = .red
         return item

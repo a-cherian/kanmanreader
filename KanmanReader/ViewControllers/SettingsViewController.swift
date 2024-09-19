@@ -11,12 +11,12 @@ class SettingsViewController: UITableViewController {
     let NAME_POS = 0
     let VIEW_POS = 0
     
-    let headers = ["Library", "Dictionary Definitions", "Info"]
+    let headers = ["Library", "Dictionary Definitions", "Info & Support"]
     var settings: [[(name: String,
                      view: UIView?,
                      action: (() -> ())?)]] = [[("Display chapter numbers", nil, nil)],
                                                [("Display both scripts", nil, nil), ("Display traditional first", nil, nil)],
-                                               [("About", nil, nil), ("Tutorial", nil, nil)]]
+                                               [("About", nil, nil), ("Tutorial", nil, nil), ("Contact Developer", nil, nil)]]
     let appPreferences = AppPreferences(from: nil)
     
     let chapterNumberButton = {
@@ -74,6 +74,7 @@ class SettingsViewController: UITableViewController {
     func configureActions() {
         settings[2][0].action = openAbout
         settings[2][1].action = openTutorial
+        settings[2][2].action = openContact
     }
     
     func setTraditionalOptionText() {
@@ -132,6 +133,13 @@ class SettingsViewController: UITableViewController {
                     // cancel action
                 }))
             present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func openContact() {
+        let email = "citradevix@gmail.com"
+        if let url = URL(string: "mailto:\(email)") {
+            UIApplication.shared.open(url)
         }
     }
 
