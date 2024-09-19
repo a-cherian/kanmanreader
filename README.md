@@ -1,6 +1,6 @@
 # Kanman Reader
 
-[![App Store](https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1725494400)](https://apps.apple.com/us/app/kanman-reader/id6670540237?itsct=apps_box_link&itscg=30200)
+[![App Store](https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1725494400)](https://apps.apple.com/app/apple-store/id6670540237?pt=127104348&ct=Github&mt=8)
 
 Kanman Reader is a manhua reader designed for Chinese learners who want a seamless reading experience when reading manhua. Upload DRM-free manhua in ZIP/RAR/CBR/CBZ format and immerse yourself more deeply in Chinese.
 
