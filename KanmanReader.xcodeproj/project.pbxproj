@@ -35,7 +35,6 @@
 		405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */; };
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
 		405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A962C7979E500A40D24 /* ComicFileManager.swift */; };
-		405A7A9B2C79B95B00A40D24 /* kanman-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 405A7A9A2C79B95B00A40D24 /* kanman-tutorial-sample.zip */; };
 		405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9D2C7B04AE00A40D24 /* TipManager.swift */; };
 		405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */; };
 		405A7AB02C7C094400A40D24 /* VReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */; };
@@ -43,6 +42,7 @@
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
 		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
 		4084D81D2C89639400928B55 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4084D81C2C89639400928B55 /* AboutViewController.swift */; };
+		4096BC912C9BDF5C00219046 /* kanman-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */; };
 		40BAE8E22C9A2238002C23C8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */; };
 		40F4EA752C81BD36008A85A4 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */; };
 		40F4EA772C86FCEE008A85A4 /* WordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA762C86FCEE008A85A4 /* WordView.swift */; };
@@ -88,7 +88,6 @@
 		4059465F2B2DC70400A6B1F9 /* ReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderViewController.swift; sourceTree = "<group>"; };
 		405946632B2EBABC00A6B1F9 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		405A7A962C7979E500A40D24 /* ComicFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicFileManager.swift; sourceTree = "<group>"; };
-		405A7A9A2C79B95B00A40D24 /* kanman-tutorial-sample.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "kanman-tutorial-sample.zip"; sourceTree = "<group>"; };
 		405A7A9C2C79E46100A40D24 /* KanmanReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KanmanReader.entitlements; sourceTree = "<group>"; };
 		405A7A9D2C7B04AE00A40D24 /* TipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipManager.swift; sourceTree = "<group>"; };
 		405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
@@ -98,6 +97,7 @@
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
 		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		4084D81C2C89639400928B55 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "kanman-tutorial-sample.zip"; sourceTree = "<group>"; };
 		40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		40F4EA762C86FCEE008A85A4 /* WordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordView.swift; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 		407D6D952C7493CC00F8A5B9 /* data */ = {
 			isa = PBXGroup;
 			children = (
-				405A7A9A2C79B95B00A40D24 /* kanman-tutorial-sample.zip */,
+				4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */,
 				407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */,
 			);
 			path = data;
@@ -289,9 +289,9 @@
 			files = (
 				402963532C8001AF00211F2E /* PrivacyInfo.xcprivacy in Resources */,
 				405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */,
-				405A7A9B2C79B95B00A40D24 /* kanman-tutorial-sample.zip in Resources */,
 				405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */,
 				407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */,
+				4096BC912C9BDF5C00219046 /* kanman-tutorial-sample.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

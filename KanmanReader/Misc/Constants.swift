@@ -14,7 +14,7 @@ struct Constants {
     
     // USERDEFAULTS KEYS
     static let LOADED_SAMPLE_KEY = "loadedSample"
-    static let LOADED_SAMPLE = "v1.0"
+    static let LOADED_SAMPLE = "v1.1.0"
     
     static let LATEST_DICT_UPDATE_KEY = "dictDate"
     static let LATEST_DICT_UPDATE = "2024-08-19"

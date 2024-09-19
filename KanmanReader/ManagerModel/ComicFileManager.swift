@@ -169,6 +169,12 @@ struct ComicFileManager {
         
     }
     
+    static func deleteTutorial() {
+        if let tutorial = CoreDataManager.shared.fetchTutorial() {
+            deleteComic(comic: tutorial)
+        }
+    }
+    
     static func deleteBookmark(uuid: String?) {
         guard let uuid = uuid else { return }
         
