@@ -10,7 +10,6 @@
 		400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0DCC2B31B45B0024AD39 /* DictionaryViewController.swift */; };
 		400E0DCF2B31D7C80024AD39 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0DCE2B31D7C70024AD39 /* Constants.swift */; };
 		400E0E942B32D4230024AD39 /* PinyinConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0E932B32D4230024AD39 /* PinyinConverter.swift */; };
-		400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */ = {isa = PBXBuildFile; productRef = 400E0E992B3559270024AD39 /* SwiftyTesseract */; };
 		400E0EA32B36D2BC0024AD39 /* ComicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400E0EA22B36D2BC0024AD39 /* ComicCell.swift */; };
 		402963532C8001AF00211F2E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 402963522C8001AF00211F2E /* PrivacyInfo.xcprivacy */; };
 		402963552C80369100211F2E /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963542C80369100211F2E /* Preferences.swift */; };
@@ -109,7 +108,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4029635B2C8077ED00211F2E /* Unrar in Frameworks */,
-				400E0E9A2B3559270024AD39 /* SwiftyTesseract in Frameworks */,
 				405946062B2C679C00A6B1F9 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,7 +235,6 @@
 			name = KanmanReader;
 			packageProductDependencies = (
 				405946052B2C679C00A6B1F9 /* ZIPFoundation */,
-				400E0E992B3559270024AD39 /* SwiftyTesseract */,
 				4029635A2C8077ED00211F2E /* Unrar */,
 			);
 			productName = ManhuaReader;
@@ -270,7 +267,6 @@
 			mainGroup = 405945AA2B2C54DA00A6B1F9;
 			packageReferences = (
 				405946042B2C679C00A6B1F9 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */,
 				402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */,
 			);
 			productRefGroup = 405945AA2B2C54DA00A6B1F9;
@@ -480,7 +476,7 @@
 				CODE_SIGN_ENTITLEMENTS = KanmanReader/KanmanReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -497,7 +493,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanmanReader;
 				PRODUCT_NAME = "Kanman Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -519,7 +515,7 @@
 				CODE_SIGN_ENTITLEMENTS = KanmanReader/KanmanReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -536,7 +532,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanmanReader;
 				PRODUCT_NAME = "Kanman Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -573,14 +569,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftyTesseract/SwiftyTesseract";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.1;
-			};
-		};
 		402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mtgto/Unrar.swift";
@@ -600,11 +588,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		400E0E992B3559270024AD39 /* SwiftyTesseract */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 400E0E982B3559260024AD39 /* XCRemoteSwiftPackageReference "SwiftyTesseract" */;
-			productName = SwiftyTesseract;
-		};
 		4029635A2C8077ED00211F2E /* Unrar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 402963592C8077EC00211F2E /* XCRemoteSwiftPackageReference "Unrar" */;

@@ -1,24 +1,6 @@
 {
-  "originHash" : "d3fdff015dd4e4011f680bc79ce1c457da4b757b6eca0589ea6329379695c2ef",
+  "originHash" : "2ab96f0365bb7b9e47592121058c8298458054b4beb8209a6ea0286212753df2",
   "pins" : [
-    {
-      "identity" : "libtesseract",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SwiftyTesseract/libtesseract.git",
-      "state" : {
-        "revision" : "214a36e04d740795d7ba2f07c6108944d0136f8a",
-        "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "swiftytesseract",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SwiftyTesseract/SwiftyTesseract",
-      "state" : {
-        "revision" : "1393d15d0278673dd89f2ba21d3fb748f99e02ce",
-        "version" : "4.0.1"
-      }
-    },
     {
       "identity" : "unrar.swift",
       "kind" : "remoteSourceControl",
