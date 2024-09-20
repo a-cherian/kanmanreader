@@ -15,6 +15,7 @@ struct ZIPExtractor: Extractor {
     
     init(url: URL) throws {
         self.url = url
+       
         archive = try Archive(url: url, accessMode: .read)
         
         // sort by filename
@@ -24,8 +25,6 @@ struct ZIPExtractor: Extractor {
         entries = entries.filter { entry in
             return entry.type == .file && shouldKeepFile(fileName: entry.path)
         }
-        
-        if(entries.count == 0) { throw ExtractError.noValidFiles }
     }
     
     func extractInfo() throws -> (cover: Data, totalPages: Int) {
@@ -59,5 +58,26 @@ struct ZIPExtractor: Extractor {
         }
         
         return images
+    }
+    
+    func extractData() throws -> [Data] {
+        var data: [Data] = []
+        
+        for i in 0..<entries.count {
+            let entry = entries[i]
+            
+            
+            var extractedData: Data = Data([])
+            
+            do {
+                _ = try archive.extract(entry) { extractedData.append($0) }
+                data.append(extractedData)
+            } catch {
+                print("Failed to extract image: \(error.localizedDescription)")
+                throw error
+            }
+        }
+        
+        return data
     }
 }

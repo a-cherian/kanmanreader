@@ -13,7 +13,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     var appPreferences = AppPreferences(from: nil)
     var comicFetchResultsController = NSFetchedResultsController<Comic>()
-    var covers: [UIImage?]? = []
+    var covers: [URL?]? = []
     
     var selectedComic: Comic? = nil
     var isSelecting = false
@@ -101,6 +101,13 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     
     override func viewWillAppear(_ animated: Bool) {
         appPreferences = AppPreferences(from: nil)
+        
+        comicFetchResultsController.fetchedObjects?.forEach { comic in
+            if comic.url == nil && ComicFileManager.LINK_CHECKING {
+                ComicFileManager.deleteComic(comic: comic)
+            }
+        }
+        
         refreshData()
     }
     
@@ -117,9 +124,9 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     @objc func refreshData() {
-        covers = comicFetchResultsController.fetchedObjects?.map({
-            UIImage(data: $0.cover ?? Data()) ?? UIImage()
-        })
+        if let data = (comicFetchResultsController.fetchedObjects?.map {$0.cover}) {
+            covers = ComicFileManager.getCovers(for: data)
+        }
         
         documentCollectionView.reloadData()
         
@@ -266,73 +273,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     }
     
     func openComic(_ comic: Comic) {
-        if let url = comic.url, let images = try? ComicFileManager.getImages(for: url) {
-            comic.lastOpened = Date()
-            CoreDataManager.shared.updateComic(comic: comic)
-            self.navigationController?.pushViewController(ReaderViewController(images: images, comic: comic), animated: true)
-            return
-        }
-       
-        let alert = UIAlertController(
-            title: "Could not open manhua",
-            message: "\"\(comic.name ?? "Manhua")\" was unable to be opened. Try re-importing the manhua file, or contact support if the problem persists.",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(
-            title: "OK",
-            style: .default,
-            handler: { _ in
-                // cancel action
-            }))
-        alert.show()
-    }
-    
-    func renameAction(_ comic: Comic) {
-        let alert = UIAlertController(
-            title: "Rename comic",
-            message: "Enter a new title for your comic.",
-            preferredStyle: .alert
-        )
-        alert.addTextField { (textField) in
-            textField.text = comic.name
-        }
-        alert.addAction(UIAlertAction(
-            title: "OK",
-            style: .default,
-            handler: { _ in
-                let name = alert.textFields?[0].text
-                comic.name = name
-                CoreDataManager.shared.updateComic(comic: comic)
-        }))
-        alert.addAction(UIAlertAction(
-            title: "Cancel",
-            style: .cancel,
-            handler: { _ in
-            // cancel action
-        }))
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func resetAction(_ comic: Comic) {
-        let alert = UIAlertController(
-            title: "Reset comic progress",
-            message: "This will reset this comic's progress to the start. Do you wish to proceed?",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(
-            title: "Reset",
-            style: .destructive,
-            handler: { _ in
-                comic.lastPage = 0
-                CoreDataManager.shared.updateComic(comic: comic)
-        }))
-        alert.addAction(UIAlertAction(
-            title: "Cancel",
-            style: .cancel,
-            handler: { _ in
-            // cancel action
-        }))
-        present(alert, animated: true, completion: nil)
+        navigationController?.openReader(with: comic)
     }
     
     func openTutorial() {
@@ -350,27 +291,6 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
         }
         
         self.present(aboutViewController, animated: true)
-    }
-    
-    func deleteAction(_ comic: Comic) {
-        let alert = UIAlertController(
-            title: "Confirm deletion",
-            message: "This will remove this manhua from your library. This action is irreversible. Do you wish to proceed?",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(
-            title: "Delete",
-            style: .destructive,
-            handler: { _ in
-                ComicFileManager.deleteComic(comic: comic)
-        }))
-        alert.addAction(UIAlertAction(
-            title: "Cancel",
-            style: .cancel,
-            handler: { _ in
-            // cancel action
-        }))
-        present(alert, animated: true, completion: nil)
     }
     
     func changeCover(_ comic: Comic) {
@@ -445,7 +365,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         cell.title.text = comic.name
         cell.progress.text = "Pages: " + String(comic.lastPage + 1) + " / " + String(comic.totalPages)
         
-        cell.coverView.image = covers?[indexPath.item]
+        cell.coverView.image = covers?[indexPath.item]?.loadImage()
         
         cell.selectView.isHidden = !isSelecting
         cell.chapterNumber = nil
@@ -509,5 +429,73 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return !isSelecting
     }
-
+    
+    func renameAction(_ comic: Comic) {
+        let alert = UIAlertController(
+            title: "Rename comic",
+            message: "Enter a new title for your comic.",
+            preferredStyle: .alert
+        )
+        alert.addTextField { (textField) in
+            textField.text = comic.name
+        }
+        alert.addAction(UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { _ in
+                let name = alert.textFields?[0].text
+                comic.name = name
+                CoreDataManager.shared.updateComic(comic: comic)
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func resetAction(_ comic: Comic) {
+        let alert = UIAlertController(
+            title: "Reset comic progress",
+            message: "This will reset this comic's progress to the start. Do you wish to proceed?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "Reset",
+            style: .destructive,
+            handler: { _ in
+                comic.lastPage = 0
+                CoreDataManager.shared.updateComic(comic: comic)
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteAction(_ comic: Comic) {
+        let alert = UIAlertController(
+            title: "Confirm deletion",
+            message: "This will remove this manhua from your library. This action is irreversible. Do you wish to proceed?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: "Delete",
+            style: .destructive,
+            handler: { _ in
+                ComicFileManager.deleteComic(comic: comic)
+        }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+            // cancel action
+        }))
+        present(alert, animated: true, completion: nil)
+    }
 }

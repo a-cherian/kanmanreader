@@ -13,7 +13,15 @@ class ImageCell: UITableViewCell {
     
     var position = -1
     weak var delegate: PageDelegate? = nil
-    var initialImage = true
+    var url: URL? {
+        didSet {
+            if let url = url, let image = url.loadImage() {
+                setImage(image)
+            }
+        }
+    }
+    
+    weak var singleTapGesture: UITapGestureRecognizer?
     
     weak var aspectConstraint: NSLayoutConstraint? = nil
     
@@ -40,7 +48,7 @@ class ImageCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        initialImage = true
+        url = nil
     }
     
     func addSubviews() {
@@ -72,7 +80,6 @@ class ImageCell: UITableViewCell {
     
     func setImage(_ image: UIImage) {
         pageView.image = image;
-        initialImage = false
         let aspectRatio = image.size.height / image.size.width
         aspectConstraint?.isActive = false
         aspectConstraint = pageView.heightAnchor.constraint(equalTo: pageView.widthAnchor, multiplier: aspectRatio)

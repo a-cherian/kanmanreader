@@ -16,20 +16,20 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     weak var rDelegate: ReaderDelegate?
     
-    var pages: [UIImage] = []
+    var urls: [URL] = []
     var position: Int {
-        max(min(currentPage.position, pages.count - 1), 0)
+        max(min(currentPage.position, urls.count - 1), 0)
     }
-    var currentImage: UIImage { return pages[position] }
+    var currentImage: UIImage? { return urls[position].loadImage() }
     var currentPage: Page = Page()
     var pendingPage: Page = Page()
     
-    required init(images: [UIImage] = [], position: Int = 0, parent: ReaderViewController? = nil) {
+    required init(urls: [URL] = [], position: Int = 0, parent: ReaderViewController? = nil) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
         
-        if(images.count == 0) { return }
+        if(urls.count == 0) { return }
         
-        self.pages = images
+        self.urls = urls
         self.currentPage = createPage(position: position)
         self.currentPage.delegate = parent
         self.rDelegate = parent
@@ -54,7 +54,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     func createPage(position: Int) -> Page {
         let newPage = Page()
-        newPage.setImage(pages[position])
+        newPage.url = urls[position]
         newPage.position = position
         newPage.delegate = parent as? ReaderViewController
         
@@ -70,7 +70,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if(position + 1 < pages.count)
+        if(position + 1 < urls.count)
         {
             let nextPage = createPage(position: position + 1)
             return nextPage

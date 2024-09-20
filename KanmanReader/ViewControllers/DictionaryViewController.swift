@@ -232,7 +232,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
             let range = NSRange(location: 0, length: targetString.utf16.count)
             for match in regex.matches(in: targetString.folding(options: .diacriticInsensitive, locale: .current), options: .withTransparentBounds, range: range) {
                 attributedString.addAttribute(NSAttributedString.Key.font, value: Constants.zhFontBoldLarge as Any, range: match.range)
-                attributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: Constants.lightBlueColor as Any, range: match.range)
+                attributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.accent as Any, range: match.range)
             }
             return attributedString
         } catch {

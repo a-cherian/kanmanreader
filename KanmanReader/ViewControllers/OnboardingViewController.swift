@@ -233,9 +233,7 @@ class OnboardingPageViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 10),
-//            imageView.bottomAnchor.constraint(equalTo: labelView.topAnchor, constant: 50),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            imageView.heightAnchor.constraint(greaterThanOrEqualTo: imageView.widthAnchor),
             imageView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -25)
         ])
     }

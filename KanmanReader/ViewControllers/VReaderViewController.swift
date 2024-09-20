@@ -12,20 +12,20 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
     weak var delegate: PageDelegate?
     weak var rDelegate: ReaderDelegate?
     
-    var pages: [UIImage] = []
+    var urls: [URL] = []
     var startPosition: Int = 0
     var position: Int {
         guard tableView.window != nil else { return 0 }
         
         let cell = tableView.visibleCells.first as? ImageCell
         
-        if let visibleRows = tableView.indexPathsForVisibleRows, visibleRows.contains(where: { $0.item == pages.count - 1 }) {
-            return pages.count - 1
+        if let visibleRows = tableView.indexPathsForVisibleRows, visibleRows.contains(where: { $0.item == urls.count - 1 }) {
+            return urls.count - 1
         }
         
-        return max(min(cell?.position ?? 0, pages.count - 1), 0)
+        return max(min(cell?.position ?? 0, urls.count - 1), 0)
     }
-    var currentImage: UIImage { return pages[position] }
+    var currentImage: UIImage? { return urls[position].loadImage() }
     var currentPage: Page = Page()
     
     lazy var tableView: UITableView = {
@@ -50,12 +50,12 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
         return imageView
     }()
     
-    required init(images: [UIImage] = [], position: Int = 0, parent: ReaderViewController? = nil) {
+    required init(urls: [URL] = [], position: Int = 0, parent: ReaderViewController? = nil) {
         super.init(nibName: nil, bundle: nil)
         
         self.delegate = parent
         self.rDelegate = parent
-        self.pages = images
+        self.urls = urls
 
         addGestureRecognizers()
         
@@ -96,7 +96,6 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
     }
     
     func addGestureRecognizers() {
-//        visionView.removeGestureRecognizer(singleTapGesture)
         let singleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didSingleTap(_:)))
         singleTapGesture.numberOfTapsRequired = 1
         singleTapGesture.numberOfTouchesRequired = 1
@@ -115,15 +114,6 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
     func stopVisionMode() {
         visionView.removeFromSuperview()
         add(view: tableView)
-    }
-    
-    func createPage(position: Int) -> Page {
-        let newPage = Page()
-        newPage.setImage(pages[position])
-        newPage.position = position
-        newPage.delegate = self.presentingViewController as? ReaderViewController
-        
-        return newPage
     }
     
     @objc func didSingleTap(_ gestureRecognizer: UIGestureRecognizer) {
@@ -159,13 +149,13 @@ class VReaderViewController: UIViewController, Reader, UITableViewDataSource, UI
         
         cell.delegate = parent as? ReaderViewController
         cell.position = indexPath.item
-        if(cell.initialImage) { cell.setImage(pages[indexPath.item]) }
+        cell.url = urls[cell.position]
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return pages.count
+        return urls.count
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

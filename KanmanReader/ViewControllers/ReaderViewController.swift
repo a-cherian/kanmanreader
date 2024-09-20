@@ -9,10 +9,10 @@ import UIKit
 import TipKit
 
 protocol Reader: UIViewController {
-    var pages: [UIImage] { get set }
+    var urls: [URL] { get set }
     var position: Int { get }
     var currentPage: Page { get set }
-    var currentImage: UIImage { get }
+    var currentImage: UIImage? { get }
 }
 
 class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate {
@@ -80,7 +80,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         return button
     }()
     
-    init(images: [UIImage] = [], comic: Comic) {
+    init(urls: [URL], comic: Comic) {
         self.comic = comic
         
         super.init(nibName: nil, bundle: nil)
@@ -88,10 +88,10 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         preferences = ReaderPreferences(from: comic.preferences)
         if preferences.scrollDirection == .horizontal {
-            reader = HReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
+            reader = HReaderViewController(urls: urls, position: Int(comic.lastPage), parent: self)
         }
         else if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: images, position: Int(comic.lastPage), parent: self)
+            reader = VReaderViewController(urls: urls, position: Int(comic.lastPage), parent: self)
         }
         
         textRecognizer.delegate = self
@@ -246,9 +246,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func didTapOCR(_ sender: UILongPressGestureRecognizer) {
-        if let hReader = reader as? HReaderViewController {
-            let image = hReader.currentImage
-            zoomedRect = image.getZoomedRect(from: reader.currentPage)
+        if let hReader = reader as? HReaderViewController,  let image = hReader.currentImage {
+            let zoomedRect = image.getZoomedRect(from: reader.currentPage)
             textRecognizer.requestInitialVision(for: image, with: zoomedRect)
             if(!DictionaryTip.tipEnabled) { hReader.currentPage.didSingleTap(sender) }
         }
@@ -279,6 +278,8 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func closeComic() {
+        ComicFileManager.clearReading()
+        
         comic.lastPage = Int64(reader.position)
         comic.lastOpened = Date()
         comic.preferences = preferences.string
@@ -361,10 +362,10 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
         let lastPosition = reader.position
         removeReader()
         if preferences.scrollDirection == .vertical {
-            reader = VReaderViewController(images: reader.pages, position: lastPosition, parent: self)
+            reader = VReaderViewController(urls: reader.urls, position: lastPosition, parent: self)
         }
         else if preferences.scrollDirection == .horizontal {
-            reader = HReaderViewController(images: reader.pages, position: lastPosition, parent: self)
+            reader = HReaderViewController(urls: reader.urls, position: lastPosition, parent: self)
         }
         addReader()
         

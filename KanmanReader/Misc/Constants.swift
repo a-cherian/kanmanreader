@@ -12,6 +12,7 @@ struct Constants {
     // APP INFO
     static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     
+    
     // USERDEFAULTS KEYS
     static let LOADED_SAMPLE_KEY = "loadedSample"
     static let LOADED_SAMPLE = "v1.1.0"
@@ -22,10 +23,6 @@ struct Constants {
     static let APP_PREFERENCES_KEY = "appPreferences"
     static let HAS_ONBOARDED_KEY = "hasOnboarded"
     static let FINISHED_TIPS_KEY = "finishedTips"
-    
-    
-    // COLORS
-    static let lightBlueColor = UIColor(red: 139 / 255.0, green: 232 / 255.0, blue: 223 / 255.0, alpha: 1.0)
     
     
     // FONTS
