@@ -133,7 +133,10 @@ class SettingsViewController: UITableViewController {
     
     func openContact() {
         let email = "citradevix@gmail.com"
-        if let url = URL(string: "mailto:\(email)") {
+        let subject = "Kanman Reader Support Request"
+        let body = "Please describe your issues or question below:\n\n\n\nApp Version: \(Constants.APP_VERSION)\nBuild Number: \(Constants.BUILD_NUMBER)\nDevice Model: \(Constants.DEVICE_MODEL)\niOS Version: \(Constants.IOS_VERSION)"
+        
+        if let url = URL(string: "mailto:\(email)?subject=\(subject)&body=\(body)") {
             UIApplication.shared.open(url)
         }
     }

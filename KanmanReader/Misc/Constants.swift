@@ -11,6 +11,9 @@ import SwiftUI
 struct Constants {
     // APP INFO
     static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+    static let BUILD_NUMBER = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+    static let IOS_VERSION = UIDevice.current.systemVersion
+    static let DEVICE_MODEL = UIDevice.current.name
     
     
     // USERDEFAULTS KEYS
