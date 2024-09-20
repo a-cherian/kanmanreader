@@ -339,9 +339,12 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
             })
         }
         else {
+            let spinner = UIActivityIndicatorView()
+            spinner.show()
             Task {
                 await ComicFileManager.createComics(for: urls)
                 print("Batch of comics created...")
+                spinner.hide()
             }
         }
     }
