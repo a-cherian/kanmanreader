@@ -20,12 +20,13 @@ struct RARExtractor: Extractor {
         
         // sort by filename
         entries = try archive.entries().sorted(by: { $0.fileName.compare($1.fileName) == .orderedAscending })
-        if(entries.count == 0) { throw ExtractError.noValidFiles }
         
         // filter out directory & extraneous files
         entries = entries.filter { entry in
             return !entry.directory && shouldKeepFile(fileName: entry.fileName)
         }
+        
+        if(entries.count == 0) { throw ExtractError.noValidFiles }
     }
     
     func extractInfo() throws -> (cover: Data, totalPages: Int) {

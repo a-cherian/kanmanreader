@@ -57,7 +57,7 @@ struct ComicFileManager {
             
             let alert = UIAlertController(
                 title: "Manhua import failed",
-                message: "Manhua was unable to be imported. Try again, or contact support if the problem persists.",
+                message: "Manhua was unable to be imported. Make sure that the file is a ZIP/RAR/CBR/CBZ that contains image files in the main folder. Contact support if the problem persists.",
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(
@@ -121,11 +121,12 @@ struct ComicFileManager {
     
     static func getPages(for url: URL, openInPlace: Bool = true) async -> [URL]? {
         do {
-            guard let imageData = try accessGuardedResource(url, with: Unpacker(for: url).extractData, openInPlace: openInPlace) as? [Data] else { return nil}
+            guard let imageData = try getData(for: url, openInPlace: true) else { return nil}
+            let readingDir = getReadingDirectory()
             
             var urls: [URL] = []
             for (index, data) in imageData.enumerated() {
-                if let url = writeToDirectory(directory: getReadingDirectory(), data: data, position: index) {
+                if let url = writeToDirectory(directory: readingDir, data: data, position: index) {
                     urls.append(url)
                 }
             }
@@ -142,7 +143,7 @@ struct ComicFileManager {
     
     static func getCovers(for data: [Data?]) -> [URL?]? {
         var urls: [URL?] = []
-        var coverDirectory = getCoverDirectory()
+        let coverDirectory = getCoverDirectory()
         
         for (index, datum) in data.enumerated() {
             if let datum = datum {
@@ -253,7 +254,7 @@ struct ComicFileManager {
     }
     
     private static func getCoverDirectory() -> URL {
-        return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "reading")
+        return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "covers")
     }
     
     private static func getCreateDirectory(baseDirectory: URL = getAppSandboxDirectory(), name: String) -> URL {

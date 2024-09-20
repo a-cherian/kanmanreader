@@ -25,6 +25,8 @@ struct ZIPExtractor: Extractor {
         entries = entries.filter { entry in
             return entry.type == .file && shouldKeepFile(fileName: entry.path)
         }
+        
+        if(entries.count == 0) { throw ExtractError.noValidFiles }
     }
     
     func extractInfo() throws -> (cover: Data, totalPages: Int) {

@@ -45,7 +45,9 @@ class TextRecognizer {
                 BoxTip.boxesGenerated = true
             }
             
-            self.delegate?.didPerformVision(image: image.drawRectsOnImage(self.textRegions, color: .red))
+            if(self.textRegions.count > 0) {
+                self.delegate?.didPerformVision(image: image.drawRectsOnImage(self.textRegions, color: .red))
+            }
         }
         
         if let frame = frame {
