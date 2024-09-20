@@ -103,29 +103,56 @@ struct ComicFileManager {
         return try accessGuardedResource(url, with: { try Unpacker(for: url).extractImages() }, openInPlace: openInPlace) as? [UIImage]
     }
     
-    static func getImageURLs(for url: URL, openInPlace: Bool = true) -> [URL?]? {
-        guard let imageData = try? accessGuardedResource(url, with: Unpacker(for: url).extractData, openInPlace: openInPlace) as? [Data] else { return nil}
+    static func getData(for url: URL, openInPlace: Bool = true) throws -> [Data]? {
+        return try accessGuardedResource(url, with: { try Unpacker(for: url).extractData() }, openInPlace: openInPlace) as? [Data]
+    }
+    
+    static func writeToDirectory(directory: URL, data: Data, position: Int) -> URL? {
+        let targetURL = directory.appending(path: "\(position)")
         
-        let fm = FileManager.default
-        let tempDirectory = fm.temporaryDirectory.appending(path: "reading")
-
+        do {
+            try data.write(to: targetURL)
+            return targetURL
+        } catch let error {
+            print("Error writing image: \(error)")
+            return nil
+        }
+    }
+    
+    static func getPages(for url: URL, openInPlace: Bool = true) async -> [URL]? {
+        do {
+            guard let imageData = try accessGuardedResource(url, with: Unpacker(for: url).extractData, openInPlace: openInPlace) as? [Data] else { return nil}
+            
+            var urls: [URL] = []
+            for (index, data) in imageData.enumerated() {
+                if let url = writeToDirectory(directory: getReadingDirectory(), data: data, position: index) {
+                    urls.append(url)
+                }
+            }
+            
+            if urls.compactMap({$0}).count == 0 { return nil }
+            
+            return urls
+        }
+        catch {
+            print("Failed to get pages: \(error)")
+            return nil
+        }
+    }
+    
+    static func getCovers(for data: [Data?]) -> [URL?]? {
         var urls: [URL?] = []
-        for (index, data) in imageData.enumerated() {
-            // Create a destination URL.
-            let targetURL = tempDirectory.appending(path: "\(index)")
-
-            // Copy the file.
-            do {
-                try data.write(to: targetURL)
-                urls.append(targetURL)
-            } catch let error {
+        var coverDirectory = getCoverDirectory()
+        
+        for (index, datum) in data.enumerated() {
+            if let datum = datum {
+                urls.append(writeToDirectory(directory: coverDirectory, data: datum, position: index))
+            }
+            else {
                 urls.append(nil)
-                print("Error writing image: \(error)")
             }
         }
         
-        if urls.compactMap({$0}).count == 0 { return nil }
-
         return urls
     }
     
@@ -185,6 +212,7 @@ struct ComicFileManager {
            let manhuaDirectoryFiles = try? FileManager.default.contentsOfDirectory(at:  getManhuaDirectory(), includingPropertiesForKeys: nil),
            manhuaDirectoryFiles.contains(url) {
             deleteFile(url: url)
+            clearTrash()
         }
         
         deleteBookmark(uuid: comic.uuid)
@@ -220,13 +248,21 @@ struct ComicFileManager {
         return getCreateDirectory(name: "Inbox")
     }
     
-    private static func getCreateDirectory(name: String) -> URL {
-        let directory = getAppSandboxDirectory().appendingPathComponent(name)
+    private static func getReadingDirectory() -> URL {
+        return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "reading")
+    }
+    
+    private static func getCoverDirectory() -> URL {
+        return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "reading")
+    }
+    
+    private static func getCreateDirectory(baseDirectory: URL = getAppSandboxDirectory(), name: String) -> URL {
+        let directory = baseDirectory.appendingPathComponent(name)
         
-        let fileManager = FileManager.default
-        if !fileManager.fileExists(atPath: directory.path) {
+        let fm = FileManager.default
+        if !fm.fileExists(atPath: directory.path) {
             do {
-                try fileManager.createDirectory(atPath: directory.path, withIntermediateDirectories: true, attributes: nil)
+                try fm.createDirectory(atPath: directory.path, withIntermediateDirectories: true, attributes: nil)
             }
             catch {
                 print("Failed to create \(name) directory: \(error)")
@@ -295,16 +331,8 @@ struct ComicFileManager {
     
     static func clearReading() {
         let fm = FileManager.default
-        let files = try? fm.contentsOfDirectory(at: fm.temporaryDirectory.appending(path: "reading"), includingPropertiesForKeys: nil)
-        
-        
-        files?.forEach { file in
-            do {
-                try fm.removeItem(at: file)
-            } catch {
-                print("Failed to delete file: \(error)")
-            }
-        }
+        let readingDir = fm.temporaryDirectory.appending(path: "reading")
+        deleteFile(url: readingDir)
     }
     
     static func loadInbox() {

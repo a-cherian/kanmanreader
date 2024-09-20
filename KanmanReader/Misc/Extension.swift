@@ -35,7 +35,7 @@ extension Comic {
             return url
         }
         catch {
-            print("Failed to read bookmark: \(error.localizedDescription)")
+            print("Failed to read bookmark for \(name ?? "manhua"): \(error.localizedDescription)")
             return nil
         }
     }
@@ -57,6 +57,36 @@ extension URL {
     }
 }
 
+extension UINavigationController {
+    func openReader(with comic: Comic, openInPlace: Bool = true) {
+        let spinner = UIActivityIndicatorView()
+        spinner.show()
+        
+        Task {
+            if let url = comic.url, let pages = await ComicFileManager.getPages(for: url, openInPlace: openInPlace) {
+                spinner.hide()
+                comic.lastOpened = Date()
+                CoreDataManager.shared.updateComic(comic: comic)
+                self.pushViewController(ReaderViewController(urls: pages, comic: comic), animated: true)
+            }
+            else {
+                spinner.hide()
+                let alert = UIAlertController(
+                    title: "Could not open manhua",
+                    message: "\"\(comic.name ?? "Manhua")\" was unable to be opened. Try re-importing the manhua file, or contact support if the problem persists.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: "OK",
+                    style: .default,
+                    handler: { _ in
+                        // cancel action
+                    }))
+                alert.show()
+            }
+        }
+    }
+}
 
 class SizingTableView: UITableView {
 
@@ -255,6 +285,50 @@ extension UIAlertController{
                topController.present(self, animated: true, completion: nil)
        }
    }
+}
+
+extension UIActivityIndicatorView {
+    func show() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let currentWindow = windowScene.windows.first(where: { $0.isKeyWindow }),
+           var topController = currentWindow.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            
+            let view = UIView()
+            view.backgroundColor = .black
+            view.layer.cornerRadius = 5
+            view.layer.borderColor = UIColor.accent.cgColor
+            view.layer.borderWidth = 2
+            view.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.style = .large
+            self.color = .accent
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.startAnimating()
+            
+            topController.view.addSubview(view)
+            view.addSubview(self)
+            view.centerYAnchor.constraint(equalTo: topController.view.centerYAnchor).isActive = true
+            view.centerXAnchor.constraint(equalTo: topController.view.centerXAnchor).isActive = true
+            view.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.5).isActive = true
+//            view.widthAnchor.constraint(lessThanOrEqualTo: topController.view.widthAnchor, multiplier: 0.4).isActive = true
+            view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 1.5).isActive = true
+            
+            self.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            self.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+//            self.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+//            self.widthAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+        }
+    }
+    
+    func hide() {
+        self.stopAnimating()
+        self.superview?.removeFromSuperview()
+        self.removeFromSuperview()
+    }
 }
 
 extension UITableView {

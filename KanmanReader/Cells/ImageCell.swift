@@ -13,7 +13,13 @@ class ImageCell: UITableViewCell {
     
     var position = -1
     weak var delegate: PageDelegate? = nil
-    var url: URL?
+    var url: URL? {
+        didSet {
+            if let url = url, let image = url.loadImage() {
+                setImage(image)
+            }
+        }
+    }
     
     weak var singleTapGesture: UITapGestureRecognizer?
     
@@ -30,10 +36,6 @@ class ImageCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
-        
-        if let url = url, let image = url.loadImage() {
-            setImage(image)
-        }
         
         addSubviews()
         configureUI()
@@ -75,17 +77,6 @@ class ImageCell: UITableViewCell {
             pageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
-    
-    func loadImage(fileName: URL) -> UIImage? {
-       do {
-            let imageData = try Data(contentsOf: fileName)
-            return UIImage(data: imageData)
-        } catch {
-            print("Error loading image : \(error)")
-        }
-        return nil
-    }
-
     
     func setImage(_ image: UIImage) {
         pageView.image = image;

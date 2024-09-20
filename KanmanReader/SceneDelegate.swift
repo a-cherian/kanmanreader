@@ -44,12 +44,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 url = movedURL
             }
             
-            if let comic = ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace) {
-                comic.lastOpened = Date()
-                CoreDataManager.shared.updateComic(comic: comic)
-                guard let images = try? ComicFileManager.getImages(for: url, openInPlace: urlContext.options.openInPlace) else { return }
-                guard let urls = ComicFileManager.getImageURLs(for: url, openInPlace: urlContext.options.openInPlace) else { return }
-                (self.window?.rootViewController as? UINavigationController)?.pushViewController(ReaderViewController(images: images, urls: urls, comic: comic), animated: true)
+            if let comic = ComicFileManager.createComic(from: url, openInPlace: urlContext.options.openInPlace),
+               let tabBarController = self.window?.rootViewController as? UITabBarController,
+               let navController = tabBarController.selectedViewController as? UINavigationController {
+                navController.openReader(with: comic, openInPlace: urlContext.options.openInPlace)
             }
         }
         ComicFileManager.loadInbox()

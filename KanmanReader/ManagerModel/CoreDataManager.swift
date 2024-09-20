@@ -61,13 +61,6 @@ struct CoreDataManager {
                     }
                     return true
                 })
-//                batchRequest.resultType = .objectIDs
-//                let result = try context.execute(batchRequest) as! NSBatchInsertResult
-//                let changes: [AnyHashable: Any] = [
-//                    NSInsertedObjectsKey: result.result as! [NSManagedObjectID]
-//                ]
-//                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
-                
                 
                 batchRequest.resultType = .objectIDs
 

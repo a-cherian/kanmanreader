@@ -113,12 +113,7 @@ class SettingsViewController: UITableViewController {
     func openTutorial() {
         guard let tutorial = ComicFileManager.createTutorial() else { return }
         if let url = tutorial.url {
-            tutorial.lastOpened = Date()
-            CoreDataManager.shared.updateComic(comic: tutorial)
-            if let images = try? ComicFileManager.getImages(for: url), let urls = ComicFileManager.getImageURLs(for: url) {
-                self.navigationController?.pushViewController(ReaderViewController(images: images, urls: urls, comic: tutorial), animated: true)
-                return
-            }
+            navigationController?.openReader(with: tutorial)
         }
         else {
             let alert = UIAlertController(

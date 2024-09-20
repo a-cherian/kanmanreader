@@ -16,7 +16,6 @@ struct RARExtractor: Extractor {
     init(url: URL) throws {
         self.url = url
         
-        // TO DO: change archive and entries into computed properties
         archive = try Archive(fileURL: url)
         
         // sort by filename

@@ -18,6 +18,13 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
     var initialImage: UIImage? = nil
     var singleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
     var doubleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer()
+    var url: URL? {
+        didSet {
+            if let url = url {
+                setImage(url)
+            }
+        }
+    }
     
     var scrollView: UIScrollView = {
         let view = UIScrollView()
@@ -95,8 +102,10 @@ class Page: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate 
         ])
     }
     
-    func setImage(_ image: UIImage) {
-        imageView.image = image;
+    func setImage(_ url: URL) {
+        guard let image = url.loadImage() else { return }
+        
+        imageView.image = image
         initialImage = nil
     }
     
