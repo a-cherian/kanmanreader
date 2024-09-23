@@ -122,7 +122,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         super.viewDidAppear(animated)
         tipManager?.startTasks()
         navigationController?.setToolbarHidden(true, animated: false)
-        NotificationCenter.default.addObserver(self, selector: #selector(closeComic), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateComic), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -138,7 +138,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
-        closeComic()
+        updateComic()
     }
     
     func addReader() {
@@ -274,12 +274,11 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     @objc func didTapBack(_ sender: UIButton) {
+        ComicFileManager.clearReading()
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc func closeComic() {
-        ComicFileManager.clearReading()
-        
+    @objc func updateComic() {
         comic.lastPage = Int64(reader.position)
         comic.lastOpened = Date()
         comic.preferences = preferences.string

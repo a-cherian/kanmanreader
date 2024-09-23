@@ -22,7 +22,7 @@ struct ComicFileManager {
         let comicData: [[AnyHashable : Any]] = urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent, options: .numeric) == .orderedDescending })
             .compactMap { url in
                 if comics?.first(where: { $0.url == url }) != nil { return nil }
-                    
+                
                 let name = getFileName(for: url)
                 guard let uuid = try? createBookmark(url: url) else { return nil }
                 guard let (cover, totalPages) = try? getInfo(for: url) else { return nil }
@@ -30,7 +30,7 @@ struct ComicFileManager {
                 
                 return ["name": name, "lastPage": 0, "totalPages": totalPages, "cover": cover, "lastOpened": Date(), "preferences": ReaderPreferences().string, "uuid": uuid]
             }
-
+        
         return await CoreDataManager.shared.createComics(comicData: comicData)
     }
     
@@ -124,7 +124,7 @@ struct ComicFileManager {
     static func getPages(for url: URL, openInPlace: Bool = true) async -> [URL]? {
         do {
             guard let imageData = try getData(for: url, openInPlace: true) else { return nil}
-            let readingDir = getReadingDirectory()
+            guard let readingDir = getReadingDirectory() else { return nil }
             
             var urls: [URL] = []
             for (index, data) in imageData.enumerated() {
@@ -143,9 +143,9 @@ struct ComicFileManager {
         }
     }
     
-    static func getCovers(for data: [Data?]) -> [URL?]? {
+    static func getCovers(for data: [Data?]) -> [URL?] {
         var urls: [URL?] = []
-        let coverDirectory = getCoverDirectory()
+        guard let coverDirectory = getCoverDirectory() else { return [] }
         
         for (index, datum) in data.enumerated() {
             if let datum = datum {
@@ -201,8 +201,8 @@ struct ComicFileManager {
             let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
             
             let uuid = generateUUID(for: url)
-            try bookmarkData.write(to: getBookmarkDirectory().appendingPathComponent(uuid))
-            print(getBookmarkDirectory())
+            guard let bookmarkURL = getBookmarkDirectory()?.appendingPathComponent(uuid) else { throw BookmarkError.failedWrite }
+            try bookmarkData.write(to: bookmarkURL)
             return uuid
         }
         catch {
@@ -213,13 +213,14 @@ struct ComicFileManager {
     
     static func deleteComic(comic: Comic) {
         if let url = comic.url,
-           let manhuaDirectoryFiles = try? FileManager.default.contentsOfDirectory(at:  getManhuaDirectory(), includingPropertiesForKeys: nil),
-           manhuaDirectoryFiles.contains(url) {
+           let manhuaDir = getManhuaDirectory(),
+           let manhuaDirFiles = try? FileManager.default.contentsOfDirectory(at: manhuaDir, includingPropertiesForKeys: nil),
+           manhuaDirFiles.contains(url) {
             deleteFile(url: url)
             clearTrash()
         }
         
-        deleteBookmark(uuid: comic.uuid)
+        deleteFile(url: comic.bookmarkURL)
         CoreDataManager.shared.deleteComic(comic: comic)
         
     }
@@ -231,36 +232,36 @@ struct ComicFileManager {
     }
     
     static func deleteBookmark(uuid: String?) {
-        guard let uuid = uuid else { return }
+        guard let uuid = uuid, uuid.count > 0, let bookmarkURL = getBookmarkDirectory()?.appendingPathComponent(uuid) else { return }
         
-        deleteFile(url: getBookmarkDirectory().appendingPathComponent(uuid))
+        deleteFile(url: bookmarkURL)
     }
     
     static func getAppSandboxDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
-    static func getBookmarkDirectory() -> URL {
+    static func getBookmarkDirectory() -> URL? {
         return getCreateDirectory(name: ".Bookmarks")
     }
     
-    static func getManhuaDirectory() -> URL {
+    static func getManhuaDirectory() -> URL? {
         return getCreateDirectory(name: "Manhua")
     }
     
-    static func getInboxDirectory() -> URL {
-        return getCreateDirectory(name: "Inbox")
+    static func getInboxDirectory() -> URL? {
+        return getAppSandboxDirectory().appendingPathComponent("Inbox")
     }
     
-    private static func getReadingDirectory() -> URL {
+    static func getReadingDirectory() -> URL? {
         return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "reading")
     }
     
-    private static func getCoverDirectory() -> URL {
+    private static func getCoverDirectory() -> URL? {
         return getCreateDirectory(baseDirectory: FileManager.default.temporaryDirectory, name: "covers")
     }
     
-    private static func getCreateDirectory(baseDirectory: URL = getAppSandboxDirectory(), name: String) -> URL {
+    private static func getCreateDirectory(baseDirectory: URL = getAppSandboxDirectory(), name: String) -> URL? {
         let directory = baseDirectory.appendingPathComponent(name)
         
         let fm = FileManager.default
@@ -270,7 +271,7 @@ struct ComicFileManager {
             }
             catch {
                 print("Failed to create \(name) directory: \(error)")
-                return getAppSandboxDirectory()
+                return nil
             }
         }
         
@@ -278,7 +279,8 @@ struct ComicFileManager {
     }
     
     static func deleteBookmarks() {
-        let files = try? FileManager.default.contentsOfDirectory(at:  getBookmarkDirectory(), includingPropertiesForKeys: nil)
+        guard let bookmarkDir = getBookmarkDirectory() else { return }
+        let files = try? FileManager.default.contentsOfDirectory(at:  bookmarkDir, includingPropertiesForKeys: nil)
         
         files?.forEach { file in
             deleteFile(url: file)
@@ -296,7 +298,8 @@ struct ComicFileManager {
     }
     
     static func loadManhuaDirectory() {
-        let files = try? FileManager.default.contentsOfDirectory(at: getManhuaDirectory(), includingPropertiesForKeys: nil)
+        guard let manhuaDir = getManhuaDirectory() else { return }
+        let files = try? FileManager.default.contentsOfDirectory(at: manhuaDir, includingPropertiesForKeys: nil)
         
         files?.forEach { file in
             createComic(from: file, openInPlace: false, alerts: false)
@@ -307,10 +310,10 @@ struct ComicFileManager {
         let fm = FileManager.default
         
         do {
-            let newURL = getManhuaDirectory().appendingPathComponent(url.lastPathComponent)
+            guard let newURL = getManhuaDirectory()?.appendingPathComponent(url.lastPathComponent) else { return nil }
             if(!fm.fileExists(atPath: newURL.path))
             {
-                try fm.moveItem(at: url, to: getManhuaDirectory().appendingPathComponent(url.lastPathComponent))
+                try fm.moveItem(at: url, to: newURL)
                 return newURL
             }
             else { return nil }
@@ -340,12 +343,12 @@ struct ComicFileManager {
     }
     
     static func loadInbox() {
-        let files = (try? FileManager.default.contentsOfDirectory(at: getInboxDirectory(), includingPropertiesForKeys: nil)) ?? []
+        guard let inboxDir = getInboxDirectory() else { return }
+        let files = (try? FileManager.default.contentsOfDirectory(at: inboxDir, includingPropertiesForKeys: nil)) ?? []
         
         for file in files {
             guard let url = ComicFileManager.moveToBooks(url: file) else { continue }
             ComicFileManager.createComic(from: url, openInPlace: false)
-            
         }
         
         clearDirectory(name: "Inbox")
@@ -355,7 +358,8 @@ struct ComicFileManager {
         clearDirectory(name: ".Trash")
     }
     
-    private static func deleteFile(url: URL) {
+    private static func deleteFile(url: URL?) {
+        guard let url = url else { return }
         let fm = FileManager.default
         do {
             if(fm.fileExists(atPath: url.path))

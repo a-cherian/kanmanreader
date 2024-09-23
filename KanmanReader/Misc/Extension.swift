@@ -16,12 +16,10 @@ extension Comic {
     }
     
     var url: URL? {
-        guard let uuid = uuid else { return nil }
-        
-        let file = ComicFileManager.getBookmarkDirectory().appendingPathComponent(uuid)
+        guard let bookmarkURL = bookmarkURL else { return nil }
         
         do {
-            let bookmarkData = try Data(contentsOf: file)
+            let bookmarkData = try Data(contentsOf: bookmarkURL)
             var isStale = false
             let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &isStale)
             
@@ -39,6 +37,11 @@ extension Comic {
             return nil
         }
     }
+    
+    var bookmarkURL: URL? {
+        guard let uuid = uuid, uuid.count > 0 else { return nil }
+        return ComicFileManager.getBookmarkDirectory()?.appendingPathComponent(uuid)
+    }
 }
 
 extension URL {
@@ -51,7 +54,7 @@ extension URL {
             let imageData = try Data(contentsOf: self)
             return UIImage(data: imageData)
         } catch {
-            print("Error loading image : \(error)")
+            print("Error loading image: \(error)")
         }
         return nil
     }
@@ -61,6 +64,8 @@ extension UINavigationController {
     func openReader(with comic: Comic, openInPlace: Bool = true) {
         let spinner = UIActivityIndicatorView()
         spinner.show()
+       
+        ComicFileManager.clearReading()
         
         Task {
             if let url = comic.url, let pages = await ComicFileManager.getPages(for: url, openInPlace: openInPlace) {

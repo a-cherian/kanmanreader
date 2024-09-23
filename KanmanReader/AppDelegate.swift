@@ -153,6 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func checkFiles() {
         DispatchQueue.global(qos: .userInitiated).async {
+            ComicFileManager.clearReading()
             ComicFileManager.clearTrash()
             ComicFileManager.loadManhuaDirectory()
         }
