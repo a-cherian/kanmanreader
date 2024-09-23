@@ -54,7 +54,7 @@ class AppPreferences {
     
     var string: String { AppPreferences.generateString(chapterNumbers: displayChapterNumbers, bothScripts: displayBothScripts, traditional: prioritizeTraditional) }
     
-    init(chapterNumbers: Bool = false, bothScripts: Bool = true, traditional: Bool = false) {
+    init(chapterNumbers: Bool = true, bothScripts: Bool = true, traditional: Bool = false) {
         displayChapterNumbers = chapterNumbers
         displayBothScripts = bothScripts
         prioritizeTraditional = traditional
@@ -74,7 +74,7 @@ class AppPreferences {
     init(fromStored: Bool) {
     }
     
-    static func generateString(chapterNumbers: Bool = false, bothScripts: Bool = true, traditional: Bool = false) -> String {
+    static func generateString(chapterNumbers: Bool = true, bothScripts: Bool = true, traditional: Bool = false) -> String {
         let chapterNumbersStr = "chapterNumbers_" + String(chapterNumbers)
         let bothScriptsStr = "bothScripts_" + String(bothScripts)
         let traditionalStr = "traditional_" + String(traditional)
