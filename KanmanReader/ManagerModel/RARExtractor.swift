@@ -19,7 +19,7 @@ struct RARExtractor: Extractor {
         archive = try Archive(fileURL: url)
         
         // sort by filename
-        entries = try archive.entries().sorted(by: { $0.fileName.compare($1.fileName) == .orderedAscending })
+        entries = try archive.entries().sorted(by: { $0.fileName.compare($1.fileName, options: .numeric) == .orderedAscending })
         
         // filter out directory & extraneous files
         entries = entries.filter { entry in

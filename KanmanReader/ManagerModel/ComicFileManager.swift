@@ -35,7 +35,7 @@ struct ComicFileManager {
     }
     
     @discardableResult
-    static func createComic(from url: URL, name: String? = nil, openInPlace: Bool = true) -> Comic? {
+    static func createComic(from url: URL, name: String? = nil, openInPlace: Bool = true, alerts: Bool = true) -> Comic? {
         let comics = CoreDataManager.shared.fetchComics()
         
         do {
@@ -55,18 +55,20 @@ struct ComicFileManager {
         catch {
             print("Couldn't create comic for \(url): \(error)")
             
-            let alert = UIAlertController(
-                title: "Manhua import failed",
-                message: "Manhua was unable to be imported. Make sure that the file is a ZIP/RAR/CBR/CBZ that contains image files in the main folder. Contact support if the problem persists.",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(
-                title: "OK",
-                style: .default,
-                handler: { _ in
-                // cancel action
-            }))
-            alert.show()
+            if(alerts) {
+                let alert = UIAlertController(
+                    title: "Manhua import failed",
+                    message: "Manhua was unable to be imported. Make sure that the file is a ZIP/RAR/CBR/CBZ that contains image files in the main folder. Contact support if the problem persists.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(
+                    title: "OK",
+                    style: .default,
+                    handler: { _ in
+                        // cancel action
+                    }))
+                alert.show()
+            }
             
             return nil
         }
@@ -200,6 +202,7 @@ struct ComicFileManager {
             
             let uuid = generateUUID(for: url)
             try bookmarkData.write(to: getBookmarkDirectory().appendingPathComponent(uuid))
+            print(getBookmarkDirectory())
             return uuid
         }
         catch {
@@ -296,7 +299,7 @@ struct ComicFileManager {
         let files = try? FileManager.default.contentsOfDirectory(at: getManhuaDirectory(), includingPropertiesForKeys: nil)
         
         files?.forEach { file in
-            createComic(from: file, openInPlace: false)
+            createComic(from: file, openInPlace: false, alerts: false)
         }
     }
     

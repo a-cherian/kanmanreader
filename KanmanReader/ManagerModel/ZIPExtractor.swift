@@ -19,7 +19,7 @@ struct ZIPExtractor: Extractor {
         archive = try Archive(url: url, accessMode: .read)
         
         // sort by filename
-        entries = archive.sorted(by: { ($0.path).compare($1.path) == .orderedAscending })
+        entries = archive.sorted(by: { ($0.path).compare($1.path, options: .numeric) == .orderedAscending })
         
         // filter out directory & extraneous files
         entries = entries.filter { entry in
