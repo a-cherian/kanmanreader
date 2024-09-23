@@ -23,6 +23,7 @@ class TabBarController: UITabBarController {
         documents.tabBarItem.image = UIImage(systemName: "books.vertical.fill")
         documents.tabBarItem.title = "Library"
         let documentsNav = UINavigationController(rootViewController: documents)
+        documentsNav.hidesBottomBarWhenPushed = true
         
         // vocabulary
 //        let vocab = VocabViewController()
@@ -35,6 +36,7 @@ class TabBarController: UITabBarController {
         settings.tabBarItem.image = UIImage(systemName: "gearshape.fill")
         settings.tabBarItem.title = "Settings"
         let settingsNav = UINavigationController(rootViewController: settings)
+        settingsNav.hidesBottomBarWhenPushed = true
         
         tabBar.backgroundColor = .black
         
