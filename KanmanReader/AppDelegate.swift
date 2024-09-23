@@ -137,6 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func loadSample() {
         let loadedSample = UserDefaults.standard.string(forKey: Constants.LOADED_SAMPLE_KEY)
+        let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
         
         if(loadedSample != Constants.LOADED_SAMPLE) {
             if let tutorial = CoreDataManager.shared.fetchTutorial() {
@@ -144,6 +145,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 ComicFileManager.createTutorial()
             }
             UserDefaults.standard.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
+        }
+        if(!hasOnboarded) {
+            ComicFileManager.createTutorial()
         }
     }
     
