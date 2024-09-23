@@ -15,7 +15,7 @@ class SettingsViewController: UITableViewController {
     var settings: [[(name: String,
                      view: UIView?,
                      action: (() -> ())?)]] = [[("Display chapter numbers", nil, nil)],
-                                               [("Display both scripts", nil, nil), ("Display traditional first", nil, nil)],
+                                               [("Display both traditional & simplified", nil, nil), ("Display traditional first", nil, nil)],
                                                [("About", nil, nil), ("Tutorial", nil, nil), ("Contact Developer", nil, nil)]]
     let appPreferences = AppPreferences(from: nil)
     
