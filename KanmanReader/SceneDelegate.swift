@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         importFile: if let urlContext = URLContexts.first {
             var url = urlContext.url
-            if(!urlContext.options.openInPlace) {
+            if !urlContext.options.openInPlace {
                 guard let movedURL = ComicFileManager.moveToBooks(url: urlContext.url) else { break importFile }
                 url = movedURL
             }

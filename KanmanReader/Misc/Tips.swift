@@ -12,40 +12,18 @@ struct OCRTip: Tip {
     @Parameter static var tipEnabled: Bool = true
     
     var title: Text {
-        Text("Hold down to search for text")
+        Text("Select text to search")
     }
     
     var message: Text? {
-        Text("Long press the page to identify regions of Chinese text")
+        Text("Long press and drag to select the region of text to be identified")
     }
     
     var image: Image? {
-        Image(systemName: "hand.tap.fill")
+        Image(systemName: "hand.draw.fill")
     }
     
     var rules: [Rule] {
-        #Rule(Self.$tipEnabled) { $0 == true }
-    }
-}
-
-struct BoxTip: Tip {
-    @Parameter static var tipEnabled: Bool = true
-    @Parameter static var boxesGenerated: Bool = false
-    
-    var title: Text {
-        Text("Tap red boxes")
-    }
-    
-    var message: Text? {
-        Text("Convert the boxed regions into text that can be copied or searched")
-    }
-    
-    var image: Image? {
-        Image(systemName: "rectangle.and.hand.point.up.left.filled")
-    }
-    
-    var rules: [Rule] {
-        #Rule(Self.$boxesGenerated) { $0 == true }
         #Rule(Self.$tipEnabled) { $0 == true }
     }
 }
@@ -127,9 +105,9 @@ extension TipUIPopoverViewController {
         let isBorderLayer = view.superview?.superview?.layer.sublayers?.map { subl in
             guard let sublayer = subl as? CAShapeLayer else { return false }
             
-            if(sublayer.lineWidth != lineWidth) { return false }
-            if(sublayer.fillColor != fillColor) { return false }
-            if(sublayer.strokeColor != borderColor) { return false }
+            if sublayer.lineWidth != lineWidth { return false }
+            if sublayer.fillColor != fillColor { return false }
+            if sublayer.strokeColor != borderColor { return false }
             
             
             return true
@@ -137,7 +115,7 @@ extension TipUIPopoverViewController {
         
         let hasBorderLayer = isBorderLayer?.contains(true) ?? false
         
-        if(!hasBorderLayer) {
+        if !hasBorderLayer {
             guard let shapeLayer = view.superview?.superview?.mask?.layer as? CAShapeLayer else { return }
             let borderLayer = CAShapeLayer()
             

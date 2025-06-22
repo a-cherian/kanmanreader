@@ -26,7 +26,7 @@ struct RARExtractor: Extractor {
             return !entry.directory && shouldKeepFile(fileName: entry.fileName)
         }
         
-        if(entries.count == 0) { throw ExtractError.noValidFiles }
+        if entries.count == 0 { throw ExtractError.noValidFiles }
     }
     
     func extractInfo() throws -> (cover: Data, totalPages: Int) {

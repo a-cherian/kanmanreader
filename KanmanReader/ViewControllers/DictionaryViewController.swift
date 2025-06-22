@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import Translation
+import SwiftUI
 
 class DictionaryViewController: UIViewController, UITextViewDelegate {
-    
     var searchLimit = 8
     var appPreferences = AppPreferences(from: nil)
+    let coordinator = TranslationCoordinator()
+    var translationView = TranslationView(coordinator: TranslationCoordinator())
+    var hostingController = UIHostingController(rootView: TranslationView(coordinator: TranslationCoordinator()))
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -36,9 +40,6 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         textView.isScrollEnabled = false
         textView.delegate = self
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapWords(_:)))
-        textView.addGestureRecognizer(tapGesture)
-        
         return textView
     }()
     
@@ -53,7 +54,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         let button = UIButton()
         
         button.setImage(UIImage(systemName: "list.clipboard.fill"), for: .normal)
-        button.tintColor = .white
+        button.tintColor = .black
         button.layer.cornerRadius = 10
         
         button.addTarget(self, action: #selector(didTapCopy), for: .touchUpInside)
@@ -61,9 +62,32 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         return button
     }()
     
+    lazy var translateButton = {
+        let button = UIButton()
+        
+        button.setImage(.translateIcon.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = .black
+        button.layer.cornerRadius = 10
+        
+        button.addTarget(self, action: #selector(didTapTranslate), for: .touchUpInside)
+        
+        return button
+    }()
+    
     init(text: String) {
         super.init(nibName: nil, bundle: nil)
-        ocrTextView.text = text
+        if text == "" {
+            ocrTextView.font = Constants.enFontItalicMedium
+            ocrTextView.textColor = UIColor.gray
+            ocrTextView.text = "No text found. Please try selecting the text you want to scan again."
+        }
+        else {
+            ocrTextView.text = text
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapWords(_:)))
+            ocrTextView.addGestureRecognizer(tapGesture)
+            DictionaryTip.dictOpened = true
+            OCRTip.tipEnabled = false
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -75,11 +99,10 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = .darkAccent
         view.layoutMargins = UIEdgeInsets(top: 50, left: 5, bottom: 50, right: 5)
         
-        DictionaryTip.dictOpened = true
-        BoxTip.tipEnabled = false
-        
         addSubviews()
         configureUI()
+        
+
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -89,15 +112,28 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     func addSubviews() {
         view.addSubview(scrollView)
         view.addSubview(copyButton)
+        view.addSubview(translateButton)
         scrollView.addSubview(contentView)
         contentView.addSubview(ocrTextView)
         contentView.addSubview(wordStackView)
+        addTranslationView()
+    }
+    
+    func addTranslationView() {
+        let translationView = TranslationView(coordinator: coordinator)
+        hostingController = UIHostingController(rootView: translationView)
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.view.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        hostingController.view.alpha = 0.01
+        hostingController.didMove(toParent: self)
     }
     
     func configureUI() {
         configureScrollView()
         configureContentView()
         configureCopyButton()
+        configureTranslateButton()
         configureOCRTextView()
         configureWordStackView()
     }
@@ -154,11 +190,28 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         ])
     }
     
+    func configureTranslateButton() {
+        translateButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            translateButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            translateButton.trailingAnchor.constraint(equalTo: copyButton.leadingAnchor, constant: -10),
+            translateButton.heightAnchor.constraint(equalToConstant: 45),
+            translateButton.widthAnchor.constraint(equalTo: copyButton.heightAnchor)
+        ])
+    }
+
+    
     @objc func didTapCopy() {
         let pasteboard = UIPasteboard.general
         pasteboard.string = ocrTextView.text
         
         copyButton.animateBackgroundFlash()
+    }
+    
+    @objc func didTapTranslate() {
+        translateButton.animateBackgroundFlash()
+        self.coordinator.textToTranslate = self.ocrTextView.text
+        self.coordinator.showsTranslation = true
     }
     
     @objc func didTapWords(_ tapGesture: UITapGestureRecognizer) {
@@ -176,13 +229,13 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
             entries += CoreDataManager.shared.translationFor(chinese: String(detectedWord.prefix(upTo: String.Index(utf16Offset: detectedWord.count - i, in: detectedWord))))
         }
         
-        if(entries.count == 0) {
+        if entries.count == 0 {
             ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
             return
         }
         
         let longestDetectedWord = entries.reduce(entries[0], {
-            if($0.traditional?.count ?? 0 > $1.traditional?.count ?? 0) { return $0 }
+            if $0.traditional?.count ?? 0 > $1.traditional?.count ?? 0 { return $0 }
             else { return $1 }
         })
         let trimmedWord = String(detectedWord.prefix(upTo: String.Index(utf16Offset: longestDetectedWord.traditional?.count ?? 0, in: detectedWord)))
@@ -199,14 +252,14 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
         for i in 0..<entries.count {
             let entry = entries[i]
             
-            if(i == 0) {
+            if i == 0 {
                 addLineToWordStack()
             }
             
             let wordView = WordView(word: entry, preferences: appPreferences)
             wordStackView.addArrangedSubview(wordView)
             
-            if((i < entries.count - 1 && entry.simplified != entries[i + 1].simplified)) {
+            if i < entries.count - 1 && entry.simplified != entries[i + 1].simplified {
                 addLineToWordStack()
             }
         }
@@ -255,7 +308,7 @@ class DictionaryViewController: UIViewController, UITextViewDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let touchPoint = touch.location(in: ocrTextView)
-        if(ocrTextView.bounds.contains(touchPoint)) { return }
+        if ocrTextView.bounds.contains(touchPoint) { return }
         
         ocrTextView.attributedText = generateAttributedString(with: "2hdaun2unkjsdjakd2", targetString: ocrTextView.text)
         wordStackView.removeAllSubviews()

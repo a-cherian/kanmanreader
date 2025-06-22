@@ -17,19 +17,15 @@ class TipManager {
     weak var delegate: TipDelegate?
     
     var ocrTip = OCRTip()
-    var boxTip = BoxTip()
     var dictTip = DictionaryTip()
     
     var ocrTipTask: Task<Void, Never>?
-    var boxTipTask: Task<Void, Never>?
     var dictTipTask: Task<Void, Never>?
     
     init() {
         try? Tips.resetDatastore()
         try? Tips.configure()
         OCRTip.tipEnabled = true
-        BoxTip.tipEnabled = true
-        BoxTip.boxesGenerated = false
         DictionaryTip.tipEnabled = true
         DictionaryTip.dictOpened = false
     }
@@ -39,13 +35,6 @@ class TipManager {
             for await shouldDisplay in ocrTip.shouldDisplayUpdates {
                 if shouldDisplay { delegate?.didDisplay(tip: ocrTip) }
                 else { delegate?.didDismiss(tip: ocrTip) }
-            }
-        }
-        
-        boxTipTask = boxTipTask ?? Task { @MainActor in
-            for await shouldDisplay in boxTip.shouldDisplayUpdates {
-                if shouldDisplay { delegate?.didDisplay(tip: boxTip) }
-                else { delegate?.didDismiss(tip: boxTip) }
             }
         }
         
@@ -59,7 +48,6 @@ class TipManager {
     
     static func disableTips() {
         OCRTip.tipEnabled = false
-        BoxTip.tipEnabled = false
         DictionaryTip.tipEnabled = false
     }
     

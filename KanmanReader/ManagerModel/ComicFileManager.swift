@@ -26,7 +26,7 @@ struct ComicFileManager {
                 let name = getFileName(for: url)
                 guard let uuid = try? createBookmark(url: url) else { return nil }
                 guard let (cover, totalPages) = try? getInfo(for: url) else { return nil }
-                if(totalPages == 0 ) { return nil }
+                if totalPages == 0 { return nil }
                 
                 return ["name": name, "lastPage": 0, "totalPages": totalPages, "cover": cover, "lastOpened": Date(), "preferences": ReaderPreferences().string, "uuid": uuid]
             }
@@ -45,7 +45,7 @@ struct ComicFileManager {
                 let name = name ?? getFileName(for: url)
                 let uuid = try createBookmark(url: url, openInPlace: openInPlace)
                 let (cover, totalPages) = try getInfo(for: url, openInPlace: openInPlace)
-                if(totalPages == 0 ) { return nil }
+                if totalPages == 0 { return nil }
                 
                 comic = CoreDataManager.shared.createComic(name: name, totalPages: totalPages, cover: cover, uuid: uuid)
             }
@@ -55,7 +55,7 @@ struct ComicFileManager {
         catch {
             print("Couldn't create comic for \(url): \(error)")
             
-            if(alerts) {
+            if alerts {
                 let alert = UIAlertController(
                     title: "Manhua import failed",
                     message: "Manhua was unable to be imported. Make sure that the file is a ZIP/RAR/CBR/CBZ that contains image files in the main folder. Contact support if the problem persists.",
@@ -160,7 +160,7 @@ struct ComicFileManager {
     }
     
     static func accessGuardedResource(_ url: URL, with function: () throws -> (Any), openInPlace: Bool = true) throws -> Any {
-        if(!openInPlace) { return try function() }
+        if !openInPlace { return try function() }
         
         guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
         defer { url.stopAccessingSecurityScopedResource() }
@@ -171,7 +171,7 @@ struct ComicFileManager {
     static func retrieveComics() -> [Comic] {
         var comics = CoreDataManager.shared.fetchComics()
         
-        if(LINK_CHECKING) {
+        if LINK_CHECKING {
             comics = comics?.compactMap { comic in
                 if comic.url == nil {
                     ComicFileManager.deleteComic(comic: comic)
@@ -187,7 +187,7 @@ struct ComicFileManager {
     }
     
     static func createBookmark(url: URL, openInPlace: Bool = true) throws -> String {
-        if(!openInPlace) { return try writeBookmark(url: url) }
+        if !openInPlace { return try writeBookmark(url: url) }
         
         guard url.startAccessingSecurityScopedResource() else { throw BookmarkError.notSecurityScoped }
         
@@ -311,8 +311,7 @@ struct ComicFileManager {
         
         do {
             guard let newURL = getManhuaDirectory()?.appendingPathComponent(url.lastPathComponent) else { return nil }
-            if(!fm.fileExists(atPath: newURL.path))
-            {
+            if !fm.fileExists(atPath: newURL.path) {
                 try fm.moveItem(at: url, to: newURL)
                 return newURL
             }
@@ -362,8 +361,7 @@ struct ComicFileManager {
         guard let url = url else { return }
         let fm = FileManager.default
         do {
-            if(fm.fileExists(atPath: url.path))
-            {
+            if fm.fileExists(atPath: url.path) {
                 try fm.removeItem(at: url) // WARNING: this WILL delete files
             }
         } catch {

@@ -15,18 +15,17 @@ protocol Reader: UIViewController {
     var currentImage: UIImage? { get }
 }
 
-class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate {
+class ReaderViewController: UIViewController, UIPopoverPresentationControllerDelegate, UIGestureRecognizerDelegate {    
     var comic: Comic
     
     var tipManager: TipManager?
-    var textRecognizer = TextRecognizer()
-    var ocrEnabled = false
-    var zoomedRect: CGRect? = nil
     
     var preferences = ReaderPreferences()
     
     var dictionaryViewController = DictionaryViewController(text: "")
     var reader: Reader = HReaderViewController()
+    var selectionView: Selection?
+    var initialLocation: CGPoint?
     
     var prefsViewController: ReaderPrefsViewController = {
         let controller = ReaderPrefsViewController()
@@ -36,7 +35,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }()
     
     var ocrTipView: TipUIView?
-    var boxTipView: TipUIView?
     var dictTipView: TipUIView?
     
     lazy var prefsButton: UIButton = {
@@ -93,8 +91,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         else if preferences.scrollDirection == .vertical {
             reader = VReaderViewController(urls: urls, position: Int(comic.lastPage), parent: self)
         }
-        
-        textRecognizer.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -115,7 +111,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         
         configureUI()
         addReader()
-        addGestureRecognizers()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -126,7 +121,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if(comic.isTutorial || !TipManager.hasStartedTips()) {
+        if comic.isTutorial || !TipManager.hasStartedTips() {
             tipManager = TipManager()
             tipManager?.delegate = self
         }
@@ -146,6 +141,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         view.addSubview(reader.view)
         configureReader()
         reader.didMove(toParent: self)
+        addGestureRecognizers()
     }
     
     func removeReader() {
@@ -180,9 +176,12 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
     }
     
     func addGestureRecognizers() {
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didTapOCR(_:)))
-        longPressGesture.minimumPressDuration = 0.3
-        view.addGestureRecognizer(longPressGesture)
+        let dragGesture = UILongPressGestureRecognizer(target: self, action: #selector(didDrag(_:)))
+        dragGesture.delegate = self;
+        dragGesture.minimumPressDuration = 0.1
+        dragGesture.allowableMovement = 10
+        dragGesture.cancelsTouchesInView = true
+        reader.view.addGestureRecognizer(dragGesture);
     }
     
     func displayOCRTip(_ tip: any Tip) {
@@ -197,20 +196,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
                 ocrTipView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 ocrTipView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
                 ocrTipView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-            ])
-        }
-    }
-    
-    func displayBoxTip(_ tip: any Tip) {
-        boxTipView = TipUIView(tip)
-        if let boxTipView = boxTipView {
-            boxTipView.viewStyle = BorderTipViewStyle()
-            boxTipView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(boxTipView)
-            view.addConstraints([
-                boxTipView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                boxTipView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-                boxTipView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
             ])
         }
     }
@@ -245,19 +230,6 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
         self.present(dictionaryViewController, animated: true)
     }
     
-    @objc func didTapOCR(_ sender: UILongPressGestureRecognizer) {
-        if let hReader = reader as? HReaderViewController,  let image = hReader.currentImage {
-            let zoomedRect = image.getZoomedRect(from: reader.currentPage)
-            textRecognizer.requestInitialVision(for: image, with: zoomedRect)
-            if(!DictionaryTip.tipEnabled) { hReader.currentPage.didSingleTap(sender) }
-        }
-        else if let vReader = reader as? VReaderViewController {
-            guard let image = vReader.tableView.screenshot() else { return }
-            textRecognizer.requestInitialVision(for: image)
-            if(!DictionaryTip.tipEnabled) { vReader.didSingleTap(sender) }
-        }
-    }
-    
     @objc func didTapPrefs() {
         prefsViewController.updatePreferences(with: preferences)
         if let pvc = prefsViewController.popoverPresentationController {
@@ -266,7 +238,7 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
             pvc.sourceRect = prefsButton.frame
             pvc.sourceView = prefsButton
             
-            if(!isModal(prefsViewController)) {
+            if !isModal(prefsViewController) {
                 prefsButton.animateBackgroundFlash()
                 self.present(prefsViewController, animated: true)
             }
@@ -297,22 +269,11 @@ class ReaderViewController: UIViewController, UIPopoverPresentationControllerDel
 
 
 
-extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegate, ReaderDelegate, ReaderPrefsDelegate {
-    func didPerformVision(image: UIImage) {
-        if let hReader = reader as? HReaderViewController {
-            hReader.currentPage.imageView.image = image
-        }
-        else if let vReader = reader as? VReaderViewController {
-            vReader.startVisionMode(image: image)
-        }
-    }
-    
+extension ReaderViewController: TipDelegate, ReaderDelegate, ReaderPrefsDelegate {
     func didDisplay(tip: any Tip) {
         switch tip{
         case is OCRTip:
             displayOCRTip(tip)
-        case is BoxTip:
-            displayBoxTip(tip)
         case is DictionaryTip:
             displayDictTip(tip)
         default:
@@ -325,8 +286,6 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
         case is OCRTip:
             ocrTipView?.removeFromSuperview()
             prefsButton.isUserInteractionEnabled = true
-        case is BoxTip:
-            boxTipView?.removeFromSuperview()
         case is DictionaryTip:
             dictTipView?.removeFromSuperview()
         default:
@@ -334,19 +293,62 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
         }
     }
     
-    @discardableResult
-    func didTapRegion(location: CGPoint) -> Bool {
-        guard let text = textRecognizer.requestFinalVision(for: location, textDirection: preferences.textDirection) else { return false }
+    @objc func didDrag(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let mainView = reader.view;
+        var posView = reader.view;
+        if reader is HReaderViewController {
+            posView = reader.currentPage.zoomableView.imageView;
+        }
+        
+        let location = gestureRecognizer.location(in: posView)
+        let start = initialLocation ?? location
+        let translation = CGPoint(x: location.x - start.x, y: location.y - start.y)
+        let p1 = CGPoint(x: location.x - translation.x,
+                            y: location.y - translation.y)
+        let p2 = gestureRecognizer.location(in: posView)
+        let minX = min(p1.x, p2.x)
+        let minY = min(p1.y, p2.y)
+        let size = CGSize(width: abs(translation.x), height: abs(translation.y))
+        let region = CGRect(origin: CGPoint(x: minX, y: minY), size: size)
+        let selectionRect = posView?.convert(region, to: mainView) ?? region
 
+        switch gestureRecognizer.state {
+        case .began:
+            initialLocation = gestureRecognizer.location(in: posView)
+            selectionView = Selection(frame: selectionRect)
+            mainView?.addSubview(selectionView!)
+        case .changed:
+            selectionView?.frame = selectionRect;
+        case .ended, .cancelled:
+            selectionView?.removeFromSuperview();
+            selectionView = nil
+            initialLocation = nil
+            Task { @MainActor in
+                await didFrameRegion(rect: region, in: reader)
+            }
+        default:
+            break
+        }
+    }
+    
+    @discardableResult
+    func didFrameRegion(rect: CGRect, in reader: Reader) async -> Bool {
+        var text = ""
+        
+        if let hReader = reader as? HReaderViewController,  let image = hReader.currentImage {
+            text = await image.requestVision(in: rect)
+        }
+        else if let vReader = reader as? VReaderViewController {
+            guard let image = vReader.tableView.screenshot() else { return false }
+            text = await image.requestVision(in: rect)
+        }
+        
         self.presentDictionary(text: text)
         
         return true
     }
     
     func didFlipPage() {
-        textRecognizer = TextRecognizer()
-        textRecognizer.delegate = self
-        
         title = "\(reader.position + 1) / \(comic.totalPages)"
     }
     
@@ -367,17 +369,18 @@ extension ReaderViewController: PageDelegate, TipDelegate, TextRecognizerDelegat
             reader = HReaderViewController(urls: reader.urls, position: lastPosition, parent: self)
         }
         addReader()
-        
-        textRecognizer = TextRecognizer()
-        textRecognizer.delegate = self
     }
     
-    func changedText(to direction: Direction) {
-        switch(direction) {
-        case .horizontal:
-            preferences.textDirection = .horizontal
-        case .vertical:
-            preferences.textDirection = .vertical
+    func toggleScroll(enabled: Bool) {
+        if let hReader = reader as? HReaderViewController {
+            hReader.dataSource = enabled ? hReader : nil
+            hReader.currentPage.zoomableView.scrollView.isScrollEnabled = enabled
+        }
+        if let vReader = reader as? VReaderViewController {
+            vReader.tableView.isScrollEnabled = enabled
+            for case let cell as ImageCell in vReader.tableView.visibleCells {
+                cell.zoomableView.scrollView.isScrollEnabled = enabled
+            }
         }
     }
     

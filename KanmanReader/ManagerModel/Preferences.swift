@@ -8,36 +8,43 @@
 import Foundation
 
 class ReaderPreferences {
-    let SCROLL_DIR_POS = 0
-    let TEXT_DIR_POS = 1
+    static let deprecatedKeys: Set<String> = ["textDirection"]
     
     var scrollDirection: Direction = .vertical
-    var textDirection: Direction = .horizontal
     
-    var string: String { ReaderPreferences.generateString(scrollDir: scrollDirection, textDir: textDirection) }
+    var string: String { Self.generateString(scrollDir: scrollDirection) }
     
-    init(scroll: Direction = .vertical, text: Direction = .horizontal) {
+    init(scroll: Direction = .vertical) {
         scrollDirection = scroll
-        textDirection = text
     }
     
     init(from string: String?) {
-        let prefsString = string ?? ReaderPreferences.generateString()
+        let prefsString = string ?? Self.generateString()
+        let prefsOptions: [String : String] = Self.parseToDictionary(prefsString)
         
-        let prefs = prefsString.split(separator: ":")
-        let prefsOptions: [[String]] = prefs.map { $0.split(separator: "_").map({ String($0) }) }
+        let scrollDirVal = prefsOptions["scrollDirection"] ?? Direction.vertical.rawValue
         
-        scrollDirection = Direction(with: prefsOptions[SCROLL_DIR_POS][1])
-        textDirection = Direction(with: prefsOptions[TEXT_DIR_POS][1])
+        scrollDirection = Direction(with: scrollDirVal)
     }
     
-    static func generateString(scrollDir: Direction = .vertical, textDir: Direction = .vertical) -> String {
+    static func generateString(scrollDir: Direction = .vertical) -> String {
         let scrollDirStr = "scrollDirection_" + scrollDir.rawValue
-        let textDirStr = "textDirection_" + textDir.rawValue
         
-        let prefs = [scrollDirStr, textDirStr]
+        let prefs = [scrollDirStr]
         
         return prefs.joined(separator: ":")
+    }
+    
+    static func parseToDictionary(_ prefs: String) -> [String : String] {
+        let pairs = prefs
+            .split(separator: ":")
+            .compactMap { item -> (String, String)? in
+                let parts = item.split(separator: "_")
+                guard parts.count == 2 else { return nil }
+                return (String(parts[0]), String(parts[1]))
+            }
+            .filter { key, _ in !Self.deprecatedKeys.contains(key) } // remove deprecations
+        return Dictionary(uniqueKeysWithValues: pairs)
     }
 }
 

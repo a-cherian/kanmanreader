@@ -35,7 +35,7 @@ class ComicCell: UICollectionViewCell {
     
     override var isSelected: Bool{
       didSet {
-          if(isSelected) {
+          if isSelected {
               selectView.image = UIImage(systemName: "checkmark.circle.fill")
           }
           else {

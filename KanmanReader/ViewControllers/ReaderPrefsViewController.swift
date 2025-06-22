@@ -9,7 +9,6 @@ import UIKit
 
 protocol ReaderPrefsDelegate: AnyObject {
     func changedScroll(to direction: Direction)
-    func changedText(to direction: Direction)
 }
 
 class ReaderPrefsViewController: UIViewController {
@@ -27,16 +26,6 @@ class ReaderPrefsViewController: UIViewController {
     lazy var scrollDirControl: UISegmentedControl = {
         let horizontalTapped = UIAction(title: "Horizontal", handler: { _ in self.delegate?.changedScroll(to: .horizontal) })
         let verticalTapped = UIAction(title: "Vertical", handler: { _ in self.delegate?.changedScroll(to: .vertical) })
-        
-        let view = UISegmentedControl(frame: .zero, actions: [horizontalTapped, verticalTapped])
-        view.selectedSegmentIndex = 0
-        
-        return view
-    }()
-    
-    lazy var textDirControl: UISegmentedControl = {
-        let horizontalTapped = UIAction(title: "Horizontal", handler: { _ in self.delegate?.changedText(to: .horizontal) })
-        let verticalTapped = UIAction(title: "Vertical", handler: { _ in self.delegate?.changedText(to: .vertical) })
         
         let view = UISegmentedControl(frame: .zero, actions: [horizontalTapped, verticalTapped])
         view.selectedSegmentIndex = 0
@@ -70,7 +59,6 @@ class ReaderPrefsViewController: UIViewController {
     func addSubviews() {
         view.addSubview(stackView)
         stackView.addArrangedSubview(ToggleView(text: "Reader Scroll Direction", view: scrollDirControl))
-//        stackView.addArrangedSubview(ToggleView(text: "Text Scanning Direction", view: textDirControl))
     }
     
     func configureUI() {
@@ -92,10 +80,6 @@ class ReaderPrefsViewController: UIViewController {
         // scroll direction
         let scrollDirMapping: [Direction] = [.horizontal, .vertical]
         scrollDirControl.selectedSegmentIndex = scrollDirMapping.firstIndex(of: prefs.scrollDirection) ?? 0
-        
-        // text direction
-        let textDirMapping: [Direction] = [.horizontal, .vertical]
-        textDirControl.selectedSegmentIndex = textDirMapping.firstIndex(of: prefs.scrollDirection) ?? 0
     }
 }
 

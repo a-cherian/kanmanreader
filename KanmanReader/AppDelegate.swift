@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkFiles()
         loadItems()
         configureInitialLaunch()
+        performUpdates()
         
         return true
     }
@@ -84,13 +85,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.loadDictionary()
         }
         
-        self.loadSample()
+        loadSample()
+    }
+    
+    func performUpdates() {
+        let lastVersion = UserDefaults.standard.string(forKey: Constants.LAST_APP_VERSION_KEY) ?? "1.0.0"
+        
+        guard (lastVersion.compare(Constants.APP_VERSION, options: .numeric) != .orderedSame) else { return }
+        
+        if lastVersion.compare("1.2.0", options: .numeric) == .orderedAscending {
+            UserDefaults.standard.set(false, forKey: Constants.FINISHED_TIPS_KEY) // redid tutorial for new scanning method
+        }
+        
+        UserDefaults.standard.set(Constants.APP_VERSION, forKey: Constants.LAST_APP_VERSION_KEY)
+        print("Updated from \(lastVersion) to \(Constants.APP_VERSION)")
     }
     
     func loadDictionary() {
         let currentDictVersion = UserDefaults.standard.string(forKey: Constants.LATEST_DICT_UPDATE_KEY)
         
-        if(currentDictVersion != Constants.LATEST_DICT_UPDATE) {
+        if currentDictVersion != Constants.LATEST_DICT_UPDATE {
             print("Updating dictionary...")
             let dictFileName = "cedict_ts_" + Constants.LATEST_DICT_UPDATE
             guard let urlPath = Bundle.main.url(forResource: dictFileName, withExtension: "txt") else { return }
@@ -110,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             var dict: [[String]] = []
 
             for entry in dictLines {
-                if(entry.hasPrefix("#")) { continue }
+                if entry.hasPrefix("#") { continue }
                 
                 let splitted = entry.trimmingCharacters(in: CharacterSet(charactersIn: "/")).split(separator: "/")
                 
@@ -129,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             Task {
                 await CoreDataManager.shared.createDict(dictData: dict)
-                UserDefaults.standard.setValue(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
+                UserDefaults.standard.set(Constants.LATEST_DICT_UPDATE, forKey: Constants.LATEST_DICT_UPDATE_KEY)
                 print("Dictionary updated...")
             }
         }
@@ -139,14 +153,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let loadedSample = UserDefaults.standard.string(forKey: Constants.LOADED_SAMPLE_KEY)
         let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
         
-        if(loadedSample != Constants.LOADED_SAMPLE) {
+        if loadedSample != Constants.LOADED_SAMPLE {
             if let tutorial = CoreDataManager.shared.fetchTutorial() {
                 ComicFileManager.deleteComic(comic: tutorial)
                 ComicFileManager.createTutorial()
             }
-            UserDefaults.standard.setValue(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
+            UserDefaults.standard.set(Constants.LOADED_SAMPLE, forKey: Constants.LOADED_SAMPLE_KEY)
         }
-        if(!hasOnboarded) {
+        if !hasOnboarded {
             ComicFileManager.createTutorial()
         }
     }
@@ -161,17 +175,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func configureInitialLaunch() {
         let appPreferences = UserDefaults.standard.string(forKey: Constants.APP_PREFERENCES_KEY)
-        
-        if(appPreferences == nil) {
+        if appPreferences == nil {
             UserDefaults.standard.setValue(AppPreferences().string, forKey: Constants.APP_PREFERENCES_KEY)
         }
+        
+        
     }
     
     func restoreToInitial() {
-        UserDefaults.standard.setValue(nil, forKey: Constants.LOADED_SAMPLE_KEY)
-        UserDefaults.standard.setValue(false, forKey: Constants.HAS_ONBOARDED_KEY)
-        UserDefaults.standard.setValue(nil, forKey: Constants.APP_PREFERENCES_KEY)
-        UserDefaults.standard.setValue(false, forKey: Constants.FINISHED_TIPS_KEY)
+        UserDefaults.standard.set(nil, forKey: Constants.LOADED_SAMPLE_KEY)
+        UserDefaults.standard.set(false, forKey: Constants.HAS_ONBOARDED_KEY)
+        UserDefaults.standard.set(nil, forKey: Constants.APP_PREFERENCES_KEY)
+        UserDefaults.standard.set(false, forKey: Constants.FINISHED_TIPS_KEY)
         
         CoreDataManager.shared.deleteAllComics()
         ComicFileManager.deleteBookmarks()

@@ -70,7 +70,7 @@ class WordView: UIView {
         var hanziPrimary = word.simplified!
         var hanziSecondary = word.simplified!
         
-        if(appPreferences.prioritizeTraditional) { hanziPrimary = word.traditional! }
+        if appPreferences.prioritizeTraditional { hanziPrimary = word.traditional! }
         else { hanziSecondary = word.traditional! }
         
         string += hanziPrimary

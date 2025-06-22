@@ -27,11 +27,10 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     required init(urls: [URL] = [], position: Int = 0, parent: ReaderViewController? = nil) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
         
-        if(urls.count == 0) { return }
+        if urls.count == 0 { return }
         
         self.urls = urls
         self.currentPage = createPage(position: position)
-        self.currentPage.delegate = parent
         self.rDelegate = parent
         
         setViewControllers([currentPage], direction: .forward, animated: true)
@@ -54,15 +53,14 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     
     func createPage(position: Int) -> Page {
         let newPage = Page()
-        newPage.url = urls[position]
+        newPage.zoomableView.setImage(urls[position], setAspect: false)
         newPage.position = position
-        newPage.delegate = parent as? ReaderViewController
         
         return newPage
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        if(position - 1 >= 0) {
+        if position - 1 >= 0 {
             let previousPage = createPage(position: position - 1)
             return previousPage
         }
@@ -70,7 +68,7 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if(position + 1 < urls.count)
+        if position + 1 < urls.count
         {
             let nextPage = createPage(position: position + 1)
             return nextPage
@@ -83,9 +81,10 @@ class HReaderViewController: UIPageViewController, UIPageViewControllerDataSourc
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if(completed) {
+        if completed {
             let previousPage = previousViewControllers[0] as? Page
-            previousPage?.imageView.image = previousPage?.initialImage
+//            previousPage?.imageView.image = previousPage?.initialImage
+            previousPage?.zoomableView.imageView.image = previousPage?.zoomableView.initialImage
             currentPage = pendingPage
             rDelegate?.didFlipPage()
         }

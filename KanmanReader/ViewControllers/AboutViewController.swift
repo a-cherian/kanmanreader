@@ -89,11 +89,11 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.textLabel?.lineBreakMode = .byWordWrapping
         cell.textLabel?.textColor = .black
         
-        if(indexPath.item == 0) {
+        if indexPath.item == 0 {
             cell.textLabel?.attributedText = getAppInfo()
             cell.textLabel?.textAlignment = .center
         }
-        if(indexPath.item == 1) {
+        if indexPath.item == 1 {
             cell.textLabel?.attributedText = getCredits()
         }
         
@@ -101,7 +101,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(section == 0) { return 2 }
+        if section == 0 { return 2 }
         return 0
     }
     

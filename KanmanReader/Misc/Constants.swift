@@ -10,8 +10,8 @@ import SwiftUI
 
 struct Constants {
     // APP INFO
-    static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
-    static let BUILD_NUMBER = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+    static let APP_VERSION = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "v1.2.0"
+    static let BUILD_NUMBER = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "7"
     static let IOS_VERSION = UIDevice.current.systemVersion
     static let DEVICE_MODEL = UIDevice.current.name
     
@@ -21,8 +21,9 @@ struct Constants {
     static let LOADED_SAMPLE = "v1.1.0"
     
     static let LATEST_DICT_UPDATE_KEY = "dictDate"
-    static let LATEST_DICT_UPDATE = "2024-08-19"
+    static let LATEST_DICT_UPDATE = "2025-06-21"
     
+    static let LAST_APP_VERSION_KEY = "lastAppVersion"
     static let APP_PREFERENCES_KEY = "appPreferences"
     static let HAS_ONBOARDED_KEY = "hasOnboarded"
     static let FINISHED_TIPS_KEY = "finishedTips"
@@ -40,6 +41,8 @@ struct Constants {
     static let zhFontBoldSmall = UIFont(name: "PingFangTC-Semibold", size: smallFont)
     static let zhFontBoldMedium = UIFont(name: "PingFangTC-Semibold", size: mediumFont)
     static let zhFontBoldLarge = UIFont(name: "PingFangTC-Semibold", size: largeFont)
+    
+    static let enFontItalicMedium = UIFont.italicSystemFont(ofSize: mediumFont)
     
     
     // MISC

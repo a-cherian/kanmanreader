@@ -181,7 +181,7 @@ class SettingsViewController: UITableViewController {
         
         cell.textLabel?.text = setting.name
         cell.accessoryView = setting.view
-        if(indexPath.section == 2) {
+        if indexPath.section == 2 {
             cell.accessoryType = .disclosureIndicator
         }
         

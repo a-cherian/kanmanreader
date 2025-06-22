@@ -107,7 +107,7 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDelega
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         let currentIndex = pages.firstIndex(of: viewController) ?? 0
 
-        if(currentIndex - 1 >= 0) {
+        if currentIndex - 1 >= 0 {
             return pages[currentIndex - 1]
         }
         else {
@@ -118,7 +118,7 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDelega
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
         
-        if(currentIndex + 1 < pages.count) {
+        if currentIndex + 1 < pages.count {
             return pages[currentIndex + 1]
         }
         else {
@@ -186,7 +186,7 @@ class OnboardingPageViewController: UIViewController {
         
         titleView.text = title
         labelView.text = text
-        if(UIDevice.current.userInterfaceIdiom == .pad) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             setImage(UIImage(named: "iPad_" + imageName))
         }
         else {

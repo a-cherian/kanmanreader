@@ -16,7 +16,6 @@
 		402963582C806E6700211F2E /* Unpacker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402963572C806E6700211F2E /* Unpacker.swift */; };
 		4029635B2C8077ED00211F2E /* Unrar in Frameworks */ = {isa = PBXBuildFile; productRef = 4029635A2C8077ED00211F2E /* Unrar */; };
 		4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC642C7C5874007D216B /* HReaderViewController.swift */; };
-		4049AC692C7C851D007D216B /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC682C7C851D007D216B /* ImageCell.swift */; };
 		4049AC6B2C7E83A3007D216B /* ReaderPrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */; };
 		4049AC6D2C7E84EC007D216B /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4049AC6C2C7E84EC007D216B /* Enums.swift */; };
 		4058EC0D2C94D3B800191D21 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4058EC0C2C94D3B800191D21 /* Appearance.swift */; };
@@ -35,13 +34,17 @@
 		405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405946632B2EBABC00A6B1F9 /* Extension.swift */; };
 		405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A962C7979E500A40D24 /* ComicFileManager.swift */; };
 		405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9D2C7B04AE00A40D24 /* TipManager.swift */; };
-		405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */; };
 		405A7AB02C7C094400A40D24 /* VReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */; };
 		40724F0E2C78521100EA81DB /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40724F0D2C78521100EA81DB /* Tips.swift */; };
+		407617352E07921F00189AED /* cedict_ts_2025-06-21.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407617342E07921F00189AED /* cedict_ts_2025-06-21.txt */; };
 		407D6D942C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt in Resources */ = {isa = PBXBuildFile; fileRef = 407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */; };
-		407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407D6D962C756BFB00F8A5B9 /* Page.swift */; };
 		4084D81D2C89639400928B55 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4084D81C2C89639400928B55 /* AboutViewController.swift */; };
 		4096BC912C9BDF5C00219046 /* kanman-tutorial-sample.zip in Resources */ = {isa = PBXBuildFile; fileRef = 4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */; };
+		40A4E4D02DFB7A040069FD1A /* SelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A4E4CF2DFB7A040069FD1A /* SelectionView.swift */; };
+		40A4E4D42DFB908C0069FD1A /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A4E4D32DFB908C0069FD1A /* TranslationView.swift */; };
+		40A4E4D62DFD7CD70069FD1A /* Zoomable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A4E4D52DFD7CC50069FD1A /* Zoomable.swift */; };
+		40A4E4D92DFD7E3D0069FD1A /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A4E4D82DFD7E3B0069FD1A /* ImageCell.swift */; };
+		40A4E4DA2DFD80830069FD1A /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A4E4D72DFD7D630069FD1A /* Page.swift */; };
 		40BAE8E22C9A2238002C23C8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */; };
 		40F4EA752C81BD36008A85A4 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */; };
 		40F4EA772C86FCEE008A85A4 /* WordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40F4EA762C86FCEE008A85A4 /* WordView.swift */; };
@@ -69,7 +72,6 @@
 		402963542C80369100211F2E /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		402963572C806E6700211F2E /* Unpacker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unpacker.swift; sourceTree = "<group>"; };
 		4049AC642C7C5874007D216B /* HReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HReaderViewController.swift; sourceTree = "<group>"; };
-		4049AC682C7C851D007D216B /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		4049AC6A2C7E83A3007D216B /* ReaderPrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPrefsViewController.swift; sourceTree = "<group>"; };
 		4049AC6C2C7E84EC007D216B /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		4058EC0C2C94D3B800191D21 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
@@ -89,14 +91,18 @@
 		405A7A962C7979E500A40D24 /* ComicFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicFileManager.swift; sourceTree = "<group>"; };
 		405A7A9C2C79E46100A40D24 /* KanmanReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KanmanReader.entitlements; sourceTree = "<group>"; };
 		405A7A9D2C7B04AE00A40D24 /* TipManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipManager.swift; sourceTree = "<group>"; };
-		405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		405A7AAF2C7C094400A40D24 /* VReaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VReaderViewController.swift; sourceTree = "<group>"; };
 		40724F0A2C76F66E00EA81DB /* Kanman Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kanman Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40724F0D2C78521100EA81DB /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
+		407617342E07921F00189AED /* cedict_ts_2025-06-21.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "cedict_ts_2025-06-21.txt"; sourceTree = "<group>"; };
 		407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cedict_ts_2024-08-19.txt"; sourceTree = "<group>"; };
-		407D6D962C756BFB00F8A5B9 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		4084D81C2C89639400928B55 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "kanman-tutorial-sample.zip"; sourceTree = "<group>"; };
+		40A4E4CF2DFB7A040069FD1A /* SelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionView.swift; sourceTree = "<group>"; };
+		40A4E4D32DFB908C0069FD1A /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
+		40A4E4D52DFD7CC50069FD1A /* Zoomable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zoomable.swift; sourceTree = "<group>"; };
+		40A4E4D72DFD7D630069FD1A /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
+		40A4E4D82DFD7E3B0069FD1A /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		40BAE8E12C9A2238002C23C8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		40F4EA742C81BD36008A85A4 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		40F4EA762C86FCEE008A85A4 /* WordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordView.swift; sourceTree = "<group>"; };
@@ -127,7 +133,6 @@
 			isa = PBXGroup;
 			children = (
 				402963542C80369100211F2E /* Preferences.swift */,
-				405A7A9F2C7B0CF300A40D24 /* TextRecognizer.swift */,
 				405A7A9D2C7B04AE00A40D24 /* TipManager.swift */,
 				405945ED2B2C55F800A6B1F9 /* CoreDataManager.swift */,
 				405A7A962C7979E500A40D24 /* ComicFileManager.swift */,
@@ -173,6 +178,7 @@
 			children = (
 				4096BC902C9BDF5C00219046 /* kanman-tutorial-sample.zip */,
 				407D6D932C7492A200F8A5B9 /* cedict_ts_2024-08-19.txt */,
+				407617342E07921F00189AED /* cedict_ts_2025-06-21.txt */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -180,11 +186,13 @@
 		40F4EA712C8134B2008A85A4 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				40A4E4D32DFB908C0069FD1A /* TranslationView.swift */,
 				4058EC0C2C94D3B800191D21 /* Appearance.swift */,
 				400E0DCE2B31D7C70024AD39 /* Constants.swift */,
 				40724F0D2C78521100EA81DB /* Tips.swift */,
 				405946632B2EBABC00A6B1F9 /* Extension.swift */,
 				4049AC6C2C7E84EC007D216B /* Enums.swift */,
+				40A4E4CF2DFB7A040069FD1A /* SelectionView.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -192,9 +200,10 @@
 		40F4EA722C8134BD008A85A4 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				4049AC682C7C851D007D216B /* ImageCell.swift */,
+				40A4E4D82DFD7E3B0069FD1A /* ImageCell.swift */,
+				40A4E4D72DFD7D630069FD1A /* Page.swift */,
+				40A4E4D52DFD7CC50069FD1A /* Zoomable.swift */,
 				400E0EA22B36D2BC0024AD39 /* ComicCell.swift */,
-				407D6D962C756BFB00F8A5B9 /* Page.swift */,
 				40F4EA762C86FCEE008A85A4 /* WordView.swift */,
 			);
 			path = Cells;
@@ -283,6 +292,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				407617352E07921F00189AED /* cedict_ts_2025-06-21.txt in Resources */,
 				402963532C8001AF00211F2E /* PrivacyInfo.xcprivacy in Resources */,
 				405945C62B2C54DF00A6B1F9 /* LaunchScreen.storyboard in Resources */,
 				405945C32B2C54DF00A6B1F9 /* Assets.xcassets in Resources */,
@@ -298,14 +308,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40A4E4D42DFB908C0069FD1A /* TranslationView.swift in Sources */,
 				405945FD2B2C567C00A6B1F9 /* DocumentSelectionViewController.swift in Sources */,
 				405945B72B2C54DA00A6B1F9 /* AppDelegate.swift in Sources */,
 				400E0EA32B36D2BC0024AD39 /* ComicCell.swift in Sources */,
 				405A7A9E2C7B04AE00A40D24 /* TipManager.swift in Sources */,
 				405A7A972C7979E500A40D24 /* ComicFileManager.swift in Sources */,
-				4049AC692C7C851D007D216B /* ImageCell.swift in Sources */,
-				407D6D972C756BFB00F8A5B9 /* Page.swift in Sources */,
 				402963552C80369100211F2E /* Preferences.swift in Sources */,
+				40A4E4D62DFD7CD70069FD1A /* Zoomable.swift in Sources */,
 				40F4EA772C86FCEE008A85A4 /* WordView.swift in Sources */,
 				4049AC6B2C7E83A3007D216B /* ReaderPrefsViewController.swift in Sources */,
 				4058EC0F2C9545CC00191D21 /* RARExtractor.swift in Sources */,
@@ -324,11 +334,13 @@
 				405946642B2EBABC00A6B1F9 /* Extension.swift in Sources */,
 				405945B92B2C54DA00A6B1F9 /* SceneDelegate.swift in Sources */,
 				40724F0E2C78521100EA81DB /* Tips.swift in Sources */,
+				40A4E4D92DFD7E3D0069FD1A /* ImageCell.swift in Sources */,
 				4049AC652C7C5874007D216B /* HReaderViewController.swift in Sources */,
 				400E0DCD2B31B45B0024AD39 /* DictionaryViewController.swift in Sources */,
 				405946602B2DC70400A6B1F9 /* ReaderViewController.swift in Sources */,
 				402963582C806E6700211F2E /* Unpacker.swift in Sources */,
-				405A7AA02C7B0CF300A40D24 /* TextRecognizer.swift in Sources */,
+				40A4E4D02DFB7A040069FD1A /* SelectionView.swift in Sources */,
+				40A4E4DA2DFD80830069FD1A /* Page.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +410,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -456,7 +468,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -476,7 +488,7 @@
 				CODE_SIGN_ENTITLEMENTS = KanmanReader/KanmanReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -488,12 +500,12 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanmanReader;
 				PRODUCT_NAME = "Kanman Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -515,7 +527,7 @@
 				CODE_SIGN_ENTITLEMENTS = KanmanReader/KanmanReader.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = AV5T75VG6K;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -527,12 +539,12 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = acherian.KanmanReader;
 				PRODUCT_NAME = "Kanman Reader";
 				PROVISIONING_PROFILE_SPECIFIER = "";

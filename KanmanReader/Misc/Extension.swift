@@ -6,9 +6,7 @@
 //
 
 import UIKit
-//import SwiftyTesseract
-//import libtesseract
-import Vision
+import VisionKit
 
 extension Comic {
     var isTutorial: Bool {
@@ -135,6 +133,20 @@ extension UIView {
 }
 
 extension UIImage {
+    func requestVision(in region: CGRect) async -> String {
+        guard region.width > 0, region.height > 0 else { return "" }
+        let croppedImage = self.crop(rect: region)
+        
+      
+        let analyzer = ImageAnalyzer()
+        do {
+            let configuration = ImageAnalyzer.Configuration([.text])
+            let analysis = try await analyzer.analyze(croppedImage, configuration: configuration)
+            return analysis.transcript
+        } catch {
+            return ""
+        }
+    }
 
     func crop(from scrollView: UIScrollView) -> UIImage {
         let zoom: CGFloat = 1.0 / scrollView.zoomScale
@@ -164,7 +176,7 @@ extension UIImage {
     }
 
     func getZoomedRect(from page: Page) -> CGRect {
-        return getZoomedRect(for: page.imageView.image, from: page.scrollView)
+        return getZoomedRect(for: page.zoomableView.imageView.image, from: page.zoomableView.scrollView)
     }
     
     func getZoomedRect(for image: UIImage?, from scrollView: UIScrollView) -> CGRect {
@@ -356,57 +368,6 @@ extension UITableView {
 extension CGRect: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(NSCoder.string(for: self))
-    }
-    
-    func normalizeBoundingBox(for image: UIImage) -> CGRect
-    {
-        let imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        let renormalized = VNImageRectForNormalizedRect(self, Int(imageRect.width), Int(imageRect.height))
-
-        return CGRect(
-            origin: CGPoint(
-                x: renormalized.origin.x,
-                y: imageRect.maxY - renormalized.origin.y - renormalized.size.height
-            ),
-            size: renormalized.size
-        )
-    }
-    
-    func unnormalizeBoundingBox(for image: UIImage) -> CGRect
-    {
-        let imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        let unnormalized = VNNormalizedRectForImageRect(self, Int(imageRect.size.width), Int(imageRect.size.height))
-        
-        let normalized = CGRect(
-            origin: CGPoint(
-                x: unnormalized.origin.x,
-                y: 1 - unnormalized.origin.y - unnormalized.size.height
-            ),
-            size: unnormalized.size
-        )
-        return normalized.inNormalBounds()
-    }
-    
-    func unnormalizeBoundingBox(for rect: CGRect?) -> CGRect
-    {
-        guard let rect = rect else { return self }
-        let unnormalized = VNNormalizedRectForImageRect(self, Int(rect.size.width), Int(rect.size.height))
-        
-        let normalized = CGRect(
-            origin: CGPoint(
-                x: unnormalized.origin.x,
-                y: 1 - unnormalized.origin.y - unnormalized.size.height
-            ),
-            size: unnormalized.size
-        )
-        return normalized.inNormalBounds()
-    }
-    
-    func inNormalBounds() -> CGRect
-    {
-        let x = max(0, self.minX)
-        let y = max(0, self.minY)
-        return CGRect(x: x, y: y, width: min(self.width, 1 - x), height: min(self.height, 1 - y))
     }
 }
 

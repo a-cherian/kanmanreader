@@ -167,7 +167,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     func checkOnboarding() {
         let hasOnboarded = UserDefaults.standard.bool(forKey: Constants.HAS_ONBOARDED_KEY)
         
-        if(!hasOnboarded) {
+        if !hasOnboarded {
             let onboardingViewController = OnboardingViewController()
             onboardingViewController.transitioningDelegate = self
             if let presentationController = onboardingViewController.presentationController as? UISheetPresentationController {
@@ -220,7 +220,7 @@ class DocumentSelectionViewController: UIViewController, ComicCellDelegate, UIVi
     @objc func didTapSelect() {
         isSelecting = !isSelecting
         
-        if(isSelecting) {
+        if isSelecting {
             enableSelectionMode()
         }
         else {
@@ -332,7 +332,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     }
     
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        if(urls.count == 1) {
+        if urls.count == 1 {
             controller.dismiss(animated: true, completion: {
                 guard let comic = ComicFileManager.createComic(from: urls[0]) else { return }
                 self.openComic(comic)
@@ -373,7 +373,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
         cell.selectView.isHidden = !isSelecting
         cell.chapterNumber = nil
         
-        if(!appPreferences.displayChapterNumbers) { return cell }
+        if !appPreferences.displayChapterNumbers { return cell }
         
         // try to scan english chapter number
         let scanner = Scanner(string: comic.name ?? "")
@@ -422,7 +422,7 @@ extension DocumentSelectionViewController: UIDocumentPickerDelegate, UICollectio
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         guard let vc = dismissed as? OnboardingViewController else { return nil }
         
-        if(vc.shouldPresentSample()) {
+        if vc.shouldPresentSample() {
             openTutorial()
         }
         
