@@ -198,7 +198,7 @@ struct ComicFileManager {
     
     private static func writeBookmark(url: URL) throws -> String {
         do {
-            let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
+            let bookmarkData = try url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
             
             let uuid = generateUUID(for: url)
             guard let bookmarkURL = getBookmarkDirectory()?.appendingPathComponent(uuid) else { throw BookmarkError.failedWrite }
